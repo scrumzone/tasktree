@@ -1,11 +1,14 @@
-import logo from './logo.svg';
+import { useEffect } from 'react';
 import './App.css';
 
 function App() {
+  useEffect(() => {
+    document.title = 'My Page Title';
+  });
   return (
     <div className="App">
       <header className="App-header">
-        React app
+        React
       </header>
     </div>
   );
