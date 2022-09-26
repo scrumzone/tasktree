@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/TaskTree.csproj": {}
+    "/src/TaskTree/TaskTree.csproj": {}
   },
   "projects": {
-    "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/TaskTree.csproj": {
+    "/src/TaskTree/TaskTree.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/TaskTree.csproj",
+        "projectUniqueName": "/src/TaskTree/TaskTree.csproj",
         "projectName": "TaskTree",
-        "projectPath": "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/TaskTree.csproj",
-        "packagesPath": "/home/zavier/.nuget/packages/",
-        "outputPath": "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/obj/",
+        "projectPath": "/src/TaskTree/TaskTree.csproj",
+        "packagesPath": "/root/.nuget/packages/",
+        "outputPath": "/src/TaskTree/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/zavier/.nuget/NuGet/NuGet.Config"
+          "/root/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -63,16 +63,11 @@
             "net47",
             "net471",
             "net472",
-            "net48"
+            "net48",
+            "net481"
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[6.0.8, 6.0.8]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -81,7 +76,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.108/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.401/RuntimeIdentifierGraph.json"
         }
       }
     }

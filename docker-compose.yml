@@ -5,6 +5,25 @@ networks:
     name: 'tasktree.localhost'
 
 services:
+
+  backend:
+    image: tasktree/backend
+
+    build:
+      context: ./backend
+      dockerfile: TaskTree/Dockerfile
+      target: development
+    container_name: tasktree-backend
+    expose:
+      - 7231 
+      - 5231
+    ports:
+      - 7231:7231
+      - 5231:5231
+    networks:
+      - tasktree
+    volumes:
+      - ./backend:/src
   frontend:
     image: tasktree/frontend
     build:
