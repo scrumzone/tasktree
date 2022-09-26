@@ -1,0 +1,21 @@
+version: '3.7'
+
+networks:
+  tasktree:
+    name: 'tasktree.localhost'
+
+services:
+  frontend:
+    image: tasktree/frontend
+    build:
+      context: frontend
+      target: development
+    container_name: tasktree-frontend
+    expose:
+     - 3000
+    ports:
+      - 3000:3000
+    networks:
+      - tasktree
+    volumes:
+      - ./frontend/node_modules:/app/node_modules
