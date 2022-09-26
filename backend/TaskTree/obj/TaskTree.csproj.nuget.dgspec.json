@@ -1,28 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\ethan\\OneDrive\\Documents\\GitHub\\tasktree\\backend\\TaskTree\\TaskTree.csproj": {}
+    "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/TaskTree.csproj": {}
   },
   "projects": {
-    "C:\\Users\\ethan\\OneDrive\\Documents\\GitHub\\tasktree\\backend\\TaskTree\\TaskTree.csproj": {
+    "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/TaskTree.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\ethan\\OneDrive\\Documents\\GitHub\\tasktree\\backend\\TaskTree\\TaskTree.csproj",
+        "projectUniqueName": "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/TaskTree.csproj",
         "projectName": "TaskTree",
-        "projectPath": "C:\\Users\\ethan\\OneDrive\\Documents\\GitHub\\tasktree\\backend\\TaskTree\\TaskTree.csproj",
-        "packagesPath": "C:\\Users\\ethan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\ethan\\OneDrive\\Documents\\GitHub\\tasktree\\backend\\TaskTree\\obj\\",
+        "projectPath": "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/TaskTree.csproj",
+        "packagesPath": "/home/zavier/.nuget/packages/",
+        "outputPath": "/home/zavier/Documents/school/fa22/cosc340/tasktree/backend/TaskTree/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\ethan\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "/home/zavier/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Users\\ethan\\OneDrive\\Documents\\NuGet Packages": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -41,9 +38,19 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[6.0.9, )"
+            },
             "Microsoft.VisualStudio.Azure.Containers.Tools.Targets": {
               "target": "Package",
               "version": "[1.17.0, )"
+            },
+            "MySql.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.4, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -56,11 +63,16 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.8, 6.0.8]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.AspNetCore.App": {
               "privateAssets": "none"
@@ -69,7 +81,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/6.0.108/RuntimeIdentifierGraph.json"
         }
       }
     }
