@@ -5,10 +5,10 @@ namespace TaskTree.Models;
 
 public class TaskTreeContext : DbContext
 {
-    public TaskTreeContext(DbContextOptions<TaskTreeContext> options) : base(options)
-    {
-    }
-    
-    // example:
-    // public DbSet<User> Users { get; set; } = null!;
+  public TaskTreeContext(DbContextOptions<TaskTreeContext> options) : base(options)
+  {
+  }
+
+  // example:
+  // public DbSet<User> Users { get; set; } = null!;
 }

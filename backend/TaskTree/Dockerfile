@@ -17,10 +17,8 @@ FROM build AS publish
 RUN dotnet publish "TaskTree.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS development
-# COPY . .
 WORKDIR /src/TaskTree
 ENTRYPOINT ["dotnet", "watch"]
-# ENTRYPOINT ["ls"]
 
 FROM base AS final
 WORKDIR /app

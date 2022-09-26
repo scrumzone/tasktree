@@ -6,6 +6,24 @@ networks:
 
 services:
 
+  db:
+    image: mysql:8.0
+    container_name: tasktree_db
+    expose:
+      - 3306
+    ports:
+      - 3306:3306
+    networks:
+      - tasktree
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: tasktree
+      MYSQL_USER: tasktree
+      MYSQL_PASSWORD: tasktree
+    volumes:
+      - tasktree_db_data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d/:ro
+
   backend:
     image: tasktree/backend
 
@@ -13,23 +31,26 @@ services:
       context: ./backend
       dockerfile: TaskTree/Dockerfile
       target: development
-    container_name: tasktree-backend
+    container_name: tasktree_backend
+    depends_on:
+      - db
     expose:
-      - 7231 
-      - 5231
+      - 5000
     ports:
-      - 7231:7231
-      - 5231:5231
+      - 5000:5000
     networks:
       - tasktree
     volumes:
       - ./backend:/src
+    environment:
+      - DOTNET_URLS=http://+:5000
+
   frontend:
     image: tasktree/frontend
     build:
       context: frontend
       target: development
-    container_name: tasktree-frontend
+    container_name: tasktree_frontend
     expose:
      - 3000
     ports:
@@ -38,3 +59,6 @@ services:
       - tasktree
     volumes:
       - ./frontend/node_modules:/app/node_modules
+  
+volumes:
+  tasktree_db_data:
