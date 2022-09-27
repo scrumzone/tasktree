@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<TaskTreeContext>(opt =>
 {
-  opt.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
+  opt.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version("1.0.0")));
 });
 
 
