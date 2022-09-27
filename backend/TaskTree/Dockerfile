@@ -16,6 +16,10 @@ RUN dotnet build "TaskTree.csproj" -c Release -o /app/build
 FROM build AS publish
 RUN dotnet publish "TaskTree.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS development
+WORKDIR /src/TaskTree
+ENTRYPOINT ["dotnet", "watch"]
+
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
