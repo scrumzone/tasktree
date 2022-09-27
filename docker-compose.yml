@@ -58,7 +58,7 @@ services:
     networks:
       - tasktree
     volumes:
-      - ./frontend/:/app
+      - ./frontend:/app
   
 volumes:
   tasktree_db_data:
