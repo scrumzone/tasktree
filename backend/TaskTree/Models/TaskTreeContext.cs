@@ -35,7 +35,7 @@ public class TaskTreeContext : DbContext
         {
           case EntityState.Modified:
             trackable.UpdatedAt = currentDateTime;
-            entry.Property(nameof(trackable.CreatedAt)).IsModified = false;
+            entry.Property(nameof(trackable.CreatedAt)).IsModified = false; /* ensure that CreatedAt won't be changed */
             break;
           case EntityState.Added:
             trackable.UpdatedAt = currentDateTime;

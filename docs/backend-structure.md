@@ -40,3 +40,5 @@ Then, modify the controller's construtor to accept an `IMapper` object and set t
 
 The mapper can now be used by calling the following function:
 `_mapper.Map(source, dest);`
+
+For an in-depth example, check out the `Controllers/UsersController.cs`.

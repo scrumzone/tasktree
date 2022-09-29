@@ -3,9 +3,11 @@ using TaskTree.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+// allow for environment variables to override configuration
 builder.Configuration.AddEnvironmentVariables();
 
+
+// Add services to the container.
 builder.Services.AddDbContext<TaskTreeContext>(opt =>
 {
   opt.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0)));
