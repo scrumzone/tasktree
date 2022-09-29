@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTree.Models;
-using TaskTree.Models.Requests;
 
 namespace TaskTree.Controllers
 {
@@ -15,10 +15,12 @@ namespace TaskTree.Controllers
     public class UsersController : ControllerBase
     {
         private readonly TaskTreeContext _context;
+        private readonly IMapper _mapper;
 
-        public UsersController(TaskTreeContext context)
+        public UsersController(TaskTreeContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -44,12 +46,17 @@ namespace TaskTree.Controllers
         // TODO: ensure only authorized user can update their account
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(long id, User user)
+        public async Task<IActionResult> UpdateUser(long id, Models.Requests.UpdateUserRequest updateUserRequest)
         {
-            if (id != user.Id)
+            var user = await _context.Users.FindAsync(id);
+
+            if (user == null)
             {
-                return BadRequest();
+                return NotFound();
             }
+            
+            // map using automapper
+            _mapper.Map(updateUserRequest, user);
 
             _context.Entry(user).State = EntityState.Modified;
 
@@ -75,21 +82,14 @@ namespace TaskTree.Controllers
         // POST: api/users
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(CreateUserRequest createUserRequest)
+        public async Task<ActionResult<User>> CreateUser(Models.Requests.CreateUserRequest createUserRequest)
         {
             if (_context.Users == null)
             {
                 return Problem("Entity set 'TaskTreeContext.Users'  is null.");
             }
 
-            var user = new User
-            {
-                Username = createUserRequest.Username,
-                Password = createUserRequest.Password,
-                FirstName = createUserRequest.FirstName,
-                LastName = createUserRequest.LastName
-            };
-
+            var user = _mapper.Map<User>(createUserRequest);
             
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
