@@ -46,8 +46,7 @@ public class TaskTreeContext : DbContext
     }
   }
   
+  // add DbSets here
   public DbSet<User> Users { get; set; }
 
-  // example:
-  // public DbSet<User> Users { get; set; } = null!;
 }

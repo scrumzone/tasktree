@@ -25,7 +25,7 @@ if (app.Environment.IsDevelopment())
 {
   // app.UseDeveloperExceptionPage();
   app.UseSwagger();
-  app.UseSwaggerUI(); /* do we need swagger? not sure if well even use openapi... */
+  app.UseSwaggerUI();
 }
 else if (app.Environment.IsProduction())
 {
