@@ -13,25 +13,25 @@ import {
 import './App.css';
 import TTNavBar from './components/TTNavBar/index';
 
+const navItems = [
+  {
+    name: 'Home',
+    path: '/',
+  },
+  {
+    name: 'Log in',
+    path: '/login',
+  },
+  {
+    name: 'Sign up',
+    path: '/signup',
+  },
+];
+
 function App() {
   useEffect(() => {
     document.title = 'Tasktree';
   });
-
-  const navItems = [
-    {
-      name: 'Home',
-      path: '/',
-    },
-    {
-      name: 'Login',
-      path: '/login',
-    },
-    {
-      name: 'Signup',
-      path: '/signup',
-    },
-  ];
 
   return (
     <div className="App">
