@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TaskTree.Models;
 using TaskTree.Models.Requests;
+using TaskTree.Models.Responses;
 
 namespace TaskTree.Controllers
 {
@@ -27,7 +28,7 @@ namespace TaskTree.Controllers
 
     // GET: api/users/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(long id)
+    public async Task<ActionResult<UserResponse>> GetUser(long id)
     {
       if (_context.Users == null)
       {
@@ -35,12 +36,15 @@ namespace TaskTree.Controllers
       }
       var user = await _context.Users.FindAsync(id);
 
+
       if (user == null)
       {
         return NotFound();
       }
 
-      return user;
+      var userResponse = _mapper.Map<User, UserResponse>(user);
+
+      return userResponse;
     }
 
     // PUT: api/users/5
