@@ -91,7 +91,7 @@ namespace TaskTree.Controllers
 
     // POST: api/users
     [HttpPost]
-    public async Task<ActionResult<User>> CreateUser(CreateUserRequest createUserRequest)
+    public async Task<ActionResult<UserResponse>> CreateUser(CreateUserRequest createUserRequest)
     {
       if (_context.Users == null)
       {
@@ -103,7 +103,7 @@ namespace TaskTree.Controllers
       _context.Users.Add(user);
       await _context.SaveChangesAsync();
 
-      return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+      return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _mapper.Map<User, UserResponse>(user));
     }
 
     // DELETE: api/Users/5
