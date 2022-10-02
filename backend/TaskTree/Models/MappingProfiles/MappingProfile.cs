@@ -9,8 +9,8 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMapNoNull<UpdateUserRequest, User>();
-        CreateMap<CreateUserRequest, User>(MemberList.Source);
-        CreateMap<User, UserResponse>(MemberList.Source);
+        CreateMapNoNull<CreateUserRequest, User>(MemberList.Source);
+        CreateMapNoNull<User, UserResponse>(MemberList.Source);
     }
 
     // This is a helper wrapper around the CreateMap function that allows us to concisely specify a mapping should not override non-null values with null ones
