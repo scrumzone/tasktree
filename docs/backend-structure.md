@@ -35,7 +35,7 @@ Remember, any action that will create or update tables should have an associated
 After accepting a Request object in the controller actions, it will need to be converted into an actual database entity. Rather than doing this conversion manually, TaskTree uses a project called [AutoMapper](https://github.com/AutoMapper/AutoMapper). It is almost completely automatic, but some manual work is needed to get it working.
 
 #### Creating a mapping
-In `Models/MappingProfiles/MappingProfile.cs`, add a `CreateMap<Source, Dest>()` function, where `Source` is original type and `Dest` is the type being converted to. If you want to ensure that null fields won't override non-null fields when merging objects (usefuk when updating entities), you can use the `CreateMapNoNull` helper we have defined in the `MappingProfile` class.
+In `Models/MappingProfiles/MappingProfile.cs`, add a `CreateMap<Source, Dest>()` function, where `Source` is original type and `Dest` is the type being converted to. If you want to ensure that null fields won't override non-null fields when merging objects (useful when updating entities), you can use the `CreateMapNoNull` helper we have defined in the `MappingProfile` class.
 
 #### Using a mapping
 Now define a private property on the controller you wish to use AutoMapper on:
