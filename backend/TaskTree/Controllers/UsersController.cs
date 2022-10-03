@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using TaskTree.Models;
 using TaskTree.Models.Requests;
+using TaskTree.Models.Responses;
 
 namespace TaskTree.Controllers
 {
@@ -26,7 +27,7 @@ namespace TaskTree.Controllers
 
     // GET: api/users/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(long id)
+    public async Task<ActionResult<UserResponse>> GetUser(long id)
     {
       if (_context.Users == null)
       {
@@ -34,12 +35,15 @@ namespace TaskTree.Controllers
       }
       var user = await _context.Users.FindAsync(id);
 
+
       if (user == null)
       {
         return NotFound();
       }
 
-      return user;
+      var userResponse = _mapper.Map<User, UserResponse>(user);
+
+      return userResponse;
     }
 
     // PUT: api/users/5
@@ -86,7 +90,7 @@ namespace TaskTree.Controllers
 
     // POST: api/users
     [HttpPost]
-    public async Task<ActionResult<User>> CreateUser(CreateUserRequest createUserRequest)
+    public async Task<ActionResult<UserResponse>> CreateUser(CreateUserRequest createUserRequest)
     {
       if (_context.Users == null)
       {
@@ -98,7 +102,7 @@ namespace TaskTree.Controllers
       _context.Users.Add(user);
       await _context.SaveChangesAsync();
 
-      return CreatedAtAction(nameof(GetUser), new { id = user.Id }, user);
+      return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _mapper.Map<User, UserResponse>(user));
     }
 
     // DELETE: api/Users/5
