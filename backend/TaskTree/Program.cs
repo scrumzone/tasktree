@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using TaskTree.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // allow for environment variables to override configuration
 builder.Configuration.AddEnvironmentVariables();
+
+builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfig"));
 
 
 // Add services to the container.

@@ -1,6 +1,7 @@
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,11 +18,13 @@ namespace TaskTree.Controllers
   {
     private readonly TaskTreeContext _context;
     private readonly IMapper _mapper;
+    private readonly IOptions<AppConfig> _config;
 
-    public UsersController(TaskTreeContext context, IMapper mapper)
+    public UsersController(TaskTreeContext context, IMapper mapper, IOptions<AppConfig> config)
     {
       _context = context;
       _mapper = mapper;
+      _config = config;
     }
 
 
@@ -143,10 +146,8 @@ namespace TaskTree.Controllers
             if (query.Any())
             {
                 var userResponse = query.First();
-                string key = "l2N,A^96HH9Vy40PFpReS8XlP2,o3]"; // jibberish, maybe TODO store in a secret
-                var issuer = "http://localhost:5000/";  // TODO update when deploying live website
 
-                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Value.AuthKey));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
                 //Create a List of Claims
@@ -154,7 +155,7 @@ namespace TaskTree.Controllers
                 permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
                 permClaims.Add(new Claim("username", userResponse.username));
                 permClaims.Add(new Claim("id", userResponse.id.ToString()));
-                if (userResponse.lastName != null)
+                if (userResponse.firstName != null)
                 {
                     permClaims.Add(new Claim("firstname", userResponse.firstName));
                 }
@@ -164,8 +165,8 @@ namespace TaskTree.Controllers
                 }
 
                 //Create Security Token object by giving required parameters    
-                var token = new JwtSecurityToken(issuer,
-                  issuer,
+                var token = new JwtSecurityToken(_config.Value.AuthIssuer,
+                  _config.Value.AuthIssuer,
                   permClaims,
                   expires: DateTime.Now.AddDays(1),
                   signingCredentials: credentials);
