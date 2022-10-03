@@ -127,48 +127,57 @@ namespace TaskTree.Controllers
       return NoContent();
     }
 
-    // api/Users/auth
-    [HttpGet("auth")]
-    public async Task<IActionResult> AuthenticateUser([FromHeader] AuthenticateUserRequest authenticateUserRequest)
-    {
-      var query = from user in _context.Users
-                  where user.Username == authenticateUserRequest.Username
-                  where user.Password == authenticateUserRequest.Password
-                  select new { user.Id, user.FirstName, user.LastName, user.Username };
+        // api/Users/auth
+        [HttpGet("auth")]
+        public IActionResult AuthenticateUser([FromHeader] AuthenticateUserRequest authenticateUserRequest)
+        {
+            // gets a single entry from DB with matching username and password, stores in a <= 1 length list
+            var query = (from user in _context.Users
+                         where user.Username == authenticateUserRequest.Username
+                         where user.Password == authenticateUserRequest.Password
+                         select new UserResponse
+                         { id = user.Id, firstName = user.FirstName, lastName = user.LastName, username = user.Username }).ToList();
 
 
+            // if the list has an entry, create a jwt valid for 24 hours. Otherwise, return 401
+            if (query.Any())
+            {
+                var userResponse = query.First();
+                string key = "l2N,A^96HH9Vy40PFpReS8XlP2,o3]"; // jibberish, maybe TODO store in a secret
+                var issuer = "http://localhost:5000/";  // TODO update when deploying live website
 
-      if (query.Any())
-      {
-        var userResponse = query.AsEnumerable().First();
-        string key = "my_secret_key_12345"; //Secret key which will be used later during validation    
-        var issuer = "http://mysite.com";  //normally this will be your site URL    
-  
-        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));    
-        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);    
-  
-        //Create a List of Claims, Keep claims name short    
-        var permClaims = new List<Claim>();    
-        permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));    
-        permClaims.Add(new Claim("username", authenticateUserRequest.Username));    
-        permClaims.Add(new Claim("id", userId));    
-        permClaims.Add(new Claim("firstname", "bilal"));    
-  
-        //Create Security Token object by giving required parameters    
-        var token = new JwtSecurityToken(issuer, //Issure    
-                        issuer,  //Audience    
-                        permClaims,    
-                        expires: DateTime.Now.AddDays(1),    
-                        signingCredentials: credentials);    
-        var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);    
-        return new { data = jwt_token };
-      }
-      else
-      {
-        // user could not be found
-        return BadRequest("Invalid username or password.");
-      }
-    }
+                var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+                var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+                //Create a List of Claims
+                var permClaims = new List<Claim>();
+                permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
+                permClaims.Add(new Claim("username", userResponse.username));
+                permClaims.Add(new Claim("id", userResponse.id.ToString()));
+                if (userResponse.lastName != null)
+                {
+                    permClaims.Add(new Claim("firstname", userResponse.firstName));
+                }
+                if (userResponse.lastName != null)
+                {
+                    permClaims.Add(new Claim("lastname", userResponse.lastName));
+                }
+
+                //Create Security Token object by giving required parameters    
+                var token = new JwtSecurityToken(issuer,
+                  issuer,
+                  permClaims,
+                  expires: DateTime.Now.AddDays(1),
+                  signingCredentials: credentials);
+                var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
+                return Ok(jwt_token);
+            }
+            else
+            {
+                // user could not be found
+                return Unauthorized("Invalid username or password.");
+            }
+        }
 
         private bool UserExists(long id)
     {
