@@ -1,17 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 using TaskTree.Models;
 using TaskTree.Models.Requests;
 
 namespace TaskTree.Controllers
 {
-  [Route("api/[controller]")]
+    [Route("api/[controller]")]
   [ApiController]
   public class UsersController : ControllerBase
   {
@@ -124,7 +123,50 @@ namespace TaskTree.Controllers
       return NoContent();
     }
 
-    private bool UserExists(long id)
+    // api/Users/auth
+    [HttpGet("auth")]
+    public async Task<IActionResult> AuthenticateUser([FromHeader] AuthenticateUserRequest authenticateUserRequest)
+    {
+      var query = from user in _context.Users
+                  where user.Username == authenticateUserRequest.Username
+                  where user.Password == authenticateUserRequest.Password
+                  select new { user.Id, user.FirstName, user.LastName, user.Username };
+
+
+
+      if (query.Any())
+      {
+        var userResponse = query.AsEnumerable().First();
+        string key = "my_secret_key_12345"; //Secret key which will be used later during validation    
+        var issuer = "http://mysite.com";  //normally this will be your site URL    
+  
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));    
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);    
+  
+        //Create a List of Claims, Keep claims name short    
+        var permClaims = new List<Claim>();    
+        permClaims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));    
+        permClaims.Add(new Claim("username", authenticateUserRequest.Username));    
+        permClaims.Add(new Claim("id", userId));    
+        permClaims.Add(new Claim("firstname", "bilal"));    
+  
+        //Create Security Token object by giving required parameters    
+        var token = new JwtSecurityToken(issuer, //Issure    
+                        issuer,  //Audience    
+                        permClaims,    
+                        expires: DateTime.Now.AddDays(1),    
+                        signingCredentials: credentials);    
+        var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);    
+        return new { data = jwt_token };
+      }
+      else
+      {
+        // user could not be found
+        return BadRequest("Invalid username or password.");
+      }
+    }
+
+        private bool UserExists(long id)
     {
       return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
     }
