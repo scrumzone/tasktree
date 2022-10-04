@@ -180,10 +180,6 @@ namespace TaskTree.Controllers
             }
         }
 
-        
-
-        
-
         private bool UserExists(long id)
     {
       return (_context.Users?.Any(e => e.Id == id)).GetValueOrDefault();
