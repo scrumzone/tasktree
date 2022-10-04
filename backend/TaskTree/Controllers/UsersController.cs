@@ -133,9 +133,9 @@ namespace TaskTree.Controllers
       return NoContent();
     }
 
-        // api/Users/auth
-        [HttpGet("auth")]
-        public IActionResult AuthenticateUser([FromHeader] AuthenticateUserRequest authenticateUserRequest)
+        // POST api/Users/auth
+        [HttpPost("auth")]
+        public IActionResult AuthenticateUser(AuthenticateUserRequest authenticateUserRequest)
         {
             // gets a single entry from DB with matching username and password, stores in a <= 1 length list
             var query = (from user in _context.Users
