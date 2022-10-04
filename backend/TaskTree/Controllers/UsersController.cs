@@ -1,6 +1,8 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -29,6 +31,7 @@ namespace TaskTree.Controllers
 
 
     // GET: api/users/5
+    [Authorize]
     [HttpGet("{id}")]
     public async Task<ActionResult<UserResponse>> GetUser(long id)
     {
@@ -50,7 +53,7 @@ namespace TaskTree.Controllers
     }
 
     // PUT: api/users/5
-    // TODO: ensure only authorized user can update their account
+    [Authorize]
     [HttpPut("{id}")]
     public async Task<IActionResult> UpdateUser(long id, UpdateUserRequest updateUserRequest)
     {
@@ -109,7 +112,7 @@ namespace TaskTree.Controllers
     }
 
     // DELETE: api/Users/5
-    // TODO: ensure only authorized user can delete their account
+    [Authorize]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(long id)
     {
@@ -171,6 +174,7 @@ namespace TaskTree.Controllers
                   expires: DateTime.Now.AddDays(1),
                   signingCredentials: credentials);
                 var jwt_token = new JwtSecurityTokenHandler().WriteToken(token);
+                
                 return Ok(jwt_token);
             }
             else
