@@ -2,12 +2,9 @@
 #wrapper1 {
     font-family: Helvetica;
     width:100%;
-    min-height:1000px;
+    padding-top:200px;
+    padding-bottom:300px;
     background-color: #cacaca;
-    vertical-align: middle;
-    padding:50px;
-    margin: auto;
-    margin-top: auto;
 }
 
 #loginField {
@@ -17,13 +14,11 @@
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
     background-color:white;
     padding:20px;
-    vertical-align:middle;
-    margin-left:auto;
-    margin-right:auto;
+    margin: 0 auto;
 }
 
 #loginField form {
-    position:relative;
+    position: relative;
     bottom: -75px;
 }
 
