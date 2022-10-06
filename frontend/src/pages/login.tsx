@@ -1,20 +1,16 @@
 import React from 'react';
+import '../components/Login/index';
 import logo from '../assets/logo.png';
+import { Button, Typography } from '@mui/material';
+import LoadLogin from '../components/Login/index';
+
 
 class LoginPage extends React.Component
 {
-    render (){
+    render () {
         return (
-            <div>
-                <div>
-                    <img src={logo} alt=''></img>
-                </div>
-                <form>
-                    <div>
-                        LOGIN PAGE
-                    </div>
-                </form>
-            </div>
+            // LoadLogin()
+            <div></div>
         )
     }
 }
