@@ -1,14 +1,14 @@
 import React from 'react';
-import LoginDesktop from './LoginDesktop';
-import LoginMobile from './LoginMobile';
+import HomeDesktop from './HomeDesktop';
+import HomeMobile from './HomeMobile';
 import { useMediaQuery } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 
-export default function LoginComponent() {
+export default function HomeComponent() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   return React.createElement(
-    isMobile ? LoginMobile : LoginDesktop,
+    isMobile ? HomeMobile : HomeDesktop,
     null
   );
 }

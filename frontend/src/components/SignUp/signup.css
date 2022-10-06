@@ -1,0 +1,9 @@
+
+#wrapper1 {
+    font-family: Helvetica;
+    width:100%;
+    min-height:1000px;
+    /* background-color: #121212; */
+    vertical-align: middle;
+    padding:50px;
+}
