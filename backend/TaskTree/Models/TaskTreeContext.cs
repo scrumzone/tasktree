@@ -8,7 +8,25 @@ public class TaskTreeContext : DbContext
   public TaskTreeContext(DbContextOptions<TaskTreeContext> options) : base(options)
   {
   }
-  
+
+  protected override void OnModelCreating(ModelBuilder modelBuilder)
+  {
+    modelBuilder.Entity<Project>()
+      .HasOne<User>()
+      .WithMany()
+      .HasForeignKey(p => p.Id);
+
+    modelBuilder.Entity<Task>()
+      .HasOne<Project>()
+      .WithOne(p => p.Root)
+      .HasForeignKey<Task>(t => t.Id);
+
+    modelBuilder.Entity<Task>()
+      .HasOne<Task>()
+      .WithMany(t => t.Children)
+      .HasForeignKey(t => t.Id);
+  }
+
   public override int SaveChanges(bool acceptChangesOnSuccess)
   {
     OnBeforeSave();
