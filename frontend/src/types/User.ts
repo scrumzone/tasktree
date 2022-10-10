@@ -4,3 +4,10 @@ export default interface User {
   firstName?: string;
   lastName?: string;
 }
+
+export const BlankUser: User = {
+  id: 0,
+  username: '',
+  firstName: '',
+  lastName: '',
+};
