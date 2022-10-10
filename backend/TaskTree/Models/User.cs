@@ -13,4 +13,6 @@ public class User : BaseEntity
     public string Password { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
+    
+    public List<Project> Projects { get; set; }
 }
