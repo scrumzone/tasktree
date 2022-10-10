@@ -20,7 +20,6 @@ class HomePage extends React.Component<{}, HomePageState> {
   componentDidMount() {
     UserService.getUser(1).then((user) => {
       this.setState({ user: user });
-      console.log(user);
     });
   }
 
