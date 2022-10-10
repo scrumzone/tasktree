@@ -11,20 +11,23 @@ public class TaskTreeContext : DbContext
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)
   {
+    // create one-to-many relation with user and projects
+    modelBuilder.Entity<User>()
+      .HasMany(u => u.Projects)
+      .WithOne(p => p.User)
+      .OnDelete(DeleteBehavior.Cascade);
+    
+    // create one-to-one relationship with project and task
     modelBuilder.Entity<Project>()
-      .HasOne<User>()
-      .WithMany()
-      .HasForeignKey(p => p.Id);
-
+      .HasOne(p => p.Root)
+      .WithOne(t => t.Project)
+      .OnDelete(DeleteBehavior.Cascade);
+    
+    // create one-to-many relationship with task and task
     modelBuilder.Entity<Task>()
-      .HasOne<Project>()
-      .WithOne(p => p.Root)
-      .HasForeignKey<Task>(t => t.Id);
-
-    modelBuilder.Entity<Task>()
-      .HasOne<Task>()
+      .HasOne(t => t.Parent)
       .WithMany(t => t.Children)
-      .HasForeignKey(t => t.Id);
+      .OnDelete(DeleteBehavior.Cascade);
   }
 
   public override int SaveChanges(bool acceptChangesOnSuccess)
@@ -66,5 +69,6 @@ public class TaskTreeContext : DbContext
   
   // add DbSets here
   public DbSet<User> Users { get; set; }
-
+  public DbSet<Task> Tasks { get; set; }
+  public DbSet<Project> Projects { get; set; }
 }
