@@ -2,11 +2,6 @@ import http from '../util/http';
 import User from '../types/User';
 
 export default class UserService {
-  static async getUsers(): Promise<User[]> {
-    const response = await http.get('/users');
-    return response.data;
-  }
-
   static async getUser(id: number): Promise<User> {
     const response = await http.get(`/users/${id}`);
     return response.data;
@@ -17,13 +12,13 @@ export default class UserService {
     return response.data;
   }
 
-  static async updateUser(user: User): Promise<User> {
-    const response = await http.put(`/users/${user.id}`, user);
-    return response.data;
+  // TODO: we should return the updated user from the endpoint
+  static async updateUser(user: User) {
+    await http.put(`/users/${user.id}`, user);
   }
 
-  static async deleteUser(id: number): Promise<User> {
-    const response = await http.delete(`/users/${id}`);
-    return response.data;
+  // TODO: we should return if the deletion succeeded or not
+  static async deleteUser(id: number) {
+    await http.delete(`/users/${id}`);
   }
 }
