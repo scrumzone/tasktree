@@ -8,9 +8,11 @@ namespace TaskTree.Models;
 public class User : BaseEntity
 {
     [Required]
-    public string Username { get; set; }
+    public string? Username { get; set; }
     [Required]
-    public string Password { get; set; }
+    public string? Password { get; set; }
     public string? FirstName { get; set; }
     public string? LastName { get; set; }
+
+    public List<Project>? Projects { get; set; }
 }

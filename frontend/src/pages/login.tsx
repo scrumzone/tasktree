@@ -1,18 +1,10 @@
 import React from 'react';
+import LoginComponent from '../components/Login/index';
 import logo from '../assets/logo.png';
 
 class LoginPage extends React.Component {
   render() {
-    return (
-      <div>
-        <div>
-          <img src={logo} alt=""></img>
-        </div>
-        <form>
-          <div>LOGIN PAGE</div>
-        </form>
-      </div>
-    );
+    return <LoginComponent />;
   }
 }
 

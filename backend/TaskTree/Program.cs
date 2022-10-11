@@ -6,6 +6,16 @@ using TaskTree.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpecificOrigins, policy =>
+    {
+        policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 // allow for environment variables to override configuration
 builder.Configuration.AddEnvironmentVariables();
 
@@ -65,5 +75,5 @@ else if (app.Environment.IsProduction())
 // app.UseAuthorization();
 
 app.MapControllers();
-
+app.UseCors(MyAllowSpecificOrigins);
 app.Run();
