@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Typography } from '@mui/material';
 import UserService from '../services/UserService';
 import User, { BlankUser } from '../types/User';
-import removeJWT from '../services/authService';
+import AuthService from '../services/authService';
 
 function logout(){
   removeJWT("access_token");
