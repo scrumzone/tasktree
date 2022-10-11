@@ -30,6 +30,8 @@ class HomePage extends React.Component<{}, HomePageState> {
         <Typography variant="h2">
           Hello, {this.state.user.firstName}.
         </Typography>
+        <button id="btn">Logout</button>
+        <script src="./src/services/logoutButton.ts"></script>
       </div>
     );
   }
