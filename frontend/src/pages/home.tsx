@@ -5,7 +5,7 @@ import User, { BlankUser } from '../types/User';
 import AuthService from '../services/authService';
 
 function logout(){
-  removeJWT("access_token");
+  AuthService.removeJWT();
   window.location.replace("/");
 }
 
