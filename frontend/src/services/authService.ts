@@ -10,6 +10,6 @@ export default class AuthService{
     }
     
     static async getJWT(){
-        getCookie("access_token");
+        return getCookie("access_token");
     }
 }
