@@ -1,9 +1,11 @@
 import {setCookie, removeCookie} from 'typescript-cookie';
 
-function storeJWT(jwt){
-    setCookie("access_token", jwt);
-}
+export default class AuthService{
+    static async storeJWT(jwt){
+        setCookie("access_token", jwt);
+    }
 
-function removeJWT(jwtName){
-    removeCookie(jwtName);
+    static async removeJWT(){
+        removeCookie("access_token");
+    }
 }
