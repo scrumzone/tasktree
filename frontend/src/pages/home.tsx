@@ -2,6 +2,12 @@ import React from 'react';
 import { Button, Typography } from '@mui/material';
 import UserService from '../services/UserService';
 import User, { BlankUser } from '../types/User';
+import AuthService from '../services/authService';
+
+function logout(){
+  AuthService.removeJWT();
+  window.location.replace("/");
+}
 
 interface HomePageState {
   user: User;
@@ -30,6 +36,7 @@ class HomePage extends React.Component<{}, HomePageState> {
         <Typography variant="h2">
           Hello, {this.state.user.firstName}.
         </Typography>
+        <Button onClick={() => logout()}>Logout Button</Button>
       </div>
     );
   }
