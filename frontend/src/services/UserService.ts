@@ -1,9 +1,14 @@
 import http from '../util/http';
 import User from '../types/User';
+import AuthService from './authService';
 
 export default class UserService {
   static async getUser(id: number): Promise<User> {
-    const response = await http.get(`/users/${id}`);
+    const response = await http.get(`/users/${id}`, { 
+      headers: { 
+        Authorization: `Bearer ${await AuthService.getJWT()}`
+      }
+    });
     return response.data;
   }
 
@@ -20,5 +25,11 @@ export default class UserService {
   // TODO: we should return if the deletion succeeded or not
   static async deleteUser(id: number) {
     await http.delete(`/users/${id}`);
+  }
+
+  static async authenticateUser(username: string, password: string): Promise<string> {
+    const response = await http.post(`/users/auth`, { Username: username, Password: password })
+    console.log(response.data);
+    return response.data;
   }
 }
