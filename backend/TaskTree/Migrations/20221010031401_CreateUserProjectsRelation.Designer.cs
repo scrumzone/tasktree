@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskTree.Models;
 
@@ -10,9 +11,10 @@ using TaskTree.Models;
 namespace TaskTree.Migrations
 {
     [DbContext(typeof(TaskTreeContext))]
-    partial class TaskTreeContextModelSnapshot : ModelSnapshot
+    [Migration("20221010031401_CreateUserProjectsRelation")]
+    partial class CreateUserProjectsRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,14 +72,8 @@ namespace TaskTree.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<long?>("ParentId")
-                        .HasColumnType("bigint");
-
                     b.Property<double?>("Progress")
                         .HasColumnType("double");
-
-                    b.Property<long?>("ProjectId")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -86,11 +82,6 @@ namespace TaskTree.Migrations
                         .HasColumnType("double");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("ProjectId")
-                        .IsUnique();
 
                     b.ToTable("Tasks");
                 });
@@ -138,33 +129,6 @@ namespace TaskTree.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TaskTree.Models.Task", b =>
-                {
-                    b.HasOne("TaskTree.Models.Task", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("TaskTree.Models.Project", "Project")
-                        .WithOne("Root")
-                        .HasForeignKey("TaskTree.Models.Task", "ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Parent");
-
-                    b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("TaskTree.Models.Project", b =>
-                {
-                    b.Navigation("Root");
-                });
-
-            modelBuilder.Entity("TaskTree.Models.Task", b =>
-                {
-                    b.Navigation("Children");
                 });
 
             modelBuilder.Entity("TaskTree.Models.User", b =>

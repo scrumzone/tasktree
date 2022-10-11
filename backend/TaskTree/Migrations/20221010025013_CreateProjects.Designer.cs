@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TaskTree.Models;
 
@@ -10,9 +11,10 @@ using TaskTree.Models;
 namespace TaskTree.Migrations
 {
     [DbContext(typeof(TaskTreeContext))]
-    partial class TaskTreeContextModelSnapshot : ModelSnapshot
+    [Migration("20221010025013_CreateProjects")]
+    partial class CreateProjects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,12 +43,7 @@ namespace TaskTree.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Projects");
                 });
@@ -70,14 +67,8 @@ namespace TaskTree.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<long?>("ParentId")
-                        .HasColumnType("bigint");
-
                     b.Property<double?>("Progress")
                         .HasColumnType("double");
-
-                    b.Property<long?>("ProjectId")
-                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime(6)");
@@ -86,11 +77,6 @@ namespace TaskTree.Migrations
                         .HasColumnType("double");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ParentId");
-
-                    b.HasIndex("ProjectId")
-                        .IsUnique();
 
                     b.ToTable("Tasks");
                 });
@@ -127,49 +113,6 @@ namespace TaskTree.Migrations
                         .IsUnique();
 
                     b.ToTable("Users");
-                });
-
-            modelBuilder.Entity("TaskTree.Models.Project", b =>
-                {
-                    b.HasOne("TaskTree.Models.User", "User")
-                        .WithMany("Projects")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TaskTree.Models.Task", b =>
-                {
-                    b.HasOne("TaskTree.Models.Task", "Parent")
-                        .WithMany("Children")
-                        .HasForeignKey("ParentId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("TaskTree.Models.Project", "Project")
-                        .WithOne("Root")
-                        .HasForeignKey("TaskTree.Models.Task", "ProjectId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Parent");
-
-                    b.Navigation("Project");
-                });
-
-            modelBuilder.Entity("TaskTree.Models.Project", b =>
-                {
-                    b.Navigation("Root");
-                });
-
-            modelBuilder.Entity("TaskTree.Models.Task", b =>
-                {
-                    b.Navigation("Children");
-                });
-
-            modelBuilder.Entity("TaskTree.Models.User", b =>
-                {
-                    b.Navigation("Projects");
                 });
 #pragma warning restore 612, 618
         }
