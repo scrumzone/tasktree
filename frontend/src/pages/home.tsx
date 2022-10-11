@@ -1,5 +1,4 @@
 import React from 'react';
-import logo from '../assets/logo.png';
 import { Button, Typography } from '@mui/material';
 import UserService from '../services/UserService';
 import User, { BlankUser } from '../types/User';
