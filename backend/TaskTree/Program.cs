@@ -1,7 +1,7 @@
+﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using TaskTree.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,12 +15,13 @@ builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfi
 // Add services to the container.
 builder.Services.AddDbContext<TaskTreeContext>(opt =>
 {
-  opt.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0)));
+    opt.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0)));
 });
 
 builder.Services.AddControllers();
 
-builder.Services.AddAuthentication(opt => {
+builder.Services.AddAuthentication(opt =>
+{
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
@@ -51,13 +52,13 @@ app.UseAuthorization();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-  // app.UseDeveloperExceptionPage();
-  app.UseSwagger();
-  app.UseSwaggerUI();
+    // app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else if (app.Environment.IsProduction())
 {
-  app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 }
 
 

@@ -1,4 +1,4 @@
-namespace TaskTree.Models.Responses;
+﻿namespace TaskTree.Models.Responses;
 
 public class UserResponse
 {

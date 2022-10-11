@@ -1,4 +1,4 @@
-namespace TaskTree.Models.Requests;
+﻿namespace TaskTree.Models.Requests;
 
 public class CreateUserRequest
 {

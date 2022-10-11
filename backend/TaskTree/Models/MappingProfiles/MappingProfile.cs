@@ -1,4 +1,4 @@
-using AutoMapper;
+﻿using AutoMapper;
 using TaskTree.Models.Requests;
 using TaskTree.Models.Responses;
 
@@ -17,7 +17,7 @@ public class MappingProfile : Profile
     private IMappingExpression<TSource, TDestination> CreateMapNoNull<TSource, TDestination>(MemberList memberList = MemberList.Destination)
     {
         IMappingExpression<TSource, TDestination> result = CreateMap<TSource, TDestination>(memberList);
-        
+
         result.ForAllMembers(x => x.Condition((src, dest, sourceValue) => sourceValue != null));
 
         return result;
