@@ -27,6 +27,6 @@
   },
   "lint-staged": {
     "src/**/*.ts*": "npm run lint:fix --workspace=frontend",
-    "*.cs": "dotnet format --workspace backend --include"
+    "*.cs": "dotnet format backend/TaskTree --include"
   }
 }
