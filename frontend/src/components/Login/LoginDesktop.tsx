@@ -33,7 +33,7 @@ export default function LoginDesktop() {
                 <h1>Account Log In</h1>
                 <form>
                     <TextField id="userIn" onChange={(e) => setUsername(e.target.value)} variant="outlined" placeholder='Username'></TextField><br/><br/>
-                    <TextField id="passIn" onChange={(e) => setPassword(e.target.value)} variant="outlined" placeholder='Password'></TextField>
+                    <TextField id="passIn" onChange={(e) => setPassword(e.target.value)} variant="outlined" type="password" placeholder='Password'></TextField>
                     <Button id="loginBtn" onClick={onSubmit} variant="contained">Log In</Button>
                 </form>
             </div>
