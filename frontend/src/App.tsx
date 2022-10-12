@@ -25,7 +25,7 @@ const navItems = [
 
 function App() {
   useEffect(() => {
-    document.title = 'Tasktree';
+document.title = 'Tasktree';
   });
 
   return (
