@@ -23,7 +23,7 @@ export default function TTNavBarDesktop(props: Props) {
               TaskTree
             </Typography>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              {props.navItems.map(item => (
+              {props.navItems.map((item) => (
                 <Button
                   key={item.path}
                   href={item.path}
