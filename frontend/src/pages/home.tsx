@@ -7,12 +7,12 @@ interface HomePageState {
   user: User;
 }
 
-class HomePage extends React.Component<{}, HomePageState> {
+class HomePage extends React.Component<Record<string, never>, HomePageState> {
   state: HomePageState = {
-    user: BlankUser,
+    user: BlankUser
   };
 
-  constructor(props: {}) {
+  constructor(props: Record<string, never>) {
     super(props);
   }
 
@@ -27,9 +27,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       <div>
         <Typography variant="h1">HOME PAGE</Typography>
         <Button>Hello World</Button>
-        <Typography variant="h2">
-          Hello, {this.state.user.firstName}.
-        </Typography>
+        <Typography variant="h2">Hello, {this.state.user.firstName}.</Typography>
       </div>
     );
   }
