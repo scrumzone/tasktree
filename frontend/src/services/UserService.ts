@@ -1,11 +1,11 @@
 import http from '../util/http';
 import User from '../types/User';
-import AuthService from './authService';
+import AuthService from './AuthService';
 
 export default class UserService {
   static async getUser(id: number): Promise<User> {
-    const response = await http.get(`/users/${id}`, { 
-      headers: { 
+    const response = await http.get(`/users/${id}`, {
+      headers: {
         Authorization: `Bearer ${await AuthService.getJWT()}`
       }
     });
@@ -28,8 +28,7 @@ export default class UserService {
   }
 
   static async authenticateUser(username: string, password: string): Promise<string> {
-    const response = await http.post(`/users/auth`, { Username: username, Password: password })
-    console.log(response.data);
+    const response = await http.post(`/users/auth`, { Username: username, Password: password });
     return response.data;
   }
 }

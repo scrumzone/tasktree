@@ -1,19 +1,19 @@
+﻿using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using TaskTree.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var  MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
 builder.Services.AddCors(options =>
 {
-  options.AddPolicy(MyAllowSpecificOrigins, policy =>
-  {
-    policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
-  });
+    options.AddPolicy(MyAllowSpecificOrigins, policy =>
+    {
+        policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+    });
 });
 
 // allow for environment variables to override configuration
@@ -25,12 +25,13 @@ builder.Services.Configure<AppConfig>(builder.Configuration.GetSection("AppConfi
 // Add services to the container.
 builder.Services.AddDbContext<TaskTreeContext>(opt =>
 {
-  opt.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0)));
+    opt.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"), new MySqlServerVersion(new Version(8, 0)));
 });
 
 builder.Services.AddControllers();
 
-builder.Services.AddAuthentication(opt => {
+builder.Services.AddAuthentication(opt =>
+{
     opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
@@ -61,13 +62,13 @@ app.UseAuthorization();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-  // app.UseDeveloperExceptionPage();
-  app.UseSwagger();
-  app.UseSwaggerUI();
+    // app.UseDeveloperExceptionPage();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 else if (app.Environment.IsProduction())
 {
-  app.UseHttpsRedirection();
+    app.UseHttpsRedirection();
 }
 
 

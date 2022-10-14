@@ -7,8 +7,5 @@ import { useTheme } from '@mui/material/styles';
 export default function SignUpComponent() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  return React.createElement(
-    isMobile ? SignUpMobile : SignUpDesktop,
-    null
-  );
+  return React.createElement(isMobile ? SignUpMobile : SignUpDesktop, null);
 }

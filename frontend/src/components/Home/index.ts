@@ -7,8 +7,5 @@ import { useTheme } from '@mui/material/styles';
 export default function HomeComponent() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  return React.createElement(
-    isMobile ? HomeMobile : HomeDesktop,
-    null
-  );
+  return React.createElement(isMobile ? HomeMobile : HomeDesktop, null);
 }

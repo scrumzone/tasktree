@@ -13,7 +13,7 @@ import {
   ListItemButton,
   ListItemText,
   Toolbar,
-  Typography,
+  Typography
 } from '@mui/material';
 import { Props } from './TTNavBarBase';
 import logo from '../../assets/logo.png';
@@ -39,8 +39,7 @@ export default function TTNavBarMobile(props: Props) {
             <ListItemButton
               sx={{ textAlign: 'center' }}
               href={item.path}
-              selected={item.path === location.pathname}
-            >
+              selected={item.path === location.pathname}>
               <ListItemText primary={item.name} />
             </ListItemButton>
           </ListItem>
@@ -54,12 +53,7 @@ export default function TTNavBarMobile(props: Props) {
       <AppBar position="static" elevation={0} color="transparent">
         <Container maxWidth={false}>
           <Toolbar disableGutters>
-            <Avatar
-              variant="rounded"
-              alt="tasktree logo"
-              src={logo}
-              sx={{ mr: 2 }}
-            />
+            <Avatar variant="rounded" alt="tasktree logo" src={logo} sx={{ mr: 2 }} />
             <Typography
               variant="h6"
               sx={{
@@ -68,9 +62,8 @@ export default function TTNavBarMobile(props: Props) {
                 letterSpacing: '.3rem',
                 color: 'inherit',
                 textDecoration: 'none',
-                flexGrow: 1,
-              }}
-            >
+                flexGrow: 1
+              }}>
               TaskTree
             </Typography>
             <IconButton
@@ -79,8 +72,7 @@ export default function TTNavBarMobile(props: Props) {
               aria-controls="menu-appbar"
               aria-haspopup="true"
               onClick={toggleDrawer}
-              color="inherit"
-            >
+              color="inherit">
               <Icon>menu</Icon>
             </IconButton>
           </Toolbar>
@@ -94,9 +86,8 @@ export default function TTNavBarMobile(props: Props) {
         ModalProps={{ keepMounted: true }}
         sx={{
           display: { xs: 'block' },
-          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-        }}
-      >
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth }
+        }}>
         {drawer}
       </Drawer>
     </Box>

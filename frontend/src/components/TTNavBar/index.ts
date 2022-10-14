@@ -8,9 +8,5 @@ import React from 'react';
 export default function TTNavBar(props: Props) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  return React.createElement(
-    isMobile ? TTNavBarMobile : TTNavBarDesktop,
-    props,
-    null
-  );
+  return React.createElement(isMobile ? TTNavBarMobile : TTNavBarDesktop, props, null);
 }

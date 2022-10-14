@@ -1,31 +1,25 @@
 import React from 'react';
 import { useEffect } from 'react';
-import logo from './assets/logo.png';
 import LoginPage from './pages/login';
 import HomePage from './pages/home';
 import SignupPage from './pages/signup';
-import {
-  BrowserRouter as Router,
-  Route,
-  Routes,
-  NavLink,
-} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import TTNavBar from './components/TTNavBar/index';
 
 const navItems = [
   {
     name: 'Home',
-    path: '/',
+    path: '/'
   },
   {
     name: 'Log in',
-    path: '/login',
+    path: '/login'
   },
   {
     name: 'Sign up',
-    path: '/signup',
-  },
+    path: '/signup'
+  }
 ];
 
 function App() {

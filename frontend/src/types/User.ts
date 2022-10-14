@@ -9,5 +9,5 @@ export const BlankUser: User = {
   id: 0,
   username: '',
   firstName: '',
-  lastName: '',
+  lastName: ''
 };

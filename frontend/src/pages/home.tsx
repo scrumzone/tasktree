@@ -2,23 +2,23 @@ import React from 'react';
 import { Button, Typography } from '@mui/material';
 import UserService from '../services/UserService';
 import User, { BlankUser } from '../types/User';
-import AuthService from '../services/authService';
+import AuthService from '../services/AuthService';
 
-function logout(){
+function logout() {
   AuthService.removeJWT();
-  window.location.replace("/");
+  window.location.replace('/');
 }
 
 interface HomePageState {
   user: User;
 }
 
-class HomePage extends React.Component<{}, HomePageState> {
+class HomePage extends React.Component<Record<string, never>, HomePageState> {
   state: HomePageState = {
-    user: BlankUser,
+    user: BlankUser
   };
 
-  constructor(props: {}) {
+  constructor(props: Record<string, never>) {
     super(props);
   }
 
@@ -33,9 +33,7 @@ class HomePage extends React.Component<{}, HomePageState> {
       <div>
         <Typography variant="h1">HOME PAGE</Typography>
         <Button>Hello World</Button>
-        <Typography variant="h2">
-          Hello, {this.state.user.firstName}.
-        </Typography>
+        <Typography variant="h2">Hello, {this.state.user.firstName}.</Typography>
         <Button onClick={() => logout()}>Logout Button</Button>
       </div>
     );
