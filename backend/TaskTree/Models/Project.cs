@@ -6,7 +6,7 @@ namespace TaskTree.Models
     public class Project : BaseEntity
     {
         [Required]
-        public string? Name { get; set; }
+        public string Name { get; set; } = null!;
         public string? Description { get; set; }
         public Task? Root { get; set; }
         public double? Progress { get; set; }

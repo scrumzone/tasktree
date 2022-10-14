@@ -6,8 +6,8 @@ namespace TaskTree.Models.Requests
     public class AuthenticateUserRequest
     {
         [Required]
-        public string? Username { get; set; }
+        public string Username { get; set; } = null!;
         [Required]
-        public string? Password { get; set; }
+        public string Password { get; set; } = null!;
     }
 }
