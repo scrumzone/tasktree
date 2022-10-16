@@ -9,6 +9,7 @@ interface stateInterface {
   password: string;
   confirmPassword: string;
   submitFlag: boolean;
+  passwordLength: number;
 }
 
 export default function SignUpDesktop() {
@@ -19,6 +20,8 @@ export default function SignUpDesktop() {
   const onChange = (e: React.SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
     setValues((values) => ({ ...values, [target.name]: target.value }));
+    if (target.name === 'password')
+      setValues((values) => ({ ...values, ['passwordLength']: values.password.length }));
   };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -49,6 +52,11 @@ export default function SignUpDesktop() {
 
     if (!values.confirmPassword) {
       setValues((values) => ({ ...values, ['confirmPassword']: '' }));
+      isValid = false;
+    }
+
+    // makes sure password is 8+ characters
+    if (values.passwordLength < 8) {
       isValid = false;
     }
 
@@ -117,8 +125,14 @@ export default function SignUpDesktop() {
                 type="password"
                 id="password"
                 onChange={onChange}
-                error={values.password === ''}
-                helperText={values.password === '' ? 'Required' : ''}
+                error={values.password === '' || (values.passwordLength < 8 && values.submitFlag)}
+                helperText={
+                  values.password === ''
+                    ? 'Required'
+                    : values.passwordLength < 8 && values.submitFlag
+                    ? 'Password must be at least 8 characters'
+                    : ''
+                }
                 value={values.password}
               />
             </Grid>
