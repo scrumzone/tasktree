@@ -15,7 +15,7 @@ interface stateInterface {
 export default function SignUpDesktop() {
   const [values, setValues] = useState<stateInterface>({} as stateInterface);
 
-  /* Generic way of using setters for state values so that one onChange can be used for
+  /* Generic way of using useStates for state values so that one onChange can be used for
    * all values in the stateInterface */
   const onChange = (e: React.SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
@@ -26,9 +26,12 @@ export default function SignUpDesktop() {
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (validateFields()) {
-      // create the user here
+    setValues((values) => ({ ...values, ['submitFlag']: true }));
 
+    if (validateFields()) {
+      // TODO create and authorize the user
+
+      // redirect to homepage
       window.location.pathname = '';
     } else {
       return;
@@ -36,7 +39,6 @@ export default function SignUpDesktop() {
   };
 
   const validateFields = () => {
-    setValues((values) => ({ ...values, ['submitFlag']: true }));
     let isValid = true;
 
     // makes sure required fields are populated
