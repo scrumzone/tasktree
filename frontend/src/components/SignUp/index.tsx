@@ -13,7 +13,7 @@ interface stateInterface {
   passwordLength: number;
 }
 
-export default function SignUpDesktop() {
+export default function SignUpComponent() {
   const [values, setValues] = useState<stateInterface>({} as stateInterface);
 
   /* Generic way of using useStates for state values so that one onChange can be used for
