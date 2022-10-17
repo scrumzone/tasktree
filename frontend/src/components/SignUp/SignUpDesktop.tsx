@@ -1,5 +1,6 @@
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import React, { FormEvent, useState } from 'react';
+import User from '../../types/User';
 import './signup.css';
 
 interface stateInterface {
@@ -29,7 +30,13 @@ export default function SignUpDesktop() {
     setValues((values) => ({ ...values, ['submitFlag']: true }));
 
     if (validateFields()) {
-      // TODO create and authorize the user
+      const user: User = {
+        firstName: values.firstName,
+        lastName: values.lastName || undefined,
+        username: values.username,
+        password: values.password
+      }
+      // TODO create and authorize the user in the backend
 
       // redirect to homepage
       window.location.pathname = '';
@@ -42,6 +49,11 @@ export default function SignUpDesktop() {
     let isValid = true;
 
     // makes sure required fields are populated
+    if (!values.firstName) {
+      setValues((values) => ({ ...values, ['firstName']: '' }));
+      isValid = false;
+    }
+
     if (!values.username) {
       setValues((values) => ({ ...values, ['username']: '' }));
       isValid = false;
@@ -92,7 +104,11 @@ export default function SignUpDesktop() {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                required
                 onChange={onChange}
+                error={values.firstName === ''}
+                helperText={values.firstName === '' ? 'Required' : ''}
+                value={values.firstName}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
