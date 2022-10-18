@@ -16,7 +16,7 @@ namespace TaskTree.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : TaskTreeControllerBase
     {
         private readonly TaskTreeContext _context;
         private readonly IMapper _mapper;
@@ -39,6 +39,12 @@ namespace TaskTree.Controllers
             {
                 return Problem("Entity set 'TaskTreeContext.Users'  is null.", statusCode: 500);
             }
+
+            if (CurrentUserIdDoesNotMatch(id))
+            {
+                return Unauthorized();
+            }
+
             var user = await _context.Users.FindAsync(id);
 
 
@@ -61,6 +67,11 @@ namespace TaskTree.Controllers
             if (_context.Users == null)
             {
                 return Problem("Entity set 'TaskTreeContext.Users'  is null.", statusCode: 500);
+            }
+
+            if (CurrentUserIdDoesNotMatch(id))
+            {
+                return Unauthorized();
             }
 
             var user = await _context.Users.FindAsync(id);
@@ -119,6 +130,11 @@ namespace TaskTree.Controllers
             if (_context.Users == null)
             {
                 return Problem("Entity set 'TaskTreeContext.Users'  is null.", statusCode: 500);
+            }
+
+            if (CurrentUserIdDoesNotMatch(id))
+            {
+                return Unauthorized();
             }
 
             var user = await _context.Users.FindAsync(id);
