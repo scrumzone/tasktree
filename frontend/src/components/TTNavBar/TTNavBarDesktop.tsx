@@ -1,9 +1,12 @@
 import React from 'react';
 import { AppBar, Avatar, Box, Button, Container, Toolbar, Typography } from '@mui/material';
 import { Props } from './TTNavBarBase';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
+import { useLocation } from 'react-router-dom';
 
 export default function TTNavBarDesktop(props: Props) {
+  const location = useLocation();
   return (
     <Box sx={{ display: 'flex' }}>
       <AppBar position="static" elevation={0} color="transparent">
@@ -26,8 +29,9 @@ export default function TTNavBarDesktop(props: Props) {
               {props.navItems.map((item) => (
                 <Button
                   key={item.path}
-                  href={item.path}
                   sx={{ my: 2, display: 'block' }}
+                  component={Link}
+                  to={item.path}
                   variant={item.path === location.pathname ? 'contained' : 'text'}>
                   {item.name}
                 </Button>

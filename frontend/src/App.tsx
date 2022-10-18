@@ -6,10 +6,13 @@ import SignupPage from './pages/signup';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import TTNavBar from './components/TTNavBar/index';
+import { useAppDispatch, useAppSelector } from './store/hooks';
+import AuthService from './services/AuthService';
+import { setCurrentUser } from './store/user';
 
 const navItems = [
   {
-    name: 'Home',
+    name: 'Landing',
     path: '/'
   },
   {
@@ -22,10 +25,23 @@ const navItems = [
   }
 ];
 
+const authedNavItems = [
+  {
+    name: 'Home',
+    path: '/'
+  },
+  {
+    name: 'Projects',
+    path: '/projects'
+  }
+];
+
 function App() {
-  useEffect(() => {
-    document.title = 'Tasktree';
-  });
+  const dispatch = useAppDispatch();
+  if (useAppSelector((state) => state.user.currentUser) === null) {
+    const user = AuthService.decodeJWT(AuthService.getJWT());
+    dispatch(setCurrentUser(user));
+  }
 
   return (
     <div className="App">

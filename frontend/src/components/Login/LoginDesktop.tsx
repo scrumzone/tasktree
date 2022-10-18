@@ -2,16 +2,23 @@ import React, { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import './login.css';
-import UserService from '../../services/UserService';
 import AuthService from '../../services/AuthService';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setCurrentUser } from '../../store/user';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginDesktop() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const onSubmit = async () => {
-    const jwt: string = await UserService.authenticateUser(username, password);
-    AuthService.storeJWT(jwt);
+    const token = await AuthService.signIn(username, password);
+    const user = AuthService.decodeJWT(token);
+    console.log(user);
+    dispatch(setCurrentUser(user));
+    navigate('/');
   };
 
   return (
