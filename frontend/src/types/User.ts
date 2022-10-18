@@ -1,8 +1,9 @@
 export default interface User {
-  id: number;
+  id?: number;
   username: string;
-  firstName?: string;
+  firstName: string;
   lastName?: string;
+  password?: string;
 }
 
 export const BlankUser: User = {
