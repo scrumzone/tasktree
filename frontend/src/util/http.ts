@@ -6,3 +6,7 @@ export default axios.create({
     'Content-type': 'application/json'
   }
 });
+
+export function authHeader(token: string | undefined): Record<string, string> {
+  return { Authorization: `Bearer ${token}` };
+}

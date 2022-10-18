@@ -2,6 +2,7 @@ import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import React, { FormEvent, useState } from 'react';
 import User from '../../types/User';
 import './signup.css';
+import { useNavigate } from 'react-router-dom';
 
 interface stateInterface {
   firstName: string;
@@ -15,6 +16,7 @@ interface stateInterface {
 
 export default function SignUpComponent() {
   const [values, setValues] = useState<stateInterface>({} as stateInterface);
+  const navigate = useNavigate();
 
   /* Generic way of using useStates for state values so that one onChange can be used for
    * all values in the stateInterface */
@@ -35,11 +37,11 @@ export default function SignUpComponent() {
         lastName: values.lastName || undefined,
         username: values.username,
         password: values.password
-      }
+      };
       // TODO create and authorize the user in the backend
 
       // redirect to homepage
-      window.location.pathname = '';
+      navigate('/');
     } else {
       return;
     }
