@@ -1,5 +1,4 @@
 import React from 'react';
-import { useEffect } from 'react';
 import LoginPage from './pages/login';
 import HomePage from './pages/home';
 import SignupPage from './pages/signup';
@@ -22,17 +21,6 @@ const navItems = [
   {
     name: 'Sign up',
     path: '/signup'
-  }
-];
-
-const authedNavItems = [
-  {
-    name: 'Home',
-    path: '/'
-  },
-  {
-    name: 'Projects',
-    path: '/projects'
   }
 ];
 

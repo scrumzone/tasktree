@@ -24,9 +24,6 @@ export default function HomePage() {
     fetchUser();
   }, []);
 
-  const currentUser = useAppSelector((state) => state.user.currentUser);
-  console.log(currentUser);
-
   return (
     <div>
       <Typography variant="h1">HOME PAGE</Typography>
