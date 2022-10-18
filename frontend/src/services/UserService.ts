@@ -12,9 +12,15 @@ export default class UserService {
     return response.data;
   }
 
-  static async createUser(user: User): Promise<User> {
-    const response = await http.post('/users', user);
-    return response.data;
+  static async createUser(user: User): Promise<any> {
+    var response;
+    await http.post('/users', user)
+      .then(res => {
+        response = res;
+      }).catch(err => {
+        response = err.response;
+      });
+    return response;
   }
 
   // TODO: we should return the updated user from the endpoint
