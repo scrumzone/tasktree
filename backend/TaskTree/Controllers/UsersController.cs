@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
@@ -117,7 +117,26 @@ namespace TaskTree.Controllers
             var user = _mapper.Map<User>(createUserRequest);
 
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            } catch(Exception e)
+            {
+                var exceptionCode = e.HResult;
+
+                // SQL server not running
+                if (exceptionCode == -2146233079) 
+                {
+                    return StatusCode(503, "Unable to connect to database");
+                }
+
+                // duplicate username
+                else if (exceptionCode == -2146233088) 
+                {
+                    return BadRequest("User already exists");
+                }
+            }
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _mapper.Map<User, UserResponse>(user));
         }
