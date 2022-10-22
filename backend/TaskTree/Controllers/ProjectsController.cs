@@ -1,0 +1,140 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using TaskTree.Models;
+using TaskTree.Models.Requests;
+using TaskTree.Models.Responses;
+
+namespace TaskTree.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ProjectsController : ControllerBase
+    {
+        private readonly TaskTreeContext _context;
+        private readonly IMapper _mapper;
+        private readonly IOptions<AppConfig> _config;
+
+        public ProjectsController(TaskTreeContext context, IMapper mapper, IOptions<AppConfig> config)
+        {
+            _context = context;
+        }
+
+        // GET: api/Projects
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<ProjectResponse>>> GetProjects()
+        {
+            //return await _context.Projects.ToListAsync();
+
+            List<ProjectResponse> projectResponses = new List<ProjectResponse>();
+            foreach (Project project in _context.Projects)
+            {
+                projectResponses.Add(_mapper.Map<Project, ProjectResponse>(project));
+            }
+            return Ok(projectResponses);
+        }
+
+        // GET: api/Projects/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ProjectResponse>> GetProject(long id)
+        {
+            var project = await _context.Projects.FindAsync(id);
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            return _mapper.Map<Project, ProjectResponse>(project);
+        }
+
+        // PUT: api/Projects/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutProject(long id, UpdateProjectRequest updateProjectRequest)
+        {
+            if (_context.Projects == null)
+            {
+                return Problem("Entity set 'TaskTreeContext.Projects'  is null.", statusCode: 500);
+            }
+
+            var project = await _context.Projects.FindAsync(id);
+
+            if(project == null)
+            {
+                return NotFound();
+            }
+
+            _mapper.Map(updateProjectRequest, project);
+
+            _context.Entry(project).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ProjectExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        // POST: api/Projects
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<ProjectResponse>> PostProject(CreateProjectRequest createProjectRequest)
+        {
+            if (_context.Projects == null)
+            {
+                return Problem("Entity set 'TaskTreeContext.Projects'  is null.", statusCode: 500);
+            }
+
+            var project = _mapper.Map<Project>(createProjectRequest);
+
+            _context.Projects.Add(project);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction(nameof(GetProject), new { id = project.Id }, _mapper.Map<Project, ProjectResponse>(project));
+        }
+
+        // DELETE: api/Projects/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteProject(long id)
+        {
+            if (_context.Projects == null)
+            {
+                return Problem("Entity set 'TaskTreeContext.Projects'  is null.", statusCode: 500);
+            }
+            var project = await _context.Projects.FindAsync(id);
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            _context.Projects.Remove(project);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool ProjectExists(long id)
+        {
+            return (_context.Projects?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+    }
+}
