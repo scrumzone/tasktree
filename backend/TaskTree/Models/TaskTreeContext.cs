@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using TaskTree.Models.Responses;
 
 namespace TaskTree.Models;
 
@@ -71,4 +72,5 @@ public class TaskTreeContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Task> Tasks { get; set; }
     public DbSet<Project> Projects { get; set; }
+    public DbSet<TaskTree.Models.Responses.UserResponse> UserResponse { get; set; }
 }
