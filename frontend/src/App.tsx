@@ -4,7 +4,7 @@ import HomePage from './pages/home';
 import SignupPage from './pages/signup';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import TTNavBar from './components/TTNavBar/index';
+import TTNavBar from './components/TTNavBar';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import AuthService from './services/AuthService';
 import { setCurrentUser } from './store/user';
@@ -24,12 +24,16 @@ const navItems = [
   }
 ];
 
-function App() {
+function loadState() {
   const dispatch = useAppDispatch();
   if (useAppSelector((state) => state.user.currentUser) === null) {
     const user = AuthService.decodeJWT(AuthService.getJWT());
     dispatch(setCurrentUser(user));
   }
+}
+
+function App() {
+  loadState();
 
   return (
     <div className="App">
