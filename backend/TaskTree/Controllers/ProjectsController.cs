@@ -35,10 +35,10 @@ namespace TaskTree.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectResponse>>> GetProjects()
         {
-            //return await _context.Projects.ToListAsync();
+            var projects = _context.Projects.Where(project => project.UserId == CurrentUserId());
 
             List<ProjectResponse> projectResponses = new List<ProjectResponse>();
-            foreach (Project project in _context.Projects)
+            foreach (Project project in projects)
             {
                 projectResponses.Add(_mapper.Map<Project, ProjectResponse>(project));
             }
@@ -126,7 +126,6 @@ namespace TaskTree.Controllers
             await _context.SaveChangesAsync();
 
             var projectResponse = _mapper.Map<Project, ProjectResponse>(project);
-            //projectResponse.Root = _mapper.Map<Task, TaskResponse>(rootTask);
 
             return CreatedAtAction(nameof(GetProject), new { id = project.Id }, projectResponse);
         }
