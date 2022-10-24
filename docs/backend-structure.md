@@ -31,6 +31,8 @@ The controllers in the `Controllers` directory essentially routes API requests a
 Creating a controller with simple CRUD actions is pretty straight-forward, Visual Studio provides a scaffolding tool for API controllers. When creating a scaffolded item, look for the 'API Controller with actions, using Entity Framework' option, and configure that as necessary.
 Remember, any action that will create or update tables should have an associated Request object in `Models/Requests`.
 
+**NOTE: Change the class the controller inherits to `TaskTreeControllerBase` from `ControllerBase`**
+
 ### AutoMapper
 After accepting a Request object in the controller actions, it will need to be converted into an actual database entity. Rather than doing this conversion manually, TaskTree uses a project called [AutoMapper](https://github.com/AutoMapper/AutoMapper). It is almost completely automatic, but some manual work is needed to get it working.
 
@@ -46,3 +48,6 @@ The mapper can now be used by calling the following function:
 `_mapper.Map(source, dest);`
 
 For an in-depth example, check out the `Controllers/UsersController.cs`.
+
+### Authorized routes
+When a route needs to have an associated user, use the `[Authorize]` decorator above the route that needs authorization. Inside the route, check if the user is wrong using `CurrentUserIdDoesNotMatch(requestedId)`. Again, check the `Controllers/UserController.cs` for an example.

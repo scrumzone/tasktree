@@ -1,4 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using AutoMapper;
@@ -16,7 +16,7 @@ namespace TaskTree.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
+    public class UsersController : TaskTreeControllerBase
     {
         private readonly TaskTreeContext _context;
         private readonly IMapper _mapper;
@@ -39,6 +39,12 @@ namespace TaskTree.Controllers
             {
                 return Problem("Entity set 'TaskTreeContext.Users'  is null.", statusCode: 500);
             }
+
+            if (CurrentUserIdDoesNotMatch(id))
+            {
+                return Unauthorized();
+            }
+
             var user = await _context.Users.FindAsync(id);
 
 
@@ -61,6 +67,11 @@ namespace TaskTree.Controllers
             if (_context.Users == null)
             {
                 return Problem("Entity set 'TaskTreeContext.Users'  is null.", statusCode: 500);
+            }
+
+            if (CurrentUserIdDoesNotMatch(id))
+            {
+                return Unauthorized();
             }
 
             var user = await _context.Users.FindAsync(id);
@@ -106,7 +117,26 @@ namespace TaskTree.Controllers
             var user = _mapper.Map<User>(createUserRequest);
 
             _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            } catch(Exception e)
+            {
+                var exceptionCode = e.HResult;
+
+                // SQL server not running
+                if (exceptionCode == -2146233079) 
+                {
+                    return StatusCode(503, "Unable to connect to database");
+                }
+
+                // duplicate username
+                else if (exceptionCode == -2146233088) 
+                {
+                    return BadRequest("User already exists");
+                }
+            }
 
             return CreatedAtAction(nameof(GetUser), new { id = user.Id }, _mapper.Map<User, UserResponse>(user));
         }
@@ -119,6 +149,11 @@ namespace TaskTree.Controllers
             if (_context.Users == null)
             {
                 return Problem("Entity set 'TaskTreeContext.Users'  is null.", statusCode: 500);
+            }
+
+            if (CurrentUserIdDoesNotMatch(id))
+            {
+                return Unauthorized();
             }
 
             var user = await _context.Users.FindAsync(id);

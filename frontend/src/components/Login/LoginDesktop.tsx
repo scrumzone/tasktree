@@ -6,6 +6,7 @@ import AuthService from '../../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setCurrentUser } from '../../store/user';
 import { useNavigate } from 'react-router-dom';
+import UserService from '../../services/UserService';
 
 export default function LoginDesktop() {
   const [username, setUsername] = useState('');
@@ -14,7 +15,7 @@ export default function LoginDesktop() {
   const dispatch = useAppDispatch();
 
   const onSubmit = async () => {
-    const token = await AuthService.signIn(username, password);
+    const token = await UserService.authenticateUser(username, password);
     const user = AuthService.decodeJWT(token);
     dispatch(setCurrentUser(user));
     navigate('/');

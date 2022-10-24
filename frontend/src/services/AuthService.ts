@@ -3,13 +3,7 @@ import User from '../types/User';
 import http from '../util/http';
 
 export default class AuthService {
-  static async signIn(username: string, password: string): Promise<string> {
-    const response = await http.post(`/users/auth`, { Username: username, Password: password });
-    const token = response.data;
-    this.storeJWT(token);
-    return token;
-  }
-  private static storeJWT(jwt: string) {
+  static storeJWT(jwt: string) {
     setCookie('access_token', jwt);
   }
 
