@@ -29,7 +29,7 @@ namespace TaskTree.Controllers
             _config = config;
         }
 
-        // GET: api/Projects
+        // GET: api/Projects/5
         [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectResponse>>> GetProjects()
