@@ -20,7 +20,7 @@ export const userSlice = createSlice({
       state.currentUser = action.payload;
       state.isLoggedIn = action.payload !== null;
     },
-    clearCurrentUser: (state) => {
+    clearCurrentUser: (_) => {
       return initialState;
     }
   }
