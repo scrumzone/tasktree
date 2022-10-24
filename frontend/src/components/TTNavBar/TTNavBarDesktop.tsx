@@ -27,7 +27,7 @@ export default function TTNavBarDesktop(props: Props) {
             </Typography>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
               {props.navItems.map((item) =>
-                'path' in item ? (
+                item.path ? (
                   <Button
                     key={item.path}
                     sx={{ my: 2, display: 'block' }}
@@ -37,7 +37,7 @@ export default function TTNavBarDesktop(props: Props) {
                     {item.name}
                   </Button>
                 ) : (
-                  <Button key={item.name} sx={{ my: 2, display: 'block' }} onClick={item.action}>
+                  <Button key={item.path} sx={{ my: 2, display: 'block' }} onClick={item.action}>
                     {item.name}
                   </Button>
                 )

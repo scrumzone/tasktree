@@ -28,15 +28,7 @@ export default function HomePage() {
   return (
     <div>
       <Typography variant="h1">HOME PAGE</Typography>
-      <Button
-        onClick={() => {
-          logout(setUser, () => {
-            dispatch(clearCurrentUser());
-          });
-        }}>
-        Log Out
-      </Button>
-      <p>{user.username}</p>
+      <Typography variant="h4">Hello, {user.username}!</Typography>
     </div>
   );
 }

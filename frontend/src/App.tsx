@@ -10,17 +10,18 @@ import { TTRoute } from './types/Route';
 import AuthService from './services/AuthService';
 import { clearCurrentUser } from './store/user';
 import LandingPage from './pages/landing';
+import { authorizedRoutes, unauthorizedRoutes } from './router';
 
 function App() {
   const { isLoggedIn } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
+  const routes = isLoggedIn ? authorizedRoutes : unauthorizedRoutes;
 
-  const navItems: TTRoute[] = isLoggedIn
+  const navItems = isLoggedIn
     ? [
         {
           name: 'Home',
-          path: '/',
-          component: <HomePage />
+          path: '/'
         },
         {
           name: 'Log out',
@@ -36,18 +37,15 @@ function App() {
     : [
         {
           name: 'Landing',
-          path: '/',
-          component: <LandingPage />
+          path: '/'
         },
         {
           name: 'Log in',
-          path: '/login',
-          component: <LoginPage />
+          path: '/login'
         },
         {
           name: 'Sign up',
-          path: '/signup',
-          component: <SignupPage />
+          path: '/signup'
         }
       ];
 
@@ -56,9 +54,8 @@ function App() {
       <Router>
         <TTNavBar navItems={navItems} />
         <Routes>
-          {navItems.map((item) => {
-            if ('component' in item)
-              return <Route key={item.name} path={item.path} element={item.component} />;
+          {routes.map((item: TTRoute) => {
+            return <Route key={item.name} path={item.path} element={item.component} />;
           })}
         </Routes>
       </Router>
