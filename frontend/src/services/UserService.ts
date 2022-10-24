@@ -1,23 +1,23 @@
-import http from '../util/http';
+import http, { authHeader } from '../util/http';
 import User from '../types/User';
 import AuthService from './AuthService';
 
 export default class UserService {
   static async getUser(id: number): Promise<User> {
     const response = await http.get(`/users/${id}`, {
-      headers: {
-        Authorization: `Bearer ${await AuthService.getJWT()}`
-      }
+      headers: authHeader(AuthService.getJWT())
     });
     return response.data;
   }
 
   static async createUser(user: User): Promise<any> {
     var response;
-    await http.post('/users', user)
-      .then(res => {
+    await http
+      .post('/users', user)
+      .then((res) => {
         response = res;
-      }).catch(err => {
+      })
+      .catch((err) => {
         response = err.response;
       });
     return response;
