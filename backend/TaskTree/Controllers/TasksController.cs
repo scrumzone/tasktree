@@ -146,12 +146,13 @@ namespace TaskTree.Controllers
 
             var task = _mapper.Map<Task>(createTaskRequst);
 
-            _context.Tasks.Add(task);
+            task.Parent.Children.Add(task);
 
             try
             {
                 await _context.SaveChangesAsync();
-            } catch(Exception e)
+            } 
+            catch(Exception e)
             {
                 var exceptionCode = e.HResult;
 
