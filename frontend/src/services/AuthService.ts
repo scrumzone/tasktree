@@ -8,7 +8,6 @@ export default class AuthService {
     const token = response.data;
     this.storeJWT(token);
     return token;
-    // should we just store right here and set up redux state?
   }
   private static storeJWT(jwt: string) {
     setCookie('access_token', jwt);
@@ -21,12 +20,6 @@ export default class AuthService {
   static getJWT(): string | undefined {
     return getCookie('access_token');
   }
-
-  // static getCurrentUser(): User | null {
-  // let user = useAppSelector((state) => state.user.currentUser);
-  // if (!user) user = this.decodeJWT(getCookie('access_token'));
-  // return user;
-  // }
 
   static decodeJWT(jwt: string | undefined): User | null {
     if (jwt === undefined) return null;
