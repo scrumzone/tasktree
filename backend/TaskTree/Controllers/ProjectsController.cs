@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +16,7 @@ namespace TaskTree.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProjectsController : ControllerBase
+    public class ProjectsController : TaskTreeControllerBase
     {
         private readonly TaskTreeContext _context;
         private readonly IMapper _mapper;
@@ -24,9 +25,12 @@ namespace TaskTree.Controllers
         public ProjectsController(TaskTreeContext context, IMapper mapper, IOptions<AppConfig> config)
         {
             _context = context;
+            _mapper = mapper;
+            _config = config;
         }
 
         // GET: api/Projects
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectResponse>>> GetProjects()
         {
@@ -41,6 +45,7 @@ namespace TaskTree.Controllers
         }
 
         // GET: api/Projects/5
+        [Authorize]
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectResponse>> GetProject(long id)
         {
@@ -56,6 +61,7 @@ namespace TaskTree.Controllers
 
         // PUT: api/Projects/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProject(long id, UpdateProjectRequest updateProjectRequest)
         {
@@ -96,6 +102,7 @@ namespace TaskTree.Controllers
 
         // POST: api/Projects
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<ProjectResponse>> PostProject(CreateProjectRequest createProjectRequest)
         {
@@ -113,6 +120,7 @@ namespace TaskTree.Controllers
         }
 
         // DELETE: api/Projects/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProject(long id)
         {
