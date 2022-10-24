@@ -6,48 +6,12 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
 import TTNavBar from './components/TTNavBar';
 import { useAppDispatch, useAppSelector } from './store/hooks';
-import AuthService from './services/AuthService';
-import { setCurrentUser } from './store/user';
-
-const navItems = [
-  {
-    name: 'Landing',
-    path: '/'
-  },
-  {
-    name: 'Log in',
-    path: '/login'
-  },
-  {
-    name: 'Sign up',
-    path: '/signup'
-  }
-];
-
-function loadState() {
-  const dispatch = useAppDispatch();
-  if (useAppSelector((state) => state.user.currentUser) === null) {
-    const user = AuthService.decodeJWT(AuthService.getJWT());
-    dispatch(setCurrentUser(user));
-  }
-}
+import AuthorizedLayout from './layouts/authorized';
+import DefaultLayout from './layouts/default';
 
 function App() {
-  loadState();
-
-  return (
-    <div className="App">
-      <Router>
-        <TTNavBar navItems={navItems} />
-        <br />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-        </Routes>
-      </Router>
-    </div>
-  );
+  const { isLoggedIn } = useAppSelector((state) => state.user);
+  return isLoggedIn ? <AuthorizedLayout /> : <DefaultLayout />;
 }
 
 export default App;

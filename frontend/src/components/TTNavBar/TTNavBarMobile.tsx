@@ -16,6 +16,7 @@ import {
   Typography
 } from '@mui/material';
 import { Props } from './TTNavBarBase';
+import { Link } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
 const drawerWidth = 240;
@@ -34,16 +35,28 @@ export default function TTNavBarMobile(props: Props) {
       </Typography>
       <Divider />
       <List>
-        {props.navItems.map((item) => (
-          <ListItem key={item.path} disablePadding>
-            <ListItemButton
-              sx={{ textAlign: 'center' }}
-              href={item.path}
-              selected={item.path === location.pathname}>
-              <ListItemText primary={item.name} />
-            </ListItemButton>
-          </ListItem>
-        ))}
+        {props.navItems.map((item) =>
+          item.path ? (
+            <ListItem key={item.path} disablePadding>
+              <ListItemButton
+                sx={{ textAlign: 'center' }}
+                component={Link}
+                to={item.path}
+                selected={item.path === location.pathname}>
+                <ListItemText primary={item.name} />
+              </ListItemButton>
+            </ListItem>
+          ) : (
+            <ListItem key={item.name} disablePadding>
+              <ListItemButton
+                sx={{ textAlign: 'center' }}
+                onClick={item.action!}
+                selected={item.path === location.pathname}>
+                <ListItemText primary={item.name} />
+              </ListItemButton>
+            </ListItem>
+          )
+        )}
       </List>
     </Box>
   );

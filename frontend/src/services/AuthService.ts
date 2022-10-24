@@ -23,7 +23,7 @@ export default class AuthService {
   }
 
   // static getCurrentUser(): User | null {
-  // let user = useAppSelector((state) => state.user.currentUser);
+  // let user = useAppSelector((state) => state.user.current);
   // if (!user) user = this.decodeJWT(getCookie('access_token'));
   // return user;
   // }

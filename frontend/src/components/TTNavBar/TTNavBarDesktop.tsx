@@ -26,16 +26,26 @@ export default function TTNavBarDesktop(props: Props) {
               TaskTree
             </Typography>
             <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-              {props.navItems.map((item) => (
-                <Button
-                  key={item.path}
-                  sx={{ my: 2, display: 'block' }}
-                  component={Link}
-                  to={item.path}
-                  variant={item.path === location.pathname ? 'contained' : 'text'}>
-                  {item.name}
-                </Button>
-              ))}
+              {props.navItems.map((item) =>
+                item.path ? (
+                  <Button
+                    key={item.path}
+                    sx={{ my: 2, display: 'block' }}
+                    component={Link}
+                    to={item.path!}
+                    variant={item.path === location.pathname ? 'contained' : 'text'}>
+                    {item.name}
+                  </Button>
+                ) : (
+                  <Button
+                    key={item.path}
+                    sx={{ my: 2, display: 'block' }}
+                    onClick={item.action}
+                    variant={item.path === location.pathname ? 'contained' : 'text'}>
+                    {item.name}
+                  </Button>
+                )
+              )}
             </Box>
           </Toolbar>
         </Container>
