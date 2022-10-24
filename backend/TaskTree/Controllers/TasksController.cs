@@ -15,7 +15,7 @@ using Task = TaskTree.Models.Task;
 
 namespace TaskTree.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/tasks")]
     [ApiController]
     public class TasksController : TaskTreeControllerBase
     {
@@ -30,24 +30,33 @@ namespace TaskTree.Controllers
             _config = config;
         }
 
-        // GET: api/Tasks
+        // GET: api/projects/{projectId}/tasks
+        [Authorize]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<TaskResponse>>> GetTasks()
+        public async Task<ActionResult<TaskResponse>> GetTasks(long projectId)
         {
-            List<TaskResponse> tasks = new List<TaskResponse>();
+            var project = await _context.Projects.FindAsync(projectId);
 
-            foreach (var task in _context.Tasks)
+            if (project == null)
             {
-                tasks.Add(_mapper.Map<Task, TaskResponse>(task));
+                return NotFound();
             }
 
-            return tasks;
+            // Is valid user
+            if (CurrentUserIdDoesNotMatch(project.User.Id))
+            {
+                return Unauthorized();
+            }
 
+            var root = _mapper.Map<Task, TaskResponse>(project.Root);
+
+            return root;
         }
 
         // GET: api/Tasks/5
+        [Authorize]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Task>> GetTask(long id)
+        public async Task<ActionResult<TaskResponse>> GetTask(long id)
         {
             var task = await _context.Tasks.FindAsync(id);
 
@@ -56,10 +65,20 @@ namespace TaskTree.Controllers
                 return NotFound();
             }
 
-            return task;
+            // Is valid user
+            long userId = GetUserId(task);
+            if (CurrentUserIdDoesNotMatch(userId))
+            {
+                return Unauthorized();
+            }
+
+            var taskResponse = _mapper.Map<Task, TaskResponse>(task);
+
+            return taskResponse;
         }
 
         // PUT: api/Tasks/5
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateTask(long id, UpdateTaskRequest updateTaskRequest)
         {
@@ -68,16 +87,18 @@ namespace TaskTree.Controllers
                 return Problem("Entity set 'TaskTreeContext.Tasks' is null.", statusCode: 500);
             }
 
-            if (CurrentUserIdDoesNotMatch(id))
-            {
-                return Unauthorized();
-            }
-
             var task = await _context.Tasks.FindAsync(id);
 
             if (task == null)
             {
                 return NotFound();
+            }
+
+            // Is valid user
+            long userId = GetUserId(task);
+            if (CurrentUserIdDoesNotMatch(userId))
+            {
+                return Unauthorized();
             }
 
             _mapper.Map(updateTaskRequest, task);
@@ -103,13 +124,24 @@ namespace TaskTree.Controllers
             return NoContent();
         }
 
-        // POST: api/Tasks
-        [HttpPost]
-        public async Task<ActionResult<Task>> CreateTask(CreateTaskRequest createTaskRequst)
+        // POST: api/tasks/{parentId}/create
+        [Authorize]
+        [HttpPost("{parentId}/create")]
+        public async Task<ActionResult<Task>> CreateTask(long parentId, CreateTaskRequest createTaskRequst)
         {
             if (_context.Tasks == null)
             {
                 return Problem("Entity set 'TaskTreeContext.Tasks' is null.", statusCode: 500);
+            }
+
+            // Get the user id from the parent task
+            var parentTask = await _context.Tasks.FindAsync(parentId);
+            long userId = GetUserId(parentTask);
+
+            // Is valid user
+            if (CurrentUserIdDoesNotMatch(userId))
+            {
+                return Unauthorized();
             }
 
             var task = _mapper.Map<Task>(createTaskRequst);
@@ -140,6 +172,7 @@ namespace TaskTree.Controllers
         }
 
         // DELETE: api/Tasks/5
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(long id)
         {
@@ -148,15 +181,23 @@ namespace TaskTree.Controllers
                 return Problem("Entity set 'TaskTreeContext.Users' is null.", statusCode: 500);
             }
 
-            if (CurrentUserIdDoesNotMatch(id))
-            {
-                return Unauthorized();
-            }
-
             var task = await _context.Tasks.FindAsync(id);
             if (task == null)
             {
                 return NotFound();
+            }
+
+            // User is not valid
+            long userId = GetUserId(task);
+            if (CurrentUserIdDoesNotMatch(userId))
+            {
+                return Unauthorized();
+            }
+
+            // Task is the root
+            if (task.ProjectId != null)
+            {
+                return Problem("Cannot delete root node", statusCode: 400);
             }
 
             _context.Tasks.Remove(task);
@@ -169,5 +210,16 @@ namespace TaskTree.Controllers
         {
             return (_context.Tasks?.Any(e => e.Id == id)).GetValueOrDefault();
         }
+
+        private long GetUserId(Task task)
+        {
+            while (task.Parent != null)
+            {
+                task = task.Parent;
+            }
+
+            return task.Project.User.Id;
+        }
     }
+
 }
