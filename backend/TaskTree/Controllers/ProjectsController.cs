@@ -11,6 +11,7 @@ using Microsoft.Extensions.Options;
 using TaskTree.Models;
 using TaskTree.Models.Requests;
 using TaskTree.Models.Responses;
+using Task = TaskTree.Models.Task;
 
 namespace TaskTree.Controllers
 {
@@ -112,11 +113,22 @@ namespace TaskTree.Controllers
             }
 
             var project = _mapper.Map<Project>(createProjectRequest);
+            project.UserId = CurrentUserId();
+
+            var rootTask = new Task()
+            {
+                Name = project.Name,
+                ProjectId = project.Id,
+            };
+            project.Root = rootTask;
 
             _context.Projects.Add(project);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetProject), new { id = project.Id }, _mapper.Map<Project, ProjectResponse>(project));
+            var projectResponse = _mapper.Map<Project, ProjectResponse>(project);
+            //projectResponse.Root = _mapper.Map<Task, TaskResponse>(rootTask);
+
+            return CreatedAtAction(nameof(GetProject), new { id = project.Id }, projectResponse);
         }
 
         // DELETE: api/Projects/5
