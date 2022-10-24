@@ -16,6 +16,7 @@ export default function LoginDesktop() {
 
   const onSubmit = async () => {
     const token = await UserService.authenticateUser(username, password);
+    AuthService.storeJWT(token);
     const user = AuthService.decodeJWT(token);
     dispatch(setCurrentUser(user));
     navigate('/');

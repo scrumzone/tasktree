@@ -36,7 +36,7 @@ export default function TTNavBarMobile(props: Props) {
       <Divider />
       <List>
         {props.navItems.map((item) =>
-          item.path ? (
+          'path' in item ? (
             <ListItem key={item.path} disablePadding>
               <ListItemButton
                 sx={{ textAlign: 'center' }}
@@ -48,10 +48,7 @@ export default function TTNavBarMobile(props: Props) {
             </ListItem>
           ) : (
             <ListItem key={item.name} disablePadding>
-              <ListItemButton
-                sx={{ textAlign: 'center' }}
-                onClick={item.action!}
-                selected={item.path === location.pathname}>
+              <ListItemButton sx={{ textAlign: 'center' }} onClick={item.action!}>
                 <ListItemText primary={item.name} />
               </ListItemButton>
             </ListItem>

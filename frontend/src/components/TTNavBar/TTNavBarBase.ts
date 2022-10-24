@@ -1,11 +1,6 @@
 import React from 'react';
+import { TTRoute } from '../../types/Route';
 
 export interface Props {
-  navItems: {
-    name: string;
-    path?: string;
-    action?: (
-      e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement | HTMLDivElement, MouseEvent>
-    ) => void;
-  }[];
+  navItems: TTRoute[];
 }
