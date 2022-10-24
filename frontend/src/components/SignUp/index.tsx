@@ -1,8 +1,12 @@
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 import React, { FormEvent, useState } from 'react';
+import AuthService from '../../services/AuthService';
+import UserService from '../../services/UserService';
 import User from '../../types/User';
 import './signup.css';
 import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../store/hooks';
+import { setCurrentUser } from '../../store/user';
 
 interface stateInterface {
   firstName: string;
@@ -12,11 +16,13 @@ interface stateInterface {
   confirmPassword: string;
   submitFlag: boolean;
   passwordLength: number;
+  errorText: string;
 }
 
 export default function SignUpComponent() {
   const [values, setValues] = useState<stateInterface>({} as stateInterface);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   /* Generic way of using useStates for state values so that one onChange can be used for
    * all values in the stateInterface */
@@ -27,7 +33,7 @@ export default function SignUpComponent() {
       setValues((values) => ({ ...values, ['passwordLength']: values.password.length }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValues((values) => ({ ...values, ['submitFlag']: true }));
 
@@ -38,13 +44,25 @@ export default function SignUpComponent() {
         username: values.username,
         password: values.password
       };
-      // TODO create and authorize the user in the backend
+      // Creates the user
+      const res = await UserService.createUser(user);
+      if (res.status != 201) {
+        displayError(res.data);
+        return;
+      }
 
-      // redirect to homepage
+      // Authenticates the user and redirects to homepage
+      const jwt: string = await UserService.authenticateUser(values.username, values.password);
+      AuthService.storeJWT(jwt);
+      dispatch(setCurrentUser(user));
       navigate('/');
     } else {
       return;
     }
+  };
+
+  const displayError = (errorMessage: string) => {
+    setValues((values) => ({ ...values, ['errorText']: errorMessage }));
   };
 
   const validateFields = () => {
@@ -96,6 +114,12 @@ export default function SignUpComponent() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
+        {values.errorText && values.errorText.length > 0 && (
+          <Box>
+            <br />
+            <Alert severity="error">{values.errorText}</Alert>
+          </Box>
+        )}
         <Box component="form" noValidate onSubmit={(e) => handleSubmit(e)} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
