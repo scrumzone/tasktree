@@ -61,9 +61,8 @@ export default function VirtualizedList() {
   };
 
   const handleSubmit = async (data: CreateProjectFormData) => {
-    console.log(data);
-    // const project = await ProjectService.createProject({ ...data, progress: 0 });
-    // setProjects([...projects, project]);
+    const project = await ProjectService.createProject({ ...data, progress: 0 });
+    setProjects([...projects, project]);
     handleClose();
   };
 
@@ -94,6 +93,7 @@ export default function VirtualizedList() {
             type="project"
             fullWidth
             variant="standard"
+            onChange={onChange}
           />
         </DialogContent>
         <DialogActions>
