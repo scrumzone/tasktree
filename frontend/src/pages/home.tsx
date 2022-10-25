@@ -39,11 +39,6 @@ export default function HomePage() {
         }}>
         Log Out
       </Button>
-      <Button onClick={() => console.log(ProjectService.createProject(BlankProject))}>Create Project</Button>
-      <Button onClick={() => console.log(ProjectService.deleteProject(1))}>Delete Project</Button>
-      <Button onClick={() => console.log(ProjectService.updateProject({name: "Cheese", progress: 5}, 1))}>Update Project</Button>
-      <Button onClick={() => console.log(ProjectService.getProject(1))}>Get Project</Button>
-      <Button onClick={() => console.log(ProjectService.getProjects())}>Get Projects</Button>
       <p>{user.username}</p>
     </div>
   );
