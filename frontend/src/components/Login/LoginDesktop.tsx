@@ -38,6 +38,7 @@ export default function LoginDesktop() {
             id="passIn"
             onChange={(e) => setPassword(e.target.value)}
             variant="outlined"
+            type="password" 
             placeholder="Password"></TextField>
           <Button id="loginBtn" onClick={onSubmit} variant="contained">
             Log In

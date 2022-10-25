@@ -24,6 +24,10 @@ function App() {
           path: '/'
         },
         {
+          name: 'Projects',
+          path: '/projects'
+        },
+        {
           name: 'Log out',
           action: (
             e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement | HTMLDivElement, MouseEvent>

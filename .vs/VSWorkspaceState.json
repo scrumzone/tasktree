@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\backend\\TaskTree",
+    "\\backend\\TaskTree\\Controllers",
+    "\\backend\\TaskTree\\Models",
+    "\\frontend",
+    "\\frontend\\src",
+    "\\frontend\\src\\components",
+    "\\frontend\\src\\components\\Login"
+  ],
+  "SelectedNode": "\\frontend\\src\\components\\Login\\LoginMobile.tsx",
+  "PreviewInSolutionExplorer": false
+}

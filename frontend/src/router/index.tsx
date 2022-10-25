@@ -1,4 +1,5 @@
 import React from 'react';
+import ProjectsPage from '../pages/projects';
 import HomePage from '../pages/home';
 import LandingPage from '../pages/landing';
 import LoginPage from '../pages/login';
@@ -27,5 +28,10 @@ export const authorizedRoutes: TTRoute[] = [
     name: 'Home',
     path: '/',
     component: <HomePage />
+  },
+  {
+    name: 'Projects',
+    path: '/projects',
+    component: <ProjectsPage />
   }
 ];
