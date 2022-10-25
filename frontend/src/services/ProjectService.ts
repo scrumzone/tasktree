@@ -32,6 +32,8 @@ export default class ProjectService {
   }
 
   static async deleteProject(id: number) {
-    await http.delete(`/projects/${id}`);
+    await http.delete(`/projects/${id}`, {
+      headers: authHeader(AuthService.getJWT())
+    });
   }
 } 
