@@ -43,7 +43,7 @@ namespace TaskTree.Controllers
             }
 
             // Is valid user
-            if (CurrentUserIdDoesNotMatch(project.User.Id))
+            if (CurrentUserIdDoesNotMatch(project.UserId))
             {
                 return Unauthorized();
             }
@@ -66,8 +66,7 @@ namespace TaskTree.Controllers
             }
 
             // Is valid user
-            long userId = GetUserId(task);
-            if (CurrentUserIdDoesNotMatch(userId))
+            if (CurrentUserIdDoesNotMatch(task.UserId))
             {
                 return Unauthorized();
             }
@@ -95,8 +94,7 @@ namespace TaskTree.Controllers
             }
 
             // Is valid user
-            long userId = GetUserId(task);
-            if (CurrentUserIdDoesNotMatch(userId))
+            if (CurrentUserIdDoesNotMatch(task.UserId))
             {
                 return Unauthorized();
             }
@@ -134,19 +132,23 @@ namespace TaskTree.Controllers
                 return Problem("Entity set 'TaskTreeContext.Tasks' is null.", statusCode: 500);
             }
 
-            // Get the user id from the parent task
             var parentTask = await _context.Tasks.FindAsync(parentId);
-            long userId = GetUserId(parentTask);
 
             // Is valid user
-            if (CurrentUserIdDoesNotMatch(userId))
+            if (CurrentUserIdDoesNotMatch(parentTask.UserId))
             {
                 return Unauthorized();
             }
 
             var task = _mapper.Map<Task>(createTaskRequst);
+            task.UserId = CurrentUserId();
+            
+            if (parentTask.Children == null)
+            {
+                parentTask.Children = new List<Task>();
+            }
 
-            task.Parent.Children.Add(task);
+            parentTask.Children.Add(task);
 
             try
             {
@@ -189,8 +191,7 @@ namespace TaskTree.Controllers
             }
 
             // User is not valid
-            long userId = GetUserId(task);
-            if (CurrentUserIdDoesNotMatch(userId))
+            if (CurrentUserIdDoesNotMatch(task.UserId))
             {
                 return Unauthorized();
             }
@@ -211,16 +212,5 @@ namespace TaskTree.Controllers
         {
             return (_context.Tasks?.Any(e => e.Id == id)).GetValueOrDefault();
         }
-
-        private long GetUserId(Task task)
-        {
-            while (task.Parent != null)
-            {
-                task = task.Parent;
-            }
-
-            return task.Project.User.Id;
-        }
     }
-
 }
