@@ -1,7 +1,6 @@
 //import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 //import React, { FormEvent, useState } from 'react';
 //import User from '../../types/User';
-import './displayProjects.css';
 
 import * as React from 'react';
 //import Box from '@mui/material/Box';
@@ -79,7 +78,7 @@ export default function VirtualizedList() {
         flexDirection: 'column',
         alignItems: 'center'
       }}>
-      <Typography component="h1" variant="h5">
+      <Typography component="h5" variant="h5">
         Projects
       </Typography>
       <Button variant="outlined" onClick={handleClickOpen}>
@@ -89,7 +88,6 @@ export default function VirtualizedList() {
 
         <DialogTitle>Create Project</DialogTitle>
         <DialogContent>
-          <DialogContentText>Please enter the name of the project.</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
