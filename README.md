@@ -32,7 +32,7 @@ dotnet tool install --global dotnet-ef
 #### Setting up MySQL
 
 On Windows, you can install the MySQL server using the installer found [here](https://dev.mysql.com/downloads/installer/). **Be sure to install version 8.0.xx.**
-After doing that, navigate to the install location of the MySQL binary (usually somthing like `C:\ProgramFiles\MySQL\bin\`) and run the following:
+After doing that, navigate to the install location of the MySQL binary (usually somthing like `C:\ProgramFiles\MySQL\MySQL Server 8.0\bin\`) and run the following:
 
 ```
 .\mysql.exe -u root -p
@@ -53,7 +53,7 @@ dotnet ef database update
 Before you can run the backend, you need to make sure that the MySQL server is running using the following command:
 
 ```
-command from andrew
+net start mysql80
 ```
 
 #### Setting up NodeJS
