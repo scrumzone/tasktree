@@ -8,6 +8,7 @@ import TTNavBar from './components/TTNavBar/index';
 import { useAppDispatch, useAppSelector } from './store/hooks';
 import AuthService from './services/AuthService';
 import { setCurrentUser } from './store/user';
+import DisplayProjectsPage from './pages/displayProjects';
 
 const navItems = [
   {
@@ -21,6 +22,10 @@ const navItems = [
   {
     name: 'Sign up',
     path: '/signup'
+  },
+  {
+    name: 'Projects',
+    path: '/projects'
   }
 ];
 
@@ -40,6 +45,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/projects" element={<DisplayProjectsPage />} />
         </Routes>
       </Router>
     </div>

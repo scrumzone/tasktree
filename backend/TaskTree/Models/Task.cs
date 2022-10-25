@@ -16,5 +16,6 @@ namespace TaskTree.Models
         public Project? Project { get; set; }
         public Task? Parent { get; set; }
         public List<Task>? Children { get; set; }
+        public long UserId { get; set; }
     }
 }
