@@ -6,6 +6,8 @@ import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { clearCurrentUser } from '../store/user';
 import CreateTaskFormDialog from '../components/CreateTaskFormDialog';
+import ProjectService from '../services/ProjectService';
+import { BlankProject } from '../types/Project';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();

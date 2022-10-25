@@ -7,20 +7,23 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import ProjectService from '../../services/ProjectService';
+import Project, { BlankProject } from '../../types/Project';
 
 function renderRow(props: ListChildComponentProps) {
-  const { index, style } = props;
+  const { data, index, style } = props;
 
   return (
-    <ListItem style={style} key={index} component="a" disablePadding>
+    <ListItem style={style} key={data[index].name} component="a" disablePadding>
       <ListItemButton>
-        <ListItemText primary={`Project ${index + 1}`} />
+        <ListItemText primary={data[index].name} />
+        <ListItemText primary={data[index].progress} />
       </ListItemButton>
     </ListItem>
   );
@@ -28,6 +31,14 @@ function renderRow(props: ListChildComponentProps) {
 
 export default function VirtualizedList() {
   const [open, setOpen] = React.useState(false);
+  const [projects, setProjects] = React.useState<Project[]>([BlankProject]);
+
+  React.useEffect(() => {
+    const fetchProjects = async () => {
+      setProjects(await ProjectService.getProjects());
+    };
+    fetchProjects();
+  }, []);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -39,7 +50,6 @@ export default function VirtualizedList() {
 
   return (
     <Box
-      //sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
       sx={{
         marginTop: 8,
         display: 'flex',
@@ -53,11 +63,10 @@ export default function VirtualizedList() {
         Create new project
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Create Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates
-            occasionally.
+            Please enter the name of the project.
           </DialogContentText>
           <TextField
             autoFocus
@@ -74,7 +83,13 @@ export default function VirtualizedList() {
           <Button onClick={handleClose}>Confirm</Button>
         </DialogActions>
       </Dialog>
-      <FixedSizeList height={400} width={360} itemSize={46} itemCount={200} overscanCount={5}>
+      <FixedSizeList 
+        height={400} 
+        width={360} 
+        itemSize={46} 
+        itemCount={projects.length} 
+        overscanCount={5}
+        itemData={projects}>
         {renderRow}
       </FixedSizeList>
     </Box>

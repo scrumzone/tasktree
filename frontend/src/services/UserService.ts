@@ -30,7 +30,9 @@ export default class UserService {
 
   // TODO: we should return if the deletion succeeded or not
   static async deleteUser(id: number) {
-    await http.delete(`/users/${id}`);
+    await http.delete(`/users/${id}`, {
+      headers: authHeader(AuthService.getJWT())
+    });
   }
 
   static async authenticateUser(username: string, password: string): Promise<string> {
