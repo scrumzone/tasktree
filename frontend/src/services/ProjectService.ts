@@ -25,7 +25,7 @@ export default class ProjectService {
   }
 
   static async updateProject(project: Project, id: number): Promise<Project> {
-    const response = await http.put(`/projects/${id}`, {
+    const response = await http.put(`/projects/${id}`, project, {
       headers: authHeader(AuthService.getJWT())
     });
     return response.data;
@@ -36,4 +36,4 @@ export default class ProjectService {
       headers: authHeader(AuthService.getJWT())
     });
   }
-} 
+}
