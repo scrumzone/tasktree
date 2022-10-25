@@ -5,7 +5,6 @@ import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { clearCurrentUser } from '../store/user';
-import CreateTaskForm from '../components/CreateTaskForm';
 import CreateTaskFormDialog from '../components/CreateTaskFormDialog';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {

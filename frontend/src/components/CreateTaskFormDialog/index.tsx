@@ -27,7 +27,6 @@ export default function CreateTaskFormDialog(props: CreateTaskFormProps) {
 
   const onChange = (e: React.SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
-    console.log(target.id, target.value);
     setFormData((formData) => ({ ...formData, [target.name]: target.value }));
   };
 
