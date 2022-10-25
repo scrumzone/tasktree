@@ -8,6 +8,6 @@ export default interface Project {
 }
 
 export const BlankProject: Project = {
-    name: '0',
+    name: 'blank',
     progress: 0
 }
