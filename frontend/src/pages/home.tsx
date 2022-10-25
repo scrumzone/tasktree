@@ -5,6 +5,9 @@ import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { clearCurrentUser } from '../store/user';
+import CreateTaskFormDialog from '../components/CreateTaskFormDialog';
+import ProjectService from '../services/ProjectService';
+import { BlankProject } from '../types/Project';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();
@@ -14,6 +17,7 @@ function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurren
 
 export default function HomePage() {
   const [user, setUser] = React.useState(BlankUser);
+  const [dOpen, setDOpen] = React.useState(false);
   const dispatch = useAppDispatch();
 
   const current = useAppSelector((state) => state.user.current);
@@ -29,6 +33,16 @@ export default function HomePage() {
     <div>
       <Typography variant="h1">HOME PAGE</Typography>
       <Typography variant="h4">Hello, {user.username}!</Typography>
+      <Button variant="outlined" onClick={() => setDOpen(true)}>
+        Open CreateTaskFormDialog
+      </Button>
+      <CreateTaskFormDialog
+        open={dOpen}
+        onClose={() => setDOpen(false)}
+        onSubmit={(formData) => {
+          console.log(formData);
+        }}
+      />
     </div>
   );
 }

@@ -29,7 +29,7 @@ export default function TTNavBarDesktop(props: Props) {
               {props.navItems.map((item) =>
                 item.path ? (
                   <Button
-                    key={item.path}
+                    key={item.name}
                     sx={{ my: 2, display: 'block' }}
                     component={Link}
                     to={item.path!}
@@ -37,7 +37,7 @@ export default function TTNavBarDesktop(props: Props) {
                     {item.name}
                   </Button>
                 ) : (
-                  <Button key={item.path} sx={{ my: 2, display: 'block' }} onClick={item.action}>
+                  <Button key={item.name} sx={{ my: 2, display: 'block' }} onClick={item.action}>
                     {item.name}
                   </Button>
                 )
