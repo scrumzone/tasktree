@@ -1,14 +1,9 @@
 import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '.';
 import User from '../types/User';
-
-interface UserState {
-  currentUser: User | null;
-  isLoggedIn: boolean;
-}
+import { UserState } from './types';
 
 const initialState: UserState = {
-  currentUser: null,
+  current: null,
   isLoggedIn: false
 };
 
@@ -17,7 +12,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setCurrentUser: (state, action: PayloadAction<User | null>) => {
-      state.currentUser = action.payload;
+      state.current = action.payload;
       state.isLoggedIn = action.payload !== null;
     },
     clearCurrentUser: (_) => {
