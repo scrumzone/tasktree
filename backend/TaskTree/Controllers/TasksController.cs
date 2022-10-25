@@ -202,7 +202,7 @@ namespace TaskTree.Controllers
             // Task is the root
             if (task.ProjectId != null)
             {
-                return Problem("Cannot delete root node", statusCode: 400);
+                return Problem("Cannot delete root task", statusCode: 400);
             }
 
             _context.Tasks.Remove(task);
