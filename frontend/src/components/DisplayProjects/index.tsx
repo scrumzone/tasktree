@@ -1,6 +1,8 @@
 //import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 //import React, { FormEvent, useState } from 'react';
 //import User from '../../types/User';
+import './displayProjects.css';
+
 import * as React from 'react';
 //import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
@@ -18,7 +20,7 @@ function renderRow(props: ListChildComponentProps) {
   const { index, style } = props;
 
   return (
-    <ListItem style={style} key={index} component="a" disablePadding>
+    <ListItem style={style} key={index} component="a" disablePadding href="/project">
       <ListItemButton>
         <ListItemText primary={`Project ${index + 1}`} />
       </ListItemButton>
@@ -30,14 +32,13 @@ export default function VirtualizedList() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    console.log('clucked');
     setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
-
+  
   return (
     <Box
       //sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
@@ -47,18 +48,17 @@ export default function VirtualizedList() {
         flexDirection: 'column',
         alignItems: 'center'
       }}>
-      <Typography component="h5" variant="h5">
+      <Typography component="h1" variant="h5">
         Projects
       </Typography>
       <Button variant="outlined" onClick={handleClickOpen}>
         Create new project
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Create project</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates
-            occasionally.
+            Please enter the name and description of the project.
           </DialogContentText>
           <TextField
             autoFocus
@@ -69,13 +69,28 @@ export default function VirtualizedList() {
             fullWidth
             variant="standard"
           />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Project Description"
+            type="description"
+            fullWidth
+            variant="standard"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleClose}>Confirm</Button>
         </DialogActions>
       </Dialog>
-      <FixedSizeList height={400} width={360} itemSize={46} itemCount={200} overscanCount={5}>
+      <FixedSizeList
+        height={400}
+        width={360}
+        itemSize={46}
+        itemCount={200}
+        overscanCount={5}
+      >
         {renderRow}
       </FixedSizeList>
     </Box>
