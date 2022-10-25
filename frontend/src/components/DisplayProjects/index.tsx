@@ -54,11 +54,10 @@ export default function VirtualizedList() {
         Create new project
       </Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Subscribe</DialogTitle>
+        <DialogTitle>Create Project</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            To subscribe to this website, please enter your email address here. We will send updates
-            occasionally.
+            Please enter the name of the project.
           </DialogContentText>
           <TextField
             autoFocus
