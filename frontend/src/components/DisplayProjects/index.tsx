@@ -29,9 +29,16 @@ function renderRow(props: ListChildComponentProps) {
   );
 }
 
+interface CreateProjectFormData {
+  name: string;
+}
+
 export default function VirtualizedList() {
   const [open, setOpen] = React.useState(false);
   const [projects, setProjects] = React.useState<Project[]>([BlankProject]);
+  const [formData, setFormData] = React.useState<CreateProjectFormData>({
+    name: ''
+  });
 
   React.useEffect(() => {
     const fetchProjects = async () => {
@@ -46,6 +53,12 @@ export default function VirtualizedList() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleSubmit = async (data: CreateProjectFormData) => {
+    const project = await ProjectService.createProject(data);
+    setProjects([...projects, project]);
+    handleClose();
   };
 
   return (
@@ -65,9 +78,7 @@ export default function VirtualizedList() {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Create Project</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Please enter the name of the project.
-          </DialogContentText>
+          <DialogContentText>Please enter the name of the project.</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -80,14 +91,19 @@ export default function VirtualizedList() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleClose}>Confirm</Button>
+          <Button
+            onClick={() => {
+              handleSubmit(formData);
+            }}>
+            Create
+          </Button>
         </DialogActions>
       </Dialog>
-      <FixedSizeList 
-        height={400} 
-        width={360} 
-        itemSize={46} 
-        itemCount={projects.length} 
+      <FixedSizeList
+        height={400}
+        width={360}
+        itemSize={46}
+        itemCount={projects.length}
         overscanCount={5}
         itemData={projects}>
         {renderRow}
