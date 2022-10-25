@@ -4,6 +4,9 @@ import AuthService from '../../services/AuthService';
 import UserService from '../../services/UserService';
 import User from '../../types/User';
 import './signup.css';
+import { useNavigate } from 'react-router-dom';
+import { useAppDispatch } from '../../store/hooks';
+import { setCurrentUser } from '../../store/user';
 
 interface stateInterface {
   firstName: string;
@@ -18,6 +21,8 @@ interface stateInterface {
 
 export default function SignUpComponent() {
   const [values, setValues] = useState<stateInterface>({} as stateInterface);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   /* Generic way of using useStates for state values so that one onChange can be used for
    * all values in the stateInterface */
@@ -38,7 +43,7 @@ export default function SignUpComponent() {
         lastName: values.lastName || undefined,
         username: values.username,
         password: values.password
-      }
+      };
       // Creates the user
       const res = await UserService.createUser(user);
       if (res.status != 201) {
@@ -49,7 +54,8 @@ export default function SignUpComponent() {
       // Authenticates the user and redirects to homepage
       const jwt: string = await UserService.authenticateUser(values.username, values.password);
       AuthService.storeJWT(jwt);
-      window.location.pathname = '';
+      dispatch(setCurrentUser(user));
+      navigate('/');
     } else {
       return;
     }
@@ -57,7 +63,7 @@ export default function SignUpComponent() {
 
   const displayError = (errorMessage: string) => {
     setValues((values) => ({ ...values, ['errorText']: errorMessage }));
-  }
+  };
 
   const validateFields = () => {
     let isValid = true;
@@ -108,13 +114,12 @@ export default function SignUpComponent() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        {
-          values.errorText && values.errorText.length > 0 &&
+        {values.errorText && values.errorText.length > 0 && (
           <Box>
             <br />
             <Alert severity="error">{values.errorText}</Alert>
           </Box>
-        }
+        )}
         <Box component="form" noValidate onSubmit={(e) => handleSubmit(e)} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>

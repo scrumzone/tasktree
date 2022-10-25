@@ -11,6 +11,12 @@ public class MappingProfile : Profile
         CreateMapNoNull<UpdateUserRequest, User>();
         CreateMapNoNull<CreateUserRequest, User>(MemberList.Source);
         CreateMapNoNull<User, UserResponse>();
+        CreateMapNoNull<Task, TaskResponse>()
+            .ForMember(dest => dest.Children, input => input.MapFrom(src => src.Children));
+        CreateMapNoNull<Project, ProjectResponse>()
+            .ForMember(dest => dest.Root, input => input.MapFrom(src => src.Root));
+        CreateMapNoNull<UpdateProjectRequest, Project>();
+        CreateMapNoNull<CreateProjectRequest, Project>();
 
         CreateMapNoNull<UpdateTaskRequest, Task>();
         CreateMapNoNull<CreateTaskRequest, Task>(MemberList.Source);
