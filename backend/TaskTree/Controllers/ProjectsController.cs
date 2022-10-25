@@ -131,6 +131,7 @@ namespace TaskTree.Controllers
             {
                 Name = project.Name,
                 ProjectId = project.Id,
+                UserId = CurrentUserId(),
             };
             project.Root = rootTask;
 

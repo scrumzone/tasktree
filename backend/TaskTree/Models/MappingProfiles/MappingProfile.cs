@@ -17,6 +17,11 @@ public class MappingProfile : Profile
             .ForMember(dest => dest.Root, input => input.MapFrom(src => src.Root));
         CreateMapNoNull<UpdateProjectRequest, Project>();
         CreateMapNoNull<CreateProjectRequest, Project>();
+
+        CreateMapNoNull<UpdateTaskRequest, Task>();
+        CreateMapNoNull<CreateTaskRequest, Task>(MemberList.Source);
+        CreateMapNoNull<Task, TaskResponse>();
+        CreateMapNoNull<Task, Task>();
     }
 
     // This is a helper wrapper around the CreateMap function that allows us to concisely specify a mapping should not override non-null values with null ones
