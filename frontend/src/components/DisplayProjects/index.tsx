@@ -10,6 +10,12 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import Popup from './popup'
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
 
 function renderRow(props: ListChildComponentProps) {
   const { index, style } = props;
@@ -24,6 +30,16 @@ function renderRow(props: ListChildComponentProps) {
 }
 
 export default function VirtualizedList() {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
   return (
     <Box
       //sx={{ width: '100%', height: 400, maxWidth: 360, bgcolor: 'background.paper' }}
@@ -36,7 +52,31 @@ export default function VirtualizedList() {
       <Typography component="h1" variant="h5">
         Projects
       </Typography>
-      <button> Create New Project </button>
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Create new project
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Subscribe</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            To subscribe to this website, please enter your email address here. We
+            will send updates occasionally.
+          </DialogContentText>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Project Name"
+            type="project"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Confirm</Button>
+        </DialogActions>
+      </Dialog>
       <FixedSizeList
         height={400}
         width={360}
