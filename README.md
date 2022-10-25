@@ -82,7 +82,11 @@ To run the backend project, all you have to do is open the project in Visual Stu
 
 ##### frontend
 
-Running the frontend is very simple; just navigate to the `frontend` directory and execute `npm run start`.
+Running the frontend is very simple; just navigate to the `frontend` directory and execute:
+
+```
+npm run start
+```
 
 #### Using Docker
 
