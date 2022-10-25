@@ -4,48 +4,63 @@ import HomePage from './pages/home';
 import SignupPage from './pages/signup';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './App.css';
-import TTNavBar from './components/TTNavBar/index';
+import TTNavBar from './components/TTNavBar';
 import { useAppDispatch, useAppSelector } from './store/hooks';
+import { TTRoute } from './types/Route';
 import AuthService from './services/AuthService';
-import { setCurrentUser } from './store/user';
-import DisplayProjectsPage from './pages/displayProjects';
-
-const navItems = [
-  {
-    name: 'Landing',
-    path: '/'
-  },
-  {
-    name: 'Log in',
-    path: '/login'
-  },
-  {
-    name: 'Sign up',
-    path: '/signup'
-  },
-  {
-    name: 'Projects',
-    path: '/projects'
-  }
-];
+import { clearCurrentUser } from './store/user';
+import LandingPage from './pages/landing';
+import { authorizedRoutes, unauthorizedRoutes } from './router';
 
 function App() {
+  const { isLoggedIn } = useAppSelector((state) => state.user);
   const dispatch = useAppDispatch();
-  if (useAppSelector((state) => state.user.currentUser) === null) {
-    const user = AuthService.decodeJWT(AuthService.getJWT());
-    dispatch(setCurrentUser(user));
-  }
+  const routes = isLoggedIn ? authorizedRoutes : unauthorizedRoutes;
+
+  const navItems = isLoggedIn
+    ? [
+        {
+          name: 'Home',
+          path: '/'
+        },
+        {
+          name: 'Projects',
+          path: '/projects'
+        },
+        {
+          name: 'Log out',
+          action: (
+            e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement | HTMLDivElement, MouseEvent>
+          ) => {
+            e.preventDefault();
+            AuthService.signOut();
+            dispatch(clearCurrentUser());
+          }
+        }
+      ]
+    : [
+        {
+          name: 'Landing',
+          path: '/'
+        },
+        {
+          name: 'Log in',
+          path: '/login'
+        },
+        {
+          name: 'Sign up',
+          path: '/signup'
+        }
+      ];
 
   return (
     <div className="App">
       <Router>
         <TTNavBar navItems={navItems} />
-        <br />
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/projects" element={<DisplayProjectsPage />} />
+          {routes.map((item: TTRoute) => {
+            return <Route key={item.name} path={item.path} element={item.component} />;
+          })}
         </Routes>
       </Router>
     </div>

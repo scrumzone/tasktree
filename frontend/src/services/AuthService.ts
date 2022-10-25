@@ -1,6 +1,5 @@
 import { setCookie, removeCookie, getCookie } from 'typescript-cookie';
 import User from '../types/User';
-import http from '../util/http';
 
 export default class AuthService {
   static storeJWT(jwt: string) {

@@ -16,11 +16,11 @@ export default function HomePage() {
   const [user, setUser] = React.useState(BlankUser);
   const dispatch = useAppDispatch();
 
-  const currentUser = useAppSelector((state) => state.user.currentUser);
+  const current = useAppSelector((state) => state.user.current);
 
   React.useEffect(() => {
     const fetchUser = async () => {
-      setUser(currentUser || BlankUser);
+      setUser(current || BlankUser);
     };
     fetchUser();
   }, []);
@@ -28,15 +28,7 @@ export default function HomePage() {
   return (
     <div>
       <Typography variant="h1">HOME PAGE</Typography>
-      <Button
-        onClick={() => {
-          logout(setUser, () => {
-            dispatch(clearCurrentUser());
-          });
-        }}>
-        Log Out
-      </Button>
-      <p>{user.username}</p>
+      <Typography variant="h4">Hello, {user.username}!</Typography>
     </div>
   );
 }
