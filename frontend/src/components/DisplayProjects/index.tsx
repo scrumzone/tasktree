@@ -1,6 +1,7 @@
 //import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
 //import React, { FormEvent, useState } from 'react';
 //import User from '../../types/User';
+
 import * as React from 'react';
 //import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
@@ -20,7 +21,9 @@ function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
 
   return (
+
     <ListItem style={style} key={data[index].name} component="a" disablePadding>
+
       <ListItemButton>
         <ListItemText primary={data[index].name} />
         <ListItemText primary={data[index].progress} />
@@ -55,6 +58,7 @@ export default function VirtualizedList() {
     setOpen(false);
   };
 
+
   const onChange = (e: React.SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
     setFormData((formData) => ({ ...formData, [target.name]: target.value }));
@@ -81,9 +85,9 @@ export default function VirtualizedList() {
         Create new project
       </Button>
       <Dialog open={open} onClose={handleClose}>
+
         <DialogTitle>Create Project</DialogTitle>
         <DialogContent>
-          <DialogContentText>Please enter the name of the project.</DialogContentText>
           <TextField
             autoFocus
             margin="dense"
@@ -94,6 +98,15 @@ export default function VirtualizedList() {
             fullWidth
             variant="standard"
             onChange={onChange}
+          />
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="Project Description"
+            type="description"
+            fullWidth
+            variant="standard"
           />
         </DialogContent>
         <DialogActions>
@@ -110,6 +123,7 @@ export default function VirtualizedList() {
         height={400}
         width={360}
         itemSize={46}
+
         itemCount={projects.length}
         overscanCount={5}
         itemData={projects}>
