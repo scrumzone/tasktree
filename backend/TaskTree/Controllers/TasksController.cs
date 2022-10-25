@@ -35,7 +35,10 @@ namespace TaskTree.Controllers
         [HttpGet]
         public async Task<ActionResult<TaskResponse>> GetTasks(long projectId)
         {
-            var project = await _context.Projects.FindAsync(projectId);
+            var project = await _context.Projects
+                .Include(project => project.Root)
+                .Include("Root.Children.Children.Children.Children.Children.Children.Children.Children.Children")
+                .FirstOrDefaultAsync(project => project.Id == projectId);
 
             if (project == null)
             {
