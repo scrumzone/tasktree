@@ -21,6 +21,10 @@ const navItems = [
   {
     name: 'Sign up',
     path: '/signup'
+  },
+  {
+    name: 'Projects',
+    path: '/displayProjects'
   }
 ];
 
@@ -40,6 +44,7 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/displayProjects" element={<DisplayProjectsPage />} />
         </Routes>
       </Router>
     </div>
