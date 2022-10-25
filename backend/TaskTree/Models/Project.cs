@@ -11,6 +11,8 @@ namespace TaskTree.Models
         public Task? Root { get; set; }
         public double? Progress { get; set; }
         [Required]
+        public long UserId { get; set; }
+        [Required]
         public User? User { get; set; }
     }
 }
