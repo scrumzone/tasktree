@@ -30,7 +30,6 @@ export default function VirtualizedList() {
   const [open, setOpen] = React.useState(false);
 
   const handleClickOpen = () => {
-    console.log('clucked');
     setOpen(true);
   };
 
