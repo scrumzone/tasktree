@@ -5,6 +5,8 @@ import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { clearCurrentUser } from '../store/user';
+import ProjectService from '../services/ProjectService';
+import { BlankProject } from '../types/Project';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();
@@ -29,6 +31,15 @@ export default function HomePage() {
     <div>
       <Typography variant="h1">HOME PAGE</Typography>
       <Typography variant="h4">Hello, {user.username}!</Typography>
+      <Button
+        onClick={() => {
+          logout(setUser, () => {
+            dispatch(clearCurrentUser());
+          });
+        }}>
+        Log Out
+      </Button>
+      <p>{user.username}</p>
     </div>
   );
 }
