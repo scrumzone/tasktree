@@ -55,9 +55,15 @@ export default function VirtualizedList() {
     setOpen(false);
   };
 
+  const onChange = (e: React.SyntheticEvent) => {
+    const target = e.target as HTMLInputElement;
+    setFormData((formData) => ({ ...formData, [target.name]: target.value }));
+  };
+
   const handleSubmit = async (data: CreateProjectFormData) => {
-    const project = await ProjectService.createProject(data);
-    setProjects([...projects, project]);
+    console.log(data);
+    // const project = await ProjectService.createProject({ ...data, progress: 0 });
+    // setProjects([...projects, project]);
     handleClose();
   };
 
@@ -83,6 +89,7 @@ export default function VirtualizedList() {
             autoFocus
             margin="dense"
             id="name"
+            name="name"
             label="Project Name"
             type="project"
             fullWidth
