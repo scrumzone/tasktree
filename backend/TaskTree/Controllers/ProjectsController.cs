@@ -35,6 +35,7 @@ namespace TaskTree.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ProjectResponse>>> GetProjects()
         {
+
             var projects = _context.Projects.Where(project => project.UserId == CurrentUserId());
 
             List<ProjectResponse> projectResponses = new List<ProjectResponse>();
@@ -50,7 +51,13 @@ namespace TaskTree.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ProjectResponse>> GetProject(long id)
         {
+
             var project = await _context.Projects.FindAsync(id);
+
+            if (CurrentUserIdDoesNotMatch(project.UserId))
+            {
+                return Unauthorized();
+            }
 
             if (project == null)
             {
@@ -73,7 +80,12 @@ namespace TaskTree.Controllers
 
             var project = await _context.Projects.FindAsync(id);
 
-            if(project == null)
+            if (CurrentUserIdDoesNotMatch(project.UserId))
+            {
+                return Unauthorized();
+            }
+
+            if (project == null)
             {
                 return NotFound();
             }
@@ -140,6 +152,12 @@ namespace TaskTree.Controllers
                 return Problem("Entity set 'TaskTreeContext.Projects'  is null.", statusCode: 500);
             }
             var project = await _context.Projects.FindAsync(id);
+
+            if (CurrentUserIdDoesNotMatch(project.UserId))
+            {
+                return Unauthorized();
+            }
+
             if (project == null)
             {
                 return NotFound();
