@@ -54,7 +54,7 @@ namespace TaskTree.Controllers
 
             var project = await _context.Projects.FindAsync(id);
 
-            if (CurrentUserIdDoesNotMatch(project.UserId))
+            if (CurrentUserIdDoesNotMatch(project?.UserId))
             {
                 return Unauthorized();
             }
