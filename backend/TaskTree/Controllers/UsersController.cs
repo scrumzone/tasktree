@@ -121,18 +121,19 @@ namespace TaskTree.Controllers
             {
                 await _context.SaveChangesAsync();
 
-            } catch(Exception e)
+            }
+            catch (Exception e)
             {
                 var exceptionCode = e.HResult;
 
                 // SQL server not running
-                if (exceptionCode == -2146233079) 
+                if (exceptionCode == -2146233079)
                 {
                     return StatusCode(503, "Unable to connect to database");
                 }
 
                 // duplicate username
-                else if (exceptionCode == -2146233088) 
+                else if (exceptionCode == -2146233088)
                 {
                     return BadRequest("User already exists");
                 }
@@ -195,11 +196,11 @@ namespace TaskTree.Controllers
                 permClaims.Add(new Claim("id", userResponse.id.ToString()));
                 if (userResponse.firstName != null)
                 {
-                    permClaims.Add(new Claim("firstname", userResponse.firstName));
+                    permClaims.Add(new Claim("firstName", userResponse.firstName));
                 }
                 if (userResponse.lastName != null)
                 {
-                    permClaims.Add(new Claim("lastname", userResponse.lastName));
+                    permClaims.Add(new Claim("lastName", userResponse.lastName));
                 }
 
                 //Create Security Token object by giving required parameters    
