@@ -8,7 +8,7 @@ namespace TaskTree.Controllers;
 // Any controller created should inherit from this class.
 public class TaskTreeControllerBase : ControllerBase
 {
-    protected bool CurrentUserIdDoesNotMatch(long requestedUserId)
+    protected bool CurrentUserIdDoesNotMatch(long? requestedUserId)
     {
         var userId = CurrentUserId();
         return userId != requestedUserId;
