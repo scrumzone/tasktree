@@ -1,7 +1,7 @@
 import Task from './Task';
 
 export default interface Project {
-  id: number;
+  id?: number;
   name: string;
   description?: string;
   root?: Task;
