@@ -1,11 +1,13 @@
 export default interface Task {
+
+  id?: number;
+  name: string;
+  description?: string;
+  progress: number;
+  weight: number;
+  completedAt: Date | null;
+  children: Task[] | null;
   ProjectID?: null;
-  name: string,
-  description?: string,
-  progress?: number,
-  weight?: number,
-  completedAt?: Date,
-  Children?: Task[];
 }
 
 export const BlankTask: Task = {
