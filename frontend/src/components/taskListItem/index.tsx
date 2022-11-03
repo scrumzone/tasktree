@@ -30,11 +30,9 @@ export default function TaskListItem(props: GetTaskFormProps) {
         <IconButton>
             <EditIcon />
         </IconButton>
-        {props.task.Children.length > 0 &&
-            <IconButton>
-                <DeleteIcon />
-            </IconButton>
-        }
+        <IconButton>
+            <DeleteIcon />
+        </IconButton>
 
       </ListItemButton>
     </Stack>
