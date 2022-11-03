@@ -1,29 +1,42 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Stack from '@mui/material/Stack';
 import IconButton from '@mui/material/IconButton';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
+import ListItemButton from '@mui/material/ListItemButton';
+import Typography from '@mui/material/Typography';
+import Task from '../../types/Task';
+import ListItemText from '@mui/material/ListItemText'
 
+interface GetTaskFormProps{
+    task: Task;
+}  
 
-export default function TaskListItem() {
+export default function TaskListItem(props: GetTaskFormProps) {
   return (
     <Stack direction="row" spacing={5}>
-      <Button variant="outlined" startIcon={<CheckCircleOutlineIcon />}>
-        Task Name
+      <ListItemButton>
+        <IconButton />
+            <CheckCircleOutlineIcon />
+        <IconButton />
+        <Typography />
+            <ListItemText primary={props.task.name} />
+        <Typography />
         <IconButton>
             <AddIcon />
         </IconButton>
         <IconButton>
             <EditIcon />
         </IconButton>
-        <IconButton>
-            <DeleteIcon />
-        </IconButton>
+        {props.task.Children.length > 0 &&
+            <IconButton>
+                <DeleteIcon />
+            </IconButton>
+        }
 
-      </Button>
+      </ListItemButton>
     </Stack>
   );
 }
