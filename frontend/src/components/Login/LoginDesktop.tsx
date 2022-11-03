@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+import { TextField, Button, Link, Typography } from '@mui/material';
 import './login.css';
 import AuthService from '../../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -42,7 +41,14 @@ export default function LoginDesktop() {
             placeholder="Password"></TextField>
           <Button id="loginBtn" onClick={onSubmit} variant="contained">
             Log In
-          </Button>
+          </Button><br></br><br></br>
+          
+          <Typography id="signUpDiv">
+            Don't have an account? &nbsp;
+            <Link className="existingUser" href="/SignUp" variant="body2">
+                Sign Up
+            </Link>
+          </Typography>
         </form>
       </div>
     </div>
