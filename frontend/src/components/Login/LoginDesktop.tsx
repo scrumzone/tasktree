@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TextField, Button, Link } from '@mui/material';
+import { TextField, Button, Link, Typography } from '@mui/material';
 import './login.css';
 import AuthService from '../../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
@@ -43,12 +43,12 @@ export default function LoginDesktop() {
             Log In
           </Button><br></br><br></br>
           
-          <div id="signUpDiv">
+          <Typography id="signUpDiv">
             Don't have an account? &nbsp;
             <Link className="existingUser" href="/SignUp" variant="body2">
                 Sign Up
             </Link>
-          </div>
+          </Typography>
         </form>
       </div>
     </div>
