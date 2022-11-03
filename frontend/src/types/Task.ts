@@ -5,9 +5,9 @@ export default interface Task {
   description?: string;
   progress: number;
   weight: number;
-  completedAt: Date | null;
-  children: Task[] | null;
-  ProjectID?: null;
+  completedAt?: Date | null;
+  children?: Task[] | null;
+  ProjectID?: number;
 }
 
 export const BlankTask: Task = {
