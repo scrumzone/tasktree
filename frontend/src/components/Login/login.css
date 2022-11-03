@@ -23,12 +23,15 @@
 }
 
 #loginBtn {
+    margin-top:80px;
     width:328px;
     height:50px;
     color:white;
     background-color:rgb(36, 131, 240);
-    position: relative;
-    bottom: -100px;
+}
+
+#signUpDiv {
+    font-size:14px;
 }
 
 #userIn, #passIn {

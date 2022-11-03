@@ -16,14 +16,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import ProjectService from '../../services/ProjectService';
 import Project, { BlankProject } from '../../types/Project';
+import CreateProjectDialog from '../CreateProjectDialog';
 
 function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
 
   return (
-
     <ListItem style={style} key={data[index].name} component="a" disablePadding>
-
       <ListItemButton>
         <ListItemText primary={data[index].name} />
         <ListItemText primary={data[index].progress} />
@@ -32,15 +31,13 @@ function renderRow(props: ListChildComponentProps) {
   );
 }
 
-interface CreateProjectFormData {
-  name: string;
-}
-
 export default function VirtualizedList() {
   const [open, setOpen] = React.useState(false);
   const [projects, setProjects] = React.useState<Project[]>([BlankProject]);
-  const [formData, setFormData] = React.useState<CreateProjectFormData>({
-    name: ''
+  const [formData, setFormData] = React.useState<Project>({
+    name: '',
+    description: '',
+    progress: 0
   });
 
   React.useEffect(() => {
@@ -58,14 +55,13 @@ export default function VirtualizedList() {
     setOpen(false);
   };
 
-
   const onChange = (e: React.SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
     setFormData((formData) => ({ ...formData, [target.name]: target.value }));
   };
 
-  const handleSubmit = async (data: CreateProjectFormData) => {
-    const project = await ProjectService.createProject({ ...data, progress: 0 });
+  const handleSubmit = async (data: Project) => {
+    const project = await ProjectService.createProject(data);
     setProjects([...projects, project]);
     handleClose();
   };
@@ -84,46 +80,11 @@ export default function VirtualizedList() {
       <Button variant="outlined" onClick={handleClickOpen}>
         Create new project
       </Button>
-      <Dialog open={open} onClose={handleClose}>
-
-        <DialogTitle>Create Project</DialogTitle>
-        <DialogContent>
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            name="name"
-            label="Project Name"
-            type="project"
-            fullWidth
-            variant="standard"
-            onChange={onChange}
-          />
-          <TextField
-            autoFocus
-            margin="dense"
-            id="name"
-            label="Project Description"
-            type="description"
-            fullWidth
-            variant="standard"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button
-            onClick={() => {
-              handleSubmit(formData);
-            }}>
-            Create
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
       <FixedSizeList
         height={400}
         width={360}
         itemSize={46}
-
         itemCount={projects.length}
         overscanCount={5}
         itemData={projects}>
