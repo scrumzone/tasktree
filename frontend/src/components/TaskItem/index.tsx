@@ -31,7 +31,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
         <IconButton>
             <EditIcon />
         </IconButton>
-        {props.task.ProjectID == null &&
+        {props.task.ProjectId == null &&
             <IconButton>
                 <DeleteIcon />
             </IconButton>
