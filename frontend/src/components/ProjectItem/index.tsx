@@ -10,7 +10,7 @@ import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgres
 import { Box, ListItem, ListItemIcon, ListItemSecondaryAction } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 
-interface GetTaskFormProps {
+interface GetProjectFormProps {
   project: Project;
 }
 
@@ -29,13 +29,13 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
   );
 }
 
-export default function TaskListItem(props: GetTaskFormProps) {
+export default function ProjectListItem(props: GetProjectFormProps) {
   return (
     <ListItem disablePadding>
       <ListItemButton>
         <ListItemText disableTypography>
           <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-            <Grid xs="auto" sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h6">{props.project.name}</Typography>
             </Grid>
             <Grid xs={6}>
