@@ -12,7 +12,7 @@ export default interface Task {
 
 export const BlankTask: Task = {
   projectId: null,
-  name: 'Testing project',
+  name: '',
   description: '',
   progress: 0,
   weight: 0, 
