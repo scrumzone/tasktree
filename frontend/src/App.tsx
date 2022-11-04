@@ -2,7 +2,7 @@ import React from 'react';
 import LoginPage from './pages/login';
 import HomePage from './pages/home';
 import SignupPage from './pages/signup';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, NavigateFunction, Route, Routes } from 'react-router-dom';
 import './App.css';
 import TTNavBar from './components/TTNavBar';
 import { useAppDispatch, useAppSelector } from './store/hooks';
@@ -11,6 +11,7 @@ import AuthService from './services/AuthService';
 import { clearCurrentUser } from './store/user';
 import LandingPage from './pages/landing';
 import { authorizedRoutes, unauthorizedRoutes } from './router';
+import { useNavigate } from 'react-router-dom';
 
 function App() {
   const { isLoggedIn } = useAppSelector((state) => state.user);
@@ -30,11 +31,13 @@ function App() {
         {
           name: 'Log out',
           action: (
-            e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement | HTMLDivElement, MouseEvent>
+            e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement | HTMLDivElement, MouseEvent>,
+            navigate: NavigateFunction
           ) => {
             e.preventDefault();
             AuthService.signOut();
             dispatch(clearCurrentUser());
+            navigate('/');
           }
         }
       ]
