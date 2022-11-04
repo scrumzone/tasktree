@@ -19,7 +19,8 @@ interface CreateProjectDialogProps {
 export default function CreateProjectDialog({ open, onClose, onSubmit }: CreateProjectDialogProps) {
   const [formData, setFormData] = React.useState<Project>({
     name: '',
-    description: ''
+    description: '',
+    progress: 0
   } as Project);
 
   const onChange = (e: React.SyntheticEvent) => {
