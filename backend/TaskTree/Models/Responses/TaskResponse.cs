@@ -9,5 +9,5 @@ public class TaskResponse
     public double? Weight { get; set; }
     public DateTime? CompletedAt { get; set; }
     public List<TaskResponse>? Children { get; set; }
-    public int? ProjectId {get; set;}
+    public int? ProjectId { get; set; }
 }

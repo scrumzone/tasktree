@@ -15,5 +15,5 @@ export const BlankTask: Task = {
   name: 'Testing project',
   description: '',
   progress: 0,
-  weight: 0,
+  weight: 0, 
 };
