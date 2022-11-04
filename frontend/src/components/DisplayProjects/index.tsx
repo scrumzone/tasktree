@@ -4,6 +4,9 @@
 
 import * as React from 'react';
 //import Box from '@mui/material/Box';
+import Icon from '@mui/material/Icon';
+import IconButton from '@mui/material/IconButton';
+import { AddCircle, Edit, Delete } from '@mui/icons-material';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
@@ -17,16 +20,42 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ProjectService from '../../services/ProjectService';
 import Project, { BlankProject } from '../../types/Project';
 import CreateProjectDialog from '../CreateProjectDialog';
+import EditProjectDialog from '../EditProjectDialog';
+import './display.css';
 
 function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
+  const [open, setOpen] = React.useState(false);
+  const [projects, setProjects] = React.useState<Project[]>([BlankProject]);
+  const [formData, setFormData] = React.useState<Project>({
+    name: '',
+    description: '',
+    progress: 0
+  });
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleSubmit = async (data: Project) => {
+    const project = await ProjectService.createProject(data);
+    setProjects([...projects, project]);
+    handleClose();
+  };
 
   return (
     <ListItem style={style} key={data[index].name} component="a" disablePadding>
       <ListItemButton>
         <ListItemText primary={data[index].name} />
         <ListItemText primary={data[index].progress} />
+        <IconButton><Edit onClick={handleClickOpen}></Edit></IconButton>
+        <IconButton><Delete></Delete></IconButton>
       </ListItemButton>
+      <EditProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
     </ListItem>
   );
 }
@@ -67,29 +96,32 @@ export default function VirtualizedList() {
   };
 
   return (
-    <Box
+    <Box className='boxWrapper1'
       sx={{
-        marginTop: 8,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center'
       }}>
-      <Typography component="h5" variant="h5">
-        Projects
-      </Typography>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Create new project
-      </Button>
-      <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
-      <FixedSizeList
-        height={400}
-        width={360}
-        itemSize={46}
-        itemCount={projects.length}
-        overscanCount={5}
-        itemData={projects}>
-        {renderRow}
-      </FixedSizeList>
+      
+      <Box className='boxWrapper2'>
+        <Typography id="listHead" component="h4" variant="h4">
+          Projects 
+        </Typography>
+        <Button variant="outlined" onClick={handleClickOpen}>
+            Create new project
+        </Button>
+        <hr></hr>
+        <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
+        <FixedSizeList
+          height={800}
+          width={1200}
+          itemSize={46}
+          itemCount={projects.length}
+          overscanCount={5}
+          itemData={projects}>
+          {renderRow}
+        </FixedSizeList>
+      </Box>
     </Box>
   );
 }

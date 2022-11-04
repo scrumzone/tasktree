@@ -1,0 +1,14 @@
+.boxWrapper1 {
+    background-color: #e7e7e7;
+    padding:50px;
+}
+
+.boxWrapper2 {
+    background-color:white;
+    padding:50px;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
+
+#listHead {
+    text-align:left;
+}
