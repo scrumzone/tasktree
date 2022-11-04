@@ -16,12 +16,13 @@ import {
   Typography
 } from '@mui/material';
 import { Props } from './TTNavBarBase';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 
 const drawerWidth = 240;
 
 export default function TTNavBarMobile(props: Props) {
+  const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
 
   const toggleDrawer = () => {
@@ -48,7 +49,11 @@ export default function TTNavBarMobile(props: Props) {
             </ListItem>
           ) : (
             <ListItem key={item.name} disablePadding>
-              <ListItemButton sx={{ textAlign: 'center' }} onClick={item.action!}>
+              <ListItemButton
+                sx={{ textAlign: 'center' }}
+                onClick={(e) => {
+                  item.action!(e, navigate);
+                }}>
                 <ListItemText primary={item.name} />
               </ListItemButton>
             </ListItem>
