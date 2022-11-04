@@ -7,11 +7,11 @@ export default interface Task {
   weight: number;
   completedAt?: Date | null;
   children?: Task[] | null;
-  ProjectId?: number;
+  projectId?: number | null;
 }
 
 export const BlankTask: Task = {
-  ProjectId: null,
+  projectId: null,
   name: 'Testing project',
   description: '',
   progress: 0,

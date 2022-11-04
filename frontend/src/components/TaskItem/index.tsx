@@ -9,7 +9,8 @@ import ListItemButton from '@mui/material/ListItemButton';
 import Typography from '@mui/material/Typography';
 import Task from '../../types/Task';
 import ListItemText from '@mui/material/ListItemText'
-import CircularProgress from '@mui/material/CircularProgress'
+import LinearProgress from '@mui/material/LinearProgress'
+import Grid from '@mui/material/Grid'
 
 interface GetTaskFormProps{
     task: Task;
@@ -19,27 +20,33 @@ export default function TaskListItem(props: GetTaskFormProps) {
   return (
     <Stack direction="row" spacing={5}>
       <ListItemButton>
+        <Grid xs={3}>
         <IconButton>
             <CheckCircleOutlineIcon />
         </IconButton>
         <Typography>
             <ListItemText primary={props.task.name} />
         </Typography>
+        </Grid>
+        <Grid xs={6}>
+          <LinearProgress variant="determinate" value={props.task.progress} />
+          <Typography>
+            {props.task.progress}%
+          </Typography>
+        </Grid>
+        <Grid xs={3}>
         <IconButton>
             <AddIcon />
         </IconButton>
         <IconButton>
             <EditIcon />
         </IconButton>
-        {props.task.ProjectId == null &&
+        {props.task.projectId == null &&
             <IconButton>
                 <DeleteIcon />
             </IconButton>
         }
-        <CircularProgress variant="determinate" value={props.task.progress} />
-        <Typography>
-            {props.task.progress}%
-        </Typography>
+        </Grid>
       </ListItemButton>
     </Stack>
   );
