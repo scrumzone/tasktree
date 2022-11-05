@@ -17,18 +17,12 @@ import DialogTitle from '@mui/material/DialogTitle';
 import ProjectService from '../../services/ProjectService';
 import Project, { BlankProject } from '../../types/Project';
 import CreateProjectDialog from '../CreateProjectDialog';
+import ProjectListItem from '../ProjectItem';
 
 function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
 
-  return (
-    <ListItem style={style} key={data[index].name} component="a" disablePadding>
-      <ListItemButton>
-        <ListItemText primary={data[index].name} />
-        <ListItemText primary={data[index].progress} />
-      </ListItemButton>
-    </ListItem>
-  );
+  return <ProjectListItem project={data[index]} />;
 }
 
 export default function VirtualizedList() {
@@ -77,19 +71,19 @@ export default function VirtualizedList() {
       <Typography component="h5" variant="h5">
         Projects
       </Typography>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Create new project
-      </Button>
       <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
       <FixedSizeList
         height={400}
-        width={360}
+        width={'80%'}
         itemSize={46}
         itemCount={projects.length}
         overscanCount={5}
         itemData={projects}>
         {renderRow}
       </FixedSizeList>
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Create new project
+      </Button>
     </Box>
   );
 }

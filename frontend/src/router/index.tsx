@@ -4,6 +4,7 @@ import HomePage from '../pages/home';
 import LandingPage from '../pages/landing';
 import LoginPage from '../pages/login';
 import SignupPage from '../pages/signup';
+import ProjectPage from '../pages/project';
 import { TTRoute } from '../types/Route';
 
 export const unauthorizedRoutes: TTRoute[] = [
@@ -33,5 +34,10 @@ export const authorizedRoutes: TTRoute[] = [
     name: 'Projects',
     path: '/projects',
     component: <ProjectsPage />
+  },
+  {
+    name: 'Project',
+    path: '/projects/:projectId',
+    component: <ProjectPage />
   }
 ];
