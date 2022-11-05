@@ -9,8 +9,9 @@ import Typography from '@mui/material/Typography';
 import Task from '../../types/Task';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Box, ListItem, ListItemIcon, ListItemSecondaryAction } from '@mui/material';
+import { Alert, Box, Button, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import TaskService from '../../services/TaskService';
 
 interface GetTaskFormProps {
   task: Task;
@@ -32,6 +33,16 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
 }
 
 export default function TaskListItem(props: GetTaskFormProps) {
+  const [open, setOpen] = React.useState(false);
+
+  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
+
   return (
     <ListItem disablePadding>
       <ListItemButton>
@@ -73,7 +84,10 @@ export default function TaskListItem(props: GetTaskFormProps) {
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    // do other stuff here
+                    if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
+                      TaskService.deleteTask(props.task.id!);
+                      setOpen(true);
+                    }
                   }}>
                   <DeleteIcon />
                 </IconButton>
@@ -82,6 +96,14 @@ export default function TaskListItem(props: GetTaskFormProps) {
           </Grid>
         </ListItemText>
       </ListItemButton>
+      <Snackbar 
+        open={open}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Task successfully deleted"
+      >
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>Task successfully deleted</Alert>
+      </Snackbar>
     </ListItem>
   );
 }
