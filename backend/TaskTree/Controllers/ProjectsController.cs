@@ -56,6 +56,7 @@ namespace TaskTree.Controllers
 
             var project = await _context.Projects
                 .Include(project => project.Root)
+                .Include("Root.Children.Children.Children.Children.Children.Children.Children.Children.Children")
                 .FirstOrDefaultAsync(project => project.Id == id);
 
             if (CurrentUserIdDoesNotMatch(project?.UserId))
