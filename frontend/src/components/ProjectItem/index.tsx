@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
 import { Box, ListItem, ListItemIcon, ListItemSecondaryAction } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
+import { Link } from 'react-router-dom';
 
 interface GetProjectFormProps {
   project: Project;
@@ -32,7 +33,7 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
 export default function ProjectListItem(props: GetProjectFormProps) {
   return (
     <ListItem disablePadding>
-      <ListItemButton>
+      <ListItemButton component={Link} to={`/projects/${props.project.id}`}>
         <ListItemText disableTypography>
           <Grid container spacing={2} alignItems="center" justifyContent="space-between">
             <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -50,15 +51,14 @@ export default function ProjectListItem(props: GetProjectFormProps) {
                 }}>
                 <EditIcon />
               </IconButton>
-              
+
               <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();                    // do other stuff here
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault(); // do other stuff here
                 }}>
                 <DeleteIcon />
               </IconButton>
-              
             </Grid>
           </Grid>
         </ListItemText>
