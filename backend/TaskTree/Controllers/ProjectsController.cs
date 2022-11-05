@@ -6,11 +6,13 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TaskTree.Models;
 using TaskTree.Models.Requests;
 using TaskTree.Models.Responses;
+using Project = TaskTree.Models.Project;
 using Task = TaskTree.Models.Task;
 
 namespace TaskTree.Controllers
@@ -52,7 +54,10 @@ namespace TaskTree.Controllers
         public async Task<ActionResult<ProjectResponse>> GetProject(long id)
         {
 
-            var project = await _context.Projects.FindAsync(id);
+            var project = await _context.Projects
+                .Include(project => project.Root)
+                .Include("Root.Children.Children.Children.Children.Children.Children.Children.Children.Children")
+                .FirstOrDefaultAsync(project => project.Id == id);
 
             if (CurrentUserIdDoesNotMatch(project?.UserId))
             {

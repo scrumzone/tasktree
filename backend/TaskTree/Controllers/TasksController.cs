@@ -6,6 +6,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using TaskTree.Models;
@@ -89,7 +90,9 @@ namespace TaskTree.Controllers
                 return Problem("Entity set 'TaskTreeContext.Tasks' is null.", statusCode: 500);
             }
 
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _context.Tasks
+                .Include("Children.Children.Children.Children.Children.Children.Children.Children.Children")
+                .FirstOrDefaultAsync(task => task.Id == id);
 
             if (task == null)
             {
@@ -100,6 +103,17 @@ namespace TaskTree.Controllers
             if (CurrentUserIdDoesNotMatch(task.UserId))
             {
                 return Unauthorized();
+            }
+
+            // If marking Task as completed, also mark all uncompleted descendents as completed
+            if (updateTaskRequest.CompletedAt != null && task.CompletedAt == null)
+            {
+                IEnumerable<Task> incompleteDescendents = task.Descendents().Where(t => t.CompletedAt == null);
+                foreach (var t in incompleteDescendents)
+                {
+                    t.CompletedAt = updateTaskRequest.CompletedAt;
+                    _context.Entry(t).State = EntityState.Modified;
+                }
             }
 
             _mapper.Map(updateTaskRequest, task);

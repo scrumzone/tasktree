@@ -18,7 +18,7 @@ public class MappingProfile : Profile
         CreateMapNoNull<UpdateProjectRequest, Project>();
         CreateMapNoNull<CreateProjectRequest, Project>();
 
-        CreateMapNoNull<UpdateTaskRequest, Task>();
+        CreateMap<UpdateTaskRequest, Task>();
         CreateMapNoNull<CreateTaskRequest, Task>(MemberList.Source);
         CreateMapNoNull<Task, TaskResponse>();
         CreateMapNoNull<Task, Task>();
