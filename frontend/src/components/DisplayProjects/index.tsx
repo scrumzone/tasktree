@@ -22,7 +22,9 @@ import ProjectListItem from '../ProjectItem';
 function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
 
-  return <ProjectListItem project={data[index]} />;
+  return <ListItem style={style}>
+    <ProjectListItem project={data[index]} />
+    </ListItem>;
 }
 
 export default function VirtualizedList() {
