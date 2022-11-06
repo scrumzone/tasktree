@@ -13,12 +13,6 @@ import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';
 import ProjectService from '../../services/ProjectService';
 
-const project : Project = {
-  name: 'Test Project',
-  description: 'Project description',
-  progress: 0,
-};
-
 interface GetProjectFormProps {
   project: Project;
   onEditSubmit: (formData: Project) => void;
@@ -77,7 +71,7 @@ export default function ProjectListItem(props: GetProjectFormProps) {
 
       <EditProjectDialog
           open={open}
-          project={project}
+          project={props.project}
           onClose={() => setOpen(false)}
           onSubmit={(formData) => {
             props.onEditSubmit(formData);
