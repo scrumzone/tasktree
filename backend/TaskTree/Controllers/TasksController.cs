@@ -92,6 +92,7 @@ namespace TaskTree.Controllers
 
             var task = await _context.Tasks
                 .Include("Children.Children.Children.Children.Children.Children.Children.Children.Children")
+                .Include("Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent")
                 .FirstOrDefaultAsync(task => task.Id == id);
 
             if (task == null)
@@ -105,20 +106,37 @@ namespace TaskTree.Controllers
                 return Unauthorized();
             }
 
-            // If marking Task as completed, also mark all uncompleted descendents as completed
-            if (updateTaskRequest.CompletedAt != null && task.CompletedAt == null)
+            bool updatingCompletionStatus = updateTaskRequest.CompletedAt.HasValue != task.CompletedAt.HasValue;
+            bool updatingWeight = updateTaskRequest.Weight != task.Weight;
+            bool updatingProgress = updateTaskRequest.CompletedAt.HasValue != (task.Progress == 100.0);
+
+            _mapper.Map(updateTaskRequest, task);
+            _context.Entry(task).State = EntityState.Modified;
+
+            // If marking Task as completed, also mark all uncompleted descendents as completed and set progress to 100
+            if (updatingCompletionStatus && updateTaskRequest.CompletedAt.HasValue)
             {
                 IEnumerable<Task> incompleteDescendents = task.Descendents().Where(t => t.CompletedAt == null);
                 foreach (var t in incompleteDescendents)
                 {
                     t.CompletedAt = updateTaskRequest.CompletedAt;
+                    t.Progress = 100.0;
+                    _context.Entry(t).State = EntityState.Modified;
+                }
+
+                task.Progress = 100.0;
+            }
+
+            // If changing a Task's progress or weight, propagate changes upward to ancestors.
+            if (updatingProgress || updatingWeight)
+            {
+                // note that foreach traverses a List<T> in index order, so this will travel up the tree
+                foreach (Task t in task.Ancestors())
+                {
+                    t.UpdateProgress();
                     _context.Entry(t).State = EntityState.Modified;
                 }
             }
-
-            _mapper.Map(updateTaskRequest, task);
-
-            _context.Entry(task).State = EntityState.Modified;
 
             try
             {
@@ -166,6 +184,7 @@ namespace TaskTree.Controllers
             }
 
             parentTask.Children.Add(task);
+            task.Parent = parentTask;
 
             try
             {
