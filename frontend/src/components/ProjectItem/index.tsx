@@ -11,6 +11,7 @@ import { Box, ListItem, ListItemIcon, ListItemSecondaryAction } from '@mui/mater
 import Grid from '@mui/material/Unstable_Grid2';
 import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';
+import ProjectService from '../../services/ProjectService';
 
 const project : Project = {
   name: 'Test Project',
@@ -20,6 +21,7 @@ const project : Project = {
 
 interface GetProjectFormProps {
   project: Project;
+  onEditSubmit: (formData: Project) => void;
 }
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
@@ -52,14 +54,6 @@ export default function ProjectListItem(props: GetProjectFormProps) {
               <LinearProgressWithLabel variant="determinate" value={props.project.progress} />
             </Grid>
             <Grid xs="auto">
-            <EditProjectDialog
-                open={open}
-                project={project}
-                onClose={() => setOpen(false)}
-                onSubmit={(formData) => {
-                  console.log(formData);
-                }}
-            />
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -81,6 +75,16 @@ export default function ProjectListItem(props: GetProjectFormProps) {
           </Grid>
         </ListItemText>
       </ListItemButton>
+
+      <EditProjectDialog
+          open={open}
+          project={project}
+          onClose={() => setOpen(false)}
+          onSubmit={(formData) => {
+            props.onEditSubmit(formData);
+            setOpen(false);
+          }}
+      />
     </ListItem>
   );
 }
