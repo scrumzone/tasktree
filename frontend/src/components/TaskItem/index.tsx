@@ -53,7 +53,10 @@ export default function TaskListItem(props: GetTaskFormProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  // do other stuff here
+                  if (confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)) {
+                    props.task.completedAt = new Date();
+                    TaskService.updateTask(props.task, props.task.id!);
+                  }
                 }}>
                 <CheckCircleOutlineIcon />
               </IconButton>
