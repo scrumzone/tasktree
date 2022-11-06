@@ -28,8 +28,8 @@ function renderRow(props: ListChildComponentProps) {
 }
 
 export default function VirtualizedList() {
-  const [open, setOpen] = React.useState(false);
   const [projects, setProjects] = React.useState<Project[]>([BlankProject]);
+  const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = React.useState<Project>({
     name: '',
     description: '',
@@ -46,7 +46,7 @@ export default function VirtualizedList() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
+  
   const handleClose = () => {
     setOpen(false);
   };
@@ -61,6 +61,7 @@ export default function VirtualizedList() {
     setProjects([...projects, project]);
     handleClose();
   };
+  
 
   return (
     <Box
