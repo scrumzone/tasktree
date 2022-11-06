@@ -1,34 +1,41 @@
 import * as React from 'react';
 import ListItem from '@mui/material/ListItem';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
 import ProjectService from '../../services/ProjectService';
 import Project, { BlankProject } from '../../types/Project';
 import CreateProjectDialog from '../CreateProjectDialog';
 import ProjectListItem from '../ProjectItem';
 
-function renderRow(props: ListChildComponentProps) {
-  const { data, index, style } = props;
-
-  function onEditSubmit(formData: Project, ) {
-    data[index].name = formData.name;
-    data[index].description = formData.description;
-    ProjectService.updateProject(data[index], data[index].id!);
-  }
-
-  return <ListItem style={style}>
-    <ProjectListItem onEditSubmit={onEditSubmit} project={data[index]} />
-    </ListItem>;
-}
-
 export default function VirtualizedList() {
   const [projects, setProjects] = React.useState<Project[]>([BlankProject]);
   const [open, setOpen] = React.useState(false);
+  const [openDel, setOpenDel] = React.useState(false);
   const [formData, setFormData] = React.useState<Project>({
     name: '',
     description: '',
     progress: 0
   });
+
+  function renderRow(props: ListChildComponentProps) {
+    const { data, index, style } = props;
+  
+    function onEditSubmit(formData: Project) {
+      data[index].name = formData.name;
+      data[index].description = formData.description;
+      ProjectService.updateProject(data[index], data[index].id!);
+    }
+  
+    function onDelete() {
+      ProjectService.deleteProject(data[index].id!);
+      setProjects(projects.filter(project => project != data[index]));
+      setOpenDel(true);
+    }
+  
+    return <ListItem style={style}>
+      <ProjectListItem onEditSubmit={onEditSubmit} onDelete={onDelete} project={data[index]} />
+      </ListItem>;
+  }
 
   React.useEffect(() => {
     const fetchProjects = async () => {
@@ -55,8 +62,16 @@ export default function VirtualizedList() {
     setProjects([...projects, project]);
     handleClose();
   };
-  
 
+  // handle close for delete
+  const handleDelClose = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenDel(false);
+  };
+  
   return (
     <Box
       sx={{
@@ -101,6 +116,7 @@ export default function VirtualizedList() {
       </Box>
 
       <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
+      
       <FixedSizeList
         height={800}
         width={'100%'}
@@ -110,6 +126,17 @@ export default function VirtualizedList() {
         itemData={projects}>
         {renderRow}
       </FixedSizeList>
+
+      <Snackbar 
+        open={openDel}
+        autoHideDuration={6000}
+        onClose={handleDelClose}
+        message="Project successfully deleted">
+        
+        <Alert onClose={handleDelClose} severity="success" sx={{ width: '100%'}}>
+          Project successfully deleted
+        </Alert>
+      </Snackbar>
     </Box>
   );
 }
