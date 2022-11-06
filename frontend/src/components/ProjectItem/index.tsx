@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Project from '../../types/Project';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Box, ListItem, ListItemIcon, ListItemSecondaryAction } from '@mui/material';
+import { Alert, Box, Button, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';
@@ -16,6 +16,7 @@ import ProjectService from '../../services/ProjectService';
 interface GetProjectFormProps {
   project: Project;
   onEditSubmit: (formData: Project) => void;
+  onDelete: () => void;
 }
 
 function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
@@ -34,7 +35,7 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
 }
 
 export default function ProjectListItem(props: GetProjectFormProps) {
-  const [open, setOpen] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
 
   return (
     <ListItem disablePadding>
@@ -52,7 +53,7 @@ export default function ProjectListItem(props: GetProjectFormProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  setOpen(true);
+                  setOpenEdit(true);
                 }}>
                 <EditIcon />
               </IconButton>
@@ -61,6 +62,9 @@ export default function ProjectListItem(props: GetProjectFormProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
+                  if (confirm(`Are you sure you want to delete project "${props.project.name}"?`)) {
+                    props.onDelete();
+                  }
                 }}>
                 <DeleteIcon />
               </IconButton>
@@ -69,15 +73,17 @@ export default function ProjectListItem(props: GetProjectFormProps) {
         </ListItemText>
       </ListItemButton>
 
+      {/* Edit project popup */}
       <EditProjectDialog
-          open={open}
+          open={openEdit}
           project={props.project}
-          onClose={() => setOpen(false)}
+          onClose={() => setOpenEdit(false)}
           onSubmit={(formData) => {
             props.onEditSubmit(formData);
-            setOpen(false);
+            setOpenEdit(false);
           }}
       />
+
     </ListItem>
   );
 }
