@@ -1,19 +1,7 @@
-//import { Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
-//import React, { FormEvent, useState } from 'react';
-//import User from '../../types/User';
-
 import * as React from 'react';
-//import Box from '@mui/material/Box';
 import ListItem from '@mui/material/ListItem';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import { Box, Button, TextField, Typography } from '@mui/material';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
+import { Box, Button, Typography } from '@mui/material';
 import ProjectService from '../../services/ProjectService';
 import Project, { BlankProject } from '../../types/Project';
 import CreateProjectDialog from '../CreateProjectDialog';
@@ -22,12 +10,23 @@ import ProjectListItem from '../ProjectItem';
 function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
 
-  return <ProjectListItem project={data[index]} />;
+  function onEditSubmit(formData: Project, ) {
+    console.log(formData);
+    data[index].name = formData.name;
+    data[index].description = formData.description;
+    ProjectService.updateProject(data[index], data[index].id!);
+  
+    console.log(data[index]);
+  }
+
+  return <ListItem style={style}>
+    <ProjectListItem onEditSubmit={onEditSubmit} project={data[index]} />
+    </ListItem>;
 }
 
 export default function VirtualizedList() {
-  const [open, setOpen] = React.useState(false);
   const [projects, setProjects] = React.useState<Project[]>([BlankProject]);
+  const [open, setOpen] = React.useState(false);
   const [formData, setFormData] = React.useState<Project>({
     name: '',
     description: '',
@@ -44,7 +43,7 @@ export default function VirtualizedList() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-
+  
   const handleClose = () => {
     setOpen(false);
   };
@@ -59,6 +58,7 @@ export default function VirtualizedList() {
     setProjects([...projects, project]);
     handleClose();
   };
+  
 
   return (
     <Box
@@ -66,24 +66,53 @@ export default function VirtualizedList() {
         marginTop: 8,
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
+        alignItems: 'center',
+        width: '80%',
+        marginLeft: 'auto',
+        marginRight: 'auto',
       }}>
-      <Typography component="h5" variant="h5">
-        Projects
-      </Typography>
+      
+      <Box
+        sx={{
+          marginTop: 8,
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          alignContent: 'space-between',
+          width: '100%',
+          padding: '10px',
+          paddingBottom: '20px',
+          borderBottom: '3px solid darkgrey',
+          marginBottom: '10px',
+        }}>
+        <Typography component="h4" variant="h4"
+          sx={{
+            justifySelf: 'left', 
+            marginLeft: '30px',
+          }}>
+          Projects
+        </Typography>
+
+        <Button variant="outlined" onClick={handleClickOpen}
+          sx={{
+            justifySelf: 'right', 
+            marginLeft: 'auto',
+            marginRight: '30px',
+          }}>
+          Create new project
+        </Button>
+      </Box>
+
       <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
       <FixedSizeList
-        height={400}
-        width={'80%'}
+        height={800}
+        width={'100%'}
         itemSize={46}
         itemCount={projects.length}
         overscanCount={5}
         itemData={projects}>
         {renderRow}
       </FixedSizeList>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Create new project
-      </Button>
     </Box>
   );
 }
