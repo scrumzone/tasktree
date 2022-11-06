@@ -12,6 +12,7 @@ import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgres
 import { Alert, Box, Button, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
+import EditTaskDialog from '../EditTaskDialog';
 
 interface GetTaskFormProps {
   task: Task;
@@ -33,14 +34,15 @@ function LinearProgressWithLabel(props: LinearProgressProps & { value: number })
 }
 
 export default function TaskListItem(props: GetTaskFormProps) {
-  const [open, setOpen] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
 
   const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
 
-    setOpen(false);
+    setOpenSnackbar(false);
   };
 
   return (
@@ -75,7 +77,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  // do other stuff here
+                  setOpenEdit(true);
                 }}>
                 <EditIcon />
               </IconButton>
@@ -86,7 +88,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
                     e.preventDefault();
                     if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
                       TaskService.deleteTask(props.task.id!);
-                      setOpen(true);
+                      setOpenSnackbar(true);
                     }
                   }}>
                   <DeleteIcon />
@@ -96,8 +98,23 @@ export default function TaskListItem(props: GetTaskFormProps) {
           </Grid>
         </ListItemText>
       </ListItemButton>
+
+      <EditTaskDialog 
+        open={openEdit}
+        task={props.task}
+        onClose={() => setOpenEdit(false)}
+        onSubmit={(formData) => {
+          console.log(formData);
+          setOpenEdit(false);
+          props.task.name = formData.name;
+          props.task.description = formData.description;
+          props.task.weight = formData.weight;
+          TaskService.updateTask(props.task, props.task.id!);
+        }}
+      />
+
       <Snackbar 
-        open={open}
+        open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleClose}
         message="Task successfully deleted"
