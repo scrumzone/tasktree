@@ -58,7 +58,6 @@ export default function ProjectListItem(props: GetProjectFormProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  // do other stuff here
                   setOpen(true);
                 }}>
                 <EditIcon />
@@ -67,7 +66,7 @@ export default function ProjectListItem(props: GetProjectFormProps) {
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
-                  e.preventDefault(); // do other stuff here
+                  e.preventDefault();
                 }}>
                 <DeleteIcon />
               </IconButton>

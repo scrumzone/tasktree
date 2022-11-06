@@ -11,12 +11,9 @@ function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
 
   function onEditSubmit(formData: Project, ) {
-    console.log(formData);
     data[index].name = formData.name;
     data[index].description = formData.description;
     ProjectService.updateProject(data[index], data[index].id!);
-  
-    console.log(data[index]);
   }
 
   return <ListItem style={style}>
