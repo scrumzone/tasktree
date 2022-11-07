@@ -1,10 +1,8 @@
 import React from 'react';
 import { Button, Typography } from '@mui/material';
-import UserService from '../services/UserService';
 import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { clearCurrentUser } from '../store/user';
 import CreateTaskDialog from '../components/CreateTaskDialog';
 import ProjectService from '../services/ProjectService';
 import { BlankProject } from '../types/Project';
@@ -47,27 +45,6 @@ export default function HomePage() {
     <div>
       <Typography variant="h1">HOME PAGE</Typography>
       <Typography variant="h4">Hello, {user.username}!</Typography>
-      <Button variant="outlined" onClick={() => setDOpen(true)}>
-        Open CreateTaskDialog
-      </Button>
-      <CreateTaskDialog
-        open={dOpen}
-        onClose={() => setDOpen(false)}
-        onSubmit={(formData) => {
-          console.log(formData);
-        }}
-      />
-      <Button variant="outlined" onClick={() => setDEOpen(true)}>
-        Open EditTaskDialog
-      </Button>
-      <EditTaskDialog
-        open={dEOpen}
-        task={task}
-        onClose={() => setDEOpen(false)}
-        onSubmit={(formData) => {
-          console.log(formData);
-        }}
-      />
     </div>
   );
 }
