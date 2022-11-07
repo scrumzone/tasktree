@@ -8,8 +8,10 @@ import { clearCurrentUser } from '../store/user';
 import CreateTaskDialog from '../components/CreateTaskDialog';
 import ProjectService from '../services/ProjectService';
 import { BlankProject } from '../types/Project';
-import Task from '../types/Task';
+import Task, { BlankTask } from '../types/Task';
 import EditTaskDialog from '../components/EditTaskDialog';
+import TaskListItem from '../components/TaskItem';
+import TaskService from '../services/TaskService';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();

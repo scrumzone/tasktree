@@ -1,11 +1,10 @@
+import React from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
-import React from 'react';
-import Task from '../../types/Task';
+import Task, { BlankTask } from '../../types/Task';
 import TaskForm from '../TaskForm';
 
 interface CreateTaskFormProps {
@@ -34,7 +33,13 @@ export default function CreateTaskDialog(props: CreateTaskFormProps) {
       </DialogContent>
       <DialogActions>
         <Button onClick={props.onClose}>Cancel</Button>
-        <Button onClick={() => props.onSubmit(formData)}>Create</Button>
+        <Button
+          onClick={() => {
+            props.onSubmit(formData);
+            setFormData(BlankTask);
+          }}>
+          Create
+        </Button>
       </DialogActions>
     </Dialog>
   );
