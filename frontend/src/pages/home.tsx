@@ -1,13 +1,9 @@
 import React from 'react';
 import { Button, Typography } from '@mui/material';
-import UserService from '../services/UserService';
 import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { clearCurrentUser } from '../store/user';
 import CreateTaskDialog from '../components/CreateTaskDialog';
-import ProjectService from '../services/ProjectService';
-import { BlankProject } from '../types/Project';
 import Task from '../types/Task';
 import EditTaskDialog from '../components/EditTaskDialog';
 

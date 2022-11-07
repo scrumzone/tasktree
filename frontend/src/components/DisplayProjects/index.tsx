@@ -19,22 +19,24 @@ export default function VirtualizedList() {
 
   function renderRow(props: ListChildComponentProps) {
     const { data, index, style } = props;
-  
+
     function onEditSubmit(formData: Project) {
       data[index].name = formData.name;
       data[index].description = formData.description;
       ProjectService.updateProject(data[index], data[index].id!);
     }
-  
+
     function onDelete() {
       ProjectService.deleteProject(data[index].id!);
-      setProjects(projects.filter(project => project != data[index]));
+      setProjects(projects.filter((project) => project != data[index]));
       setOpenDel(true);
     }
-  
-    return <ListItem style={style}>
-      <ProjectListItem onEditSubmit={onEditSubmit} onDelete={onDelete} project={data[index]} />
-      </ListItem>;
+
+    return (
+      <ListItem style={style}>
+        <ProjectListItem onEditSubmit={onEditSubmit} onDelete={onDelete} project={data[index]} />
+      </ListItem>
+    );
   }
 
   React.useEffect(() => {
@@ -47,7 +49,7 @@ export default function VirtualizedList() {
   const handleClickOpen = () => {
     setOpen(true);
   };
-  
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -71,7 +73,7 @@ export default function VirtualizedList() {
 
     setOpenDel(false);
   };
-  
+
   return (
     <Box
       sx={{
@@ -81,9 +83,8 @@ export default function VirtualizedList() {
         alignItems: 'center',
         width: '80%',
         marginLeft: 'auto',
-        marginRight: 'auto',
+        marginRight: 'auto'
       }}>
-      
       <Box
         sx={{
           marginTop: 8,
@@ -95,28 +96,32 @@ export default function VirtualizedList() {
           padding: '10px',
           paddingBottom: '20px',
           borderBottom: '3px solid darkgrey',
-          marginBottom: '10px',
+          marginBottom: '10px'
         }}>
-        <Typography component="h4" variant="h4"
+        <Typography
+          component="h4"
+          variant="h4"
           sx={{
-            justifySelf: 'left', 
-            marginLeft: '30px',
+            justifySelf: 'left',
+            marginLeft: '30px'
           }}>
           Projects
         </Typography>
 
-        <Button variant="outlined" onClick={handleClickOpen}
+        <Button
+          variant="outlined"
+          onClick={handleClickOpen}
           sx={{
-            justifySelf: 'right', 
+            justifySelf: 'right',
             marginLeft: 'auto',
-            marginRight: '30px',
+            marginRight: '30px'
           }}>
           Create new project
         </Button>
       </Box>
 
       <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
-      
+
       <FixedSizeList
         height={800}
         width={'100%'}
@@ -127,13 +132,12 @@ export default function VirtualizedList() {
         {renderRow}
       </FixedSizeList>
 
-      <Snackbar 
+      <Snackbar
         open={openDel}
         autoHideDuration={6000}
         onClose={handleDelClose}
         message="Project successfully deleted">
-        
-        <Alert onClose={handleDelClose} severity="success" sx={{ width: '100%'}}>
+        <Alert onClose={handleDelClose} severity="success" sx={{ width: '100%' }}>
           Project successfully deleted
         </Alert>
       </Snackbar>
