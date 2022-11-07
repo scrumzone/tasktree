@@ -49,6 +49,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
         <ListItemText disableTypography>
           <Grid container spacing={2} alignItems="center" justifyContent="space-between">
             <Grid xs="auto" sx={{ display: 'flex', alignItems: 'center' }}>
+              {!props.task.completedAt &&
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -57,11 +58,19 @@ export default function TaskListItem(props: GetTaskFormProps) {
                 }}>
                 <CheckCircleOutlineIcon />
               </IconButton>
-              <Typography variant="h6">{props.task.name}</Typography>
+              }
+              <Typography 
+                sx={{
+                  textDecoration: props.task.completedAt ? 'line-through' : '',
+                  color: props.task.completedAt ? 'gray' : ''
+                }} 
+                variant="h6">{props.task.name}
+              </Typography>
             </Grid>
             <Grid xs={6}>
               <LinearProgressWithLabel variant="determinate" value={props.task.progress} />
             </Grid>
+            {!props.task.completedAt &&
             <Grid xs="auto">
               <IconButton
                 onClick={(e) => {
@@ -93,6 +102,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
                 </IconButton>
               )}
             </Grid>
+            }
           </Grid>
         </ListItemText>
       </ListItemButton>
