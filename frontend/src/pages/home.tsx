@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Typography } from '@mui/material';
+import { Button, List, Typography } from '@mui/material';
 import UserService from '../services/UserService';
 import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
@@ -10,6 +10,7 @@ import ProjectService from '../services/ProjectService';
 import { BlankProject } from '../types/Project';
 import Task from '../types/Task';
 import EditTaskDialog from '../components/EditTaskDialog';
+import ExpandableTaskList from '../components/ExpandableTaskList';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();
@@ -22,7 +23,32 @@ const task: Task = {
   description: 'Task description',
   weight: 100,
   progress: 1,
-  children: null,
+  children: [
+    {
+      name: 'Task2',
+      description: 'Task description',
+      weight: 1,
+      progress: 50,
+      children: [
+        {
+          name: 'Task3',
+          description: 'Task description',
+          weight: 1,
+          progress: 0,
+          children: [
+            {
+              name: 'Task4',
+              description: 'Task description',
+              weight: 1,
+              progress: 0,
+              children: null
+            }
+          ]
+        }
+      ],
+      completedAt: null
+    }
+  ],
   completedAt: null
 };
 
@@ -66,6 +92,9 @@ export default function HomePage() {
           console.log(formData);
         }}
       />
+      <List>
+        <ExpandableTaskList task={task} />
+      </List>
     </div>
   );
 }
