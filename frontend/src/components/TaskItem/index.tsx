@@ -1,6 +1,7 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -9,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import Task from '../../types/Task';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Alert, Box, Button, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar } from '@mui/material';
+import { Alert, Box, ListItem, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
 import EditTaskDialog from '../EditTaskDialog';
@@ -18,18 +19,59 @@ interface GetTaskFormProps {
   task: Task;
 }
 
-function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
+interface ProgressBarProps extends LinearProgressProps {
+  task: Task;
+}
+
+function LinearProgressWithLabel(props: ProgressBarProps) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+          <LinearProgress variant="determinate" color={props.task.completedAt ? 'success' : 'primary'} {...props}/>
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value
+            props.task.progress
         )}%`}</Typography>
       </Box>
     </Box>
+  );
+
+}
+
+function IconGrid(props: GetTaskFormProps & {setOpen: (e: boolean) => void }) {
+  return (
+    <Grid xs={2} container justifyContent='center'>
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          // do other stuff here
+        }}>
+        <AddIcon />
+      </IconButton>
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          // do other stuff here
+        }}>
+        <EditIcon />
+      </IconButton>
+      {props.task.projectId == null && (
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
+              TaskService.deleteTask(props.task.id!);
+              props.setOpen(true);
+            }
+          }}>
+          <DeleteIcon />
+        </IconButton>
+      )}
+    </Grid>
   );
 }
 
@@ -50,7 +92,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
       <ListItemButton>
         <ListItemText disableTypography>
           <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-            <Grid xs="auto" sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center'}}>
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -60,44 +102,25 @@ export default function TaskListItem(props: GetTaskFormProps) {
                     TaskService.updateTask(props.task, props.task.id!);
                   }
                 }}>
-                <CheckCircleOutlineIcon />
+                {props.task.completedAt && <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'}/>}
+                {!props.task.completedAt && <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'}/>}
+                
               </IconButton>
-              <Typography variant="h6">{props.task.name}</Typography>
+              <Typography 
+                sx={{
+                  textDecoration: props.task.completedAt ? 'line-through' : '',
+                  color: props.task.completedAt ? 'gray' : ''
+                }} 
+                variant="h6">{props.task.name}
+              </Typography>
             </Grid>
-            <Grid xs={6}>
-              <LinearProgressWithLabel variant="determinate" value={props.task.progress} />
+            <Grid xs={8}>
+              <LinearProgressWithLabel variant="determinate" task={props.task} />
             </Grid>
-            <Grid xs="auto">
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  // do other stuff here
-                }}>
-                <AddIcon />
-              </IconButton>
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  setOpenEdit(true);
-                }}>
-                <EditIcon />
-              </IconButton>
-              {props.task.projectId == null && (
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
-                      TaskService.deleteTask(props.task.id!);
-                      setOpenSnackbar(true);
-                    }
-                  }}>
-                  <DeleteIcon />
-                </IconButton>
-              )}
-            </Grid>
+            {props.task.completedAt && <Grid xs={2} container justifyContent='center'></Grid>}
+            {!props.task.completedAt &&
+              <IconGrid task={props.task} setOpen={setOpenSnackbar} />
+            }
           </Grid>
         </ListItemText>
       </ListItemButton>
