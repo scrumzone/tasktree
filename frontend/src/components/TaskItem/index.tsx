@@ -104,7 +104,6 @@ export default function TaskListItem(props: GetTaskFormProps) {
         task={props.task}
         onClose={() => setOpenEdit(false)}
         onSubmit={(formData) => {
-          console.log(formData);
           setOpenEdit(false);
           TaskService.updateTask(formData, props.task.id!);
         }}
