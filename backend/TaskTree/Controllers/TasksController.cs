@@ -52,6 +52,11 @@ namespace TaskTree.Controllers
                 return Unauthorized();
             }
 
+            if (project.Root == null)
+            {
+                return Problem("Project root is null.", statusCode: 500);
+            }
+
             var root = _mapper.Map<Task, TaskResponse>(project.Root);
 
             return root;
@@ -141,55 +146,15 @@ namespace TaskTree.Controllers
                 }
             }
 
-            /*
-             * Audit the entire tree from bottom to top, updating progress and completion where necessary.
-             */
+            // After making changes, tree and project status must be re-evaluated bottom-up
+            var projId = task.RootProjectId();
 
-            var findRoot = task;
-            while (findRoot.Parent != null)
+            if (projId == null)
             {
-                findRoot = findRoot.Parent;
+                return Problem("Cannot find root project.", statusCode: 500); ;
             }
 
-            var root = await _context.Tasks
-                .Include("Children.Children.Children.Children.Children.Children.Children.Children.Children")
-                .FirstOrDefaultAsync(task => task.Id == findRoot.Id);
-
-            if (root == null)
-            {
-                return Problem("Cannot find root node in 'TaskTreeContext.Tasks'.", statusCode: 500); ;
-            }
-
-            List<List<Task>> treeLayers = new List<List<Task>>();
-
-            List<Task> thisLayer = new List<Task>();
-            List<Task> nextLayer = new List<Task>();
-            thisLayer.Add(root);
-            while (thisLayer.Count > 0)
-            {
-                foreach (Task t in thisLayer)
-                {
-                    if (t.Children != null) nextLayer.AddRange(t.Children);
-                }
-                treeLayers.Add(new List<Task>());
-                treeLayers.Last().AddRange(thisLayer);
-
-                thisLayer.Clear();
-                thisLayer.AddRange(nextLayer);
-                nextLayer.Clear();
-            }
-
-            for (int i = treeLayers.Count - 1; i >= 0; i--)
-            {
-                var layer = treeLayers[i];
-                foreach (Task t in layer)
-                {
-                    t.UpdateProgress();
-                    _context.Entry(t).State = EntityState.Modified;
-                }
-            }
-
-            await _context.SaveChangesAsync();
+            await AuditProject((long)projId);
 
             return NoContent();
         }
@@ -244,6 +209,16 @@ namespace TaskTree.Controllers
                 }
             }
 
+            // After making changes, tree and project status must be re-evaluated bottom-up
+            var projId = task.RootProjectId();
+
+            if (projId == null)
+            {
+                return Problem("Cannot find root project.", statusCode: 500); ;
+            }
+
+            await AuditProject((long)projId);
+
             return CreatedAtAction(nameof(GetTask), new { id = task.Id }, _mapper.Map<Task, TaskResponse>(task));
         }
 
@@ -276,6 +251,85 @@ namespace TaskTree.Controllers
             }
 
             _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            // After making changes, tree and project status must be re-evaluated bottom-up
+            var projId = task.RootProjectId();
+
+            if (projId == null)
+            {
+                return Problem("Cannot find root project.", statusCode: 500); ;
+            }
+
+            await AuditProject((long)projId);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Audits an entire project tree from the bottom up, correcting all progress and completion values.
+        /// </summary>
+        /// <param name="id">The value of the <see cref="BaseEntity.Id"/> property for the desired project.</param>
+        private async Task<IActionResult> AuditProject(long id)
+        {
+            var project = await _context.Projects
+                .Include(project => project.Root)
+                .Include("Root.Children.Children.Children.Children.Children.Children.Children.Children.Children")
+                .FirstOrDefaultAsync(project => project.Id == id);
+
+            if (CurrentUserIdDoesNotMatch(project?.UserId))
+            {
+                return Unauthorized();
+            }
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var root = project.Root;
+
+            if (root == null)
+            {
+                return Problem("Cannot find root node in 'TaskTreeContext.Tasks'.", statusCode: 500); ;
+            }
+
+            List<List<Task>> treeLayers = new List<List<Task>>();
+
+            List<Task> thisLayer = new List<Task>();
+            List<Task> nextLayer = new List<Task>();
+            thisLayer.Add(root);
+            while (thisLayer.Count > 0)
+            {
+                foreach (Task t in thisLayer)
+                {
+                    if (t.Children != null)
+                    {
+                        nextLayer.AddRange(t.Children);
+                    }
+                }
+                treeLayers.Add(new List<Task>());
+                treeLayers.Last().AddRange(thisLayer);
+
+                thisLayer.Clear();
+                thisLayer.AddRange(nextLayer);
+                nextLayer.Clear();
+            }
+
+            for (int i = treeLayers.Count - 1; i >= 0; i--)
+            {
+                var layer = treeLayers[i];
+                foreach (Task t in layer)
+                {
+                    t.UpdateProgress();
+                    _context.Entry(t).State = EntityState.Modified;
+                }
+            }
+
+            project.Progress = root.Progress;
+
+            _context.Entry(project).State = EntityState.Modified;
+
             await _context.SaveChangesAsync();
 
             return NoContent();

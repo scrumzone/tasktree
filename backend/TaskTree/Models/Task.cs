@@ -18,8 +18,15 @@ namespace TaskTree.Models
             set
             {
                 _completedAt = value;
-                if (value != null && Progress < 100.0) Progress = 100.0;
-                if (value == null && (Children == null || Children.Count == 0)) Progress = 0.0;
+
+                if (value != null && Progress < 100.0)
+                {
+                    Progress = 100.0;
+                }
+                if (value == null && (Children == null || Children.Count == 0))
+                {
+                    Progress = 0.0;
+                }
             }
         }
         public double Weight
@@ -37,8 +44,15 @@ namespace TaskTree.Models
             set
             {
                 _progress = Math.Clamp(value, 0.0, 100.0);
-                if (value >= 100.0 && CompletedAt == null) CompletedAt = DateTime.Now;
-                if (value < 100.0 && CompletedAt != null) CompletedAt = null;
+
+                if (value >= 100.0 && CompletedAt == null)
+                {
+                    CompletedAt = DateTime.Now;
+                }
+                if (value < 100.0 && CompletedAt != null)
+                {
+                    CompletedAt = null;
+                }
             }
         }
 
@@ -66,7 +80,10 @@ namespace TaskTree.Models
             while (unprocessedTasks.Count != 0)
             {
                 t = unprocessedTasks.ElementAt(0);
-                if (t.Children != null) unprocessedTasks.AddRange(t.Children);
+                if (t.Children != null)
+                {
+                    unprocessedTasks.AddRange(t.Children);
+                }
                 unprocessedTasks.RemoveAt(0);
                 processedTasks.Add(t);
             }
@@ -106,10 +123,18 @@ namespace TaskTree.Models
             foreach (Task t in Children)
             {
                 totalChildWeight += t.Weight;
-                if (t.Progress != 0) totalChildWeightCompleted += t.Weight * (t.Progress / 100);
+                if (t.Progress != 0)
+                {
+                    totalChildWeightCompleted += t.Weight * (t.Progress / 100);
+                }
             }
 
             Progress = (totalChildWeightCompleted / totalChildWeight) * 100;
+        }
+
+        public long? RootProjectId()
+        {
+            return Ancestors().Last().ProjectId;
         }
     }
 }
