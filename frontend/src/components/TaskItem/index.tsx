@@ -29,21 +29,58 @@ export default function TaskListItem(props: GetTaskFormProps) {
   const [open, setOpen] = React.useState(false);
 
   function LinearProgressWithLabel(progressProps: LinearProgressProps & { value: number }) {
-  return (
-    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-      <Box sx={{ width: '100%', mr: 1 }}>
-          <ThemeProvider theme={theme}>
-            <LinearProgress variant="determinate" color={props.task.completedAt ? 'secondary' : 'primary'} {...progressProps}/>
-          </ThemeProvider>
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+            <ThemeProvider theme={theme}>
+              <LinearProgress variant="determinate" color={props.task.completedAt ? 'secondary' : 'primary'} {...progressProps}/>
+            </ThemeProvider>
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(
+              progressProps.value
+          )}%`}</Typography>
+        </Box>
       </Box>
-      <Box sx={{ minWidth: 35 }}>
-        <Typography variant="body2" color="text.secondary">{`${Math.round(
-            progressProps.value
-        )}%`}</Typography>
-      </Box>
-    </Box>
-  );
-}
+    );
+
+  }
+
+  function IconGrid() {
+    return (
+      <Grid xs={2} container justifyContent='center'>
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            // do other stuff here
+          }}>
+          <AddIcon />
+        </IconButton>
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            // do other stuff here
+          }}>
+          <EditIcon />
+        </IconButton>
+        {props.task.projectId == null && (
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
+                TaskService.deleteTask(props.task.id!);
+                setOpen(true);
+              }
+            }}>
+            <DeleteIcon />
+          </IconButton>
+        )}
+      </Grid>
+    );
+  }
 
   const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -82,37 +119,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
             </Grid>
             {props.task.completedAt && <Grid xs={2} container justifyContent='center'></Grid>}
             {!props.task.completedAt &&
-              <Grid xs={2} container justifyContent='center'>
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  // do other stuff here
-                }}>
-                <AddIcon />
-              </IconButton>
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  // do other stuff here
-                }}>
-                <EditIcon />
-              </IconButton>
-              {props.task.projectId == null && (
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
-                      TaskService.deleteTask(props.task.id!);
-                      setOpen(true);
-                    }
-                  }}>
-                  <DeleteIcon />
-                </IconButton>
-              )}
-            </Grid>
+              <IconGrid />
             }
           </Grid>
         </ListItemText>
