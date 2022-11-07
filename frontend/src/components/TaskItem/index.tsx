@@ -18,60 +18,64 @@ interface GetTaskFormProps {
   task: Task;
 }
 
+interface ProgressBarProps extends LinearProgressProps {
+  task: Task;
+}
+
+function LinearProgressWithLabel(props: ProgressBarProps) {
+  return (
+    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+      <Box sx={{ width: '100%', mr: 1 }}>
+          <LinearProgress variant="determinate" color={props.task.completedAt ? 'success' : 'primary'} {...props}/>
+      </Box>
+      <Box sx={{ minWidth: 35 }}>
+        <Typography variant="body2" color="text.secondary">{`${Math.round(
+            props.task.progress
+        )}%`}</Typography>
+      </Box>
+    </Box>
+  );
+
+}
+
+function IconGrid(props: GetTaskFormProps & {setOpen: (e: boolean) => void }) {
+  return (
+    <Grid xs={2} container justifyContent='center'>
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          // do other stuff here
+        }}>
+        <AddIcon />
+      </IconButton>
+      <IconButton
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          // do other stuff here
+        }}>
+        <EditIcon />
+      </IconButton>
+      {props.task.projectId == null && (
+        <IconButton
+          onClick={(e) => {
+            e.stopPropagation();
+            e.preventDefault();
+            if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
+              TaskService.deleteTask(props.task.id!);
+              props.setOpen(true);
+            }
+          }}>
+          <DeleteIcon />
+        </IconButton>
+      )}
+    </Grid>
+  );
+}
+
 export default function TaskListItem(props: GetTaskFormProps) {
   const [open, setOpen] = React.useState(false);
-
-  function LinearProgressWithLabel(progressProps: LinearProgressProps & { value: number }) {
-    return (
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Box sx={{ width: '100%', mr: 1 }}>
-            <LinearProgress variant="determinate" color={props.task.completedAt ? 'success' : 'primary'} {...progressProps}/>
-        </Box>
-        <Box sx={{ minWidth: 35 }}>
-          <Typography variant="body2" color="text.secondary">{`${Math.round(
-              progressProps.value
-          )}%`}</Typography>
-        </Box>
-      </Box>
-    );
-
-  }
-
-  function IconGrid() {
-    return (
-      <Grid xs={2} container justifyContent='center'>
-        <IconButton
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            // do other stuff here
-          }}>
-          <AddIcon />
-        </IconButton>
-        <IconButton
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            // do other stuff here
-          }}>
-          <EditIcon />
-        </IconButton>
-        {props.task.projectId == null && (
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              e.preventDefault();
-              if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
-                TaskService.deleteTask(props.task.id!);
-                setOpen(true);
-              }
-            }}>
-            <DeleteIcon />
-          </IconButton>
-        )}
-      </Grid>
-    );
-  }
 
   const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -106,11 +110,11 @@ export default function TaskListItem(props: GetTaskFormProps) {
               </Typography>
             </Grid>
             <Grid xs={8}>
-              <LinearProgressWithLabel variant="determinate" value={props.task.progress} />
+              <LinearProgressWithLabel variant="determinate" task={props.task} />
             </Grid>
             {props.task.completedAt && <Grid xs={2} container justifyContent='center'></Grid>}
             {!props.task.completedAt &&
-              <IconGrid />
+              <IconGrid task={props.task} setOpen={setOpen} />
             }
           </Grid>
         </ListItemText>
