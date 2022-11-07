@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import Task from '../../types/Task';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Alert, Box, Button, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar } from '@mui/material';
+import { Alert, Box, Button, createTheme, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar, ThemeProvider } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
 
@@ -17,23 +17,33 @@ interface GetTaskFormProps {
   task: Task;
 }
 
-function LinearProgressWithLabel(props: LinearProgressProps & { value: number }) {
+const theme = createTheme({
+  palette: {
+    secondary: {
+      main: "#34a853"
+    }
+  }
+});
+
+export default function TaskListItem(props: GetTaskFormProps) {
+  const [open, setOpen] = React.useState(false);
+
+  function LinearProgressWithLabel(progressProps: LinearProgressProps & { value: number }) {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center' }}>
       <Box sx={{ width: '100%', mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+          <ThemeProvider theme={theme}>
+            <LinearProgress variant="determinate" color={props.task.completedAt ? 'secondary' : 'primary'} {...progressProps}/>
+          </ThemeProvider>
       </Box>
       <Box sx={{ minWidth: 35 }}>
         <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value
+            progressProps.value
         )}%`}</Typography>
       </Box>
     </Box>
   );
 }
-
-export default function TaskListItem(props: GetTaskFormProps) {
-  const [open, setOpen] = React.useState(false);
 
   const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -48,7 +58,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
       <ListItemButton>
         <ListItemText disableTypography>
           <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-            <Grid xs="auto" sx={{ display: 'flex', alignItems: 'center' }}>
+            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center', paddingLeft: props.task.completedAt ? '40px' : '0' }}>
               {!props.task.completedAt &&
               <IconButton
                 onClick={(e) => {
@@ -67,11 +77,12 @@ export default function TaskListItem(props: GetTaskFormProps) {
                 variant="h6">{props.task.name}
               </Typography>
             </Grid>
-            <Grid xs={6}>
+            <Grid xs={8}>
               <LinearProgressWithLabel variant="determinate" value={props.task.progress} />
             </Grid>
+            {props.task.completedAt && <Grid xs={2} container justifyContent='center'></Grid>}
             {!props.task.completedAt &&
-            <Grid xs="auto">
+              <Grid xs={2} container justifyContent='center'>
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
