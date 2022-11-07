@@ -91,8 +91,8 @@ namespace TaskTree.Controllers
             }
 
             var task = await _context.Tasks
-                .Include("Children.Children.Children.Children.Children.Children.Children.Children.Children")
                 .Include("Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent")
+                .Include("Children.Children.Children.Children.Children.Children.Children.Children.Children")
                 .FirstOrDefaultAsync(task => task.Id == id);
 
             if (task == null)
@@ -106,37 +106,24 @@ namespace TaskTree.Controllers
                 return Unauthorized();
             }
 
-            bool updatingCompletionStatus = updateTaskRequest.CompletedAt.HasValue != task.CompletedAt.HasValue;
-            bool updatingWeight = updateTaskRequest.Weight != task.Weight;
-            bool updatingProgress = updateTaskRequest.CompletedAt.HasValue != (task.Progress == 100.0);
+            var updatingCompletionStatus = updateTaskRequest.CompletedAt.HasValue && !task.CompletedAt.HasValue;
 
             _mapper.Map(updateTaskRequest, task);
+
+            // Marking complete also completes all incomplete children
+            if (updatingCompletionStatus)
+            {
+                foreach (Task t in task.Descendents())
+                {
+                    if (!t.CompletedAt.HasValue)
+                    {
+                        t.CompletedAt = task.CompletedAt;
+                        _context.Entry(t).State = EntityState.Modified;
+                    }
+                }
+            }
+
             _context.Entry(task).State = EntityState.Modified;
-
-            // If marking Task as completed, also mark all uncompleted descendents as completed and set progress to 100
-            if (updatingCompletionStatus && updateTaskRequest.CompletedAt.HasValue)
-            {
-                IEnumerable<Task> incompleteDescendents = task.Descendents().Where(t => t.CompletedAt == null);
-                foreach (var t in incompleteDescendents)
-                {
-                    t.CompletedAt = updateTaskRequest.CompletedAt;
-                    t.Progress = 100.0;
-                    _context.Entry(t).State = EntityState.Modified;
-                }
-
-                task.Progress = 100.0;
-            }
-
-            // If changing a Task's progress or weight, propagate changes upward to ancestors.
-            if (updatingProgress || updatingWeight)
-            {
-                // note that foreach traverses a List<T> in index order, so this will travel up the tree
-                foreach (Task t in task.Ancestors())
-                {
-                    t.UpdateProgress();
-                    _context.Entry(t).State = EntityState.Modified;
-                }
-            }
 
             try
             {
@@ -153,6 +140,56 @@ namespace TaskTree.Controllers
                     throw;
                 }
             }
+
+            /*
+             * Audit the entire tree from bottom to top, updating progress and completion where necessary.
+             */
+
+            var findRoot = task;
+            while (findRoot.Parent != null)
+            {
+                findRoot = findRoot.Parent;
+            }
+
+            var root = await _context.Tasks
+                .Include("Children.Children.Children.Children.Children.Children.Children.Children.Children")
+                .FirstOrDefaultAsync(task => task.Id == findRoot.Id);
+
+            if (root == null)
+            {
+                return Problem("Cannot find root node in 'TaskTreeContext.Tasks'.", statusCode: 500); ;
+            }
+
+            List<List<Task>> treeLayers = new List<List<Task>>();
+
+            List<Task> thisLayer = new List<Task>();
+            List<Task> nextLayer = new List<Task>();
+            thisLayer.Add(root);
+            while (thisLayer.Count > 0)
+            {
+                foreach (Task t in thisLayer)
+                {
+                    if (t.Children != null) nextLayer.AddRange(t.Children);
+                }
+                treeLayers.Add(new List<Task>());
+                treeLayers.Last().AddRange(thisLayer);
+
+                thisLayer.Clear();
+                thisLayer.AddRange(nextLayer);
+                nextLayer.Clear();
+            }
+
+            for (int i = treeLayers.Count - 1; i >= 0; i--)
+            {
+                var layer = treeLayers[i];
+                foreach (Task t in layer)
+                {
+                    t.UpdateProgress();
+                    _context.Entry(t).State = EntityState.Modified;
+                }
+            }
+
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

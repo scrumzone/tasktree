@@ -7,14 +7,24 @@ namespace TaskTree.Models
     {
         private double _weight = 1.0;
         private double _progress = 0.0;
+        private DateTime? _completedAt = null;
 
         [Required]
         public string Name { get; set; } = null!;
         public string? Description { get; set; }
-        public DateTime? CompletedAt { get; set; }
+        public DateTime? CompletedAt
+        {
+            get => _completedAt;
+            set
+            {
+                _completedAt = value;
+                if (value != null && Progress < 100.0) Progress = 100.0;
+                if (value == null && (Children == null || Children.Count == 0)) Progress = 0.0;
+            }
+        }
         public double Weight
         {
-            get { return _weight; }
+            get => _weight;
             set
             {
                 if (value <= 0.0) throw new ArgumentOutOfRangeException();
@@ -23,11 +33,12 @@ namespace TaskTree.Models
         }
         public double Progress
         {
-            get { return _progress; }
+            get => _progress;
             set
             {
-                _progress = Math.Clamp(value, 0, 100);
-                if (_progress == 100.0) CompletedAt = DateTime.Now;
+                _progress = Math.Clamp(value, 0.0, 100.0);
+                if (value >= 100.0 && CompletedAt == null) CompletedAt = DateTime.Now;
+                if (value < 100.0 && CompletedAt != null) CompletedAt = null;
             }
         }
 
@@ -95,10 +106,7 @@ namespace TaskTree.Models
             foreach (Task t in Children)
             {
                 totalChildWeight += t.Weight;
-                if (t.Progress != 0)
-                {
-                    totalChildWeightCompleted += t.Weight * (t.Progress / 100);
-                }
+                if (t.Progress != 0) totalChildWeightCompleted += t.Weight * (t.Progress / 100);
             }
 
             Progress = (totalChildWeightCompleted / totalChildWeight) * 100;
