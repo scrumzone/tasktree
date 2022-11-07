@@ -13,6 +13,7 @@ import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgres
 import { Alert, Box, ListItem, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
+import EditTaskDialog from '../EditTaskDialog';
 
 interface GetTaskFormProps {
   task: Task;
@@ -75,14 +76,15 @@ function IconGrid(props: GetTaskFormProps & {setOpen: (e: boolean) => void }) {
 }
 
 export default function TaskListItem(props: GetTaskFormProps) {
-  const [open, setOpen] = React.useState(false);
+  const [openSnackbar, setOpenSnackbar] = React.useState(false);
+  const [openEdit, setOpenEdit] = React.useState(false);
 
   const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
       return;
     }
 
-    setOpen(false);
+    setOpenSnackbar(false);
   };
 
   return (
@@ -95,7 +97,10 @@ export default function TaskListItem(props: GetTaskFormProps) {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
-                  // do other stuff here
+                  if (confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)) {
+                    props.task.completedAt = new Date();
+                    TaskService.updateTask(props.task, props.task.id!);
+                  }
                 }}>
                 {props.task.completedAt && <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'}/>}
                 {!props.task.completedAt && <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'}/>}
@@ -114,13 +119,24 @@ export default function TaskListItem(props: GetTaskFormProps) {
             </Grid>
             {props.task.completedAt && <Grid xs={2} container justifyContent='center'></Grid>}
             {!props.task.completedAt &&
-              <IconGrid task={props.task} setOpen={setOpen} />
+              <IconGrid task={props.task} setOpen={setOpenSnackbar} />
             }
           </Grid>
         </ListItemText>
       </ListItemButton>
+
+      <EditTaskDialog 
+        open={openEdit}
+        task={props.task}
+        onClose={() => setOpenEdit(false)}
+        onSubmit={(formData) => {
+          setOpenEdit(false);
+          TaskService.updateTask(formData, props.task.id!);
+        }}
+      />
+
       <Snackbar 
-        open={open}
+        open={openSnackbar}
         autoHideDuration={6000}
         onClose={handleClose}
         message="Task successfully deleted"
