@@ -1,6 +1,7 @@
 import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
@@ -92,7 +93,9 @@ export default function TaskListItem(props: GetTaskFormProps) {
                   e.preventDefault();
                   // do other stuff here
                 }}>
-                <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'}/>
+                {props.task.completedAt && <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'}/>}
+                {!props.task.completedAt && <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'}/>}
+                
               </IconButton>
               <Typography 
                 sx={{
