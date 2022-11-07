@@ -9,21 +9,13 @@ import Typography from '@mui/material/Typography';
 import Task from '../../types/Task';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Alert, Box, Button, createTheme, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar, ThemeProvider } from '@mui/material';
+import { Alert, Box, ListItem, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
 
 interface GetTaskFormProps {
   task: Task;
 }
-
-const theme = createTheme({
-  palette: {
-    secondary: {
-      main: "#34a853"
-    }
-  }
-});
 
 export default function TaskListItem(props: GetTaskFormProps) {
   const [open, setOpen] = React.useState(false);
@@ -32,9 +24,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
     return (
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ width: '100%', mr: 1 }}>
-            <ThemeProvider theme={theme}>
-              <LinearProgress variant="determinate" color={props.task.completedAt ? 'secondary' : 'primary'} {...progressProps}/>
-            </ThemeProvider>
+            <LinearProgress variant="determinate" color={props.task.completedAt ? 'success' : 'primary'} {...progressProps}/>
         </Box>
         <Box sx={{ minWidth: 35 }}>
           <Typography variant="body2" color="text.secondary">{`${Math.round(
@@ -95,17 +85,15 @@ export default function TaskListItem(props: GetTaskFormProps) {
       <ListItemButton>
         <ListItemText disableTypography>
           <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center', paddingLeft: props.task.completedAt ? '40px' : '0' }}>
-              {!props.task.completedAt &&
+            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center'}}>
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
                   // do other stuff here
                 }}>
-                <CheckCircleOutlineIcon />
+                <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'}/>
               </IconButton>
-              }
               <Typography 
                 sx={{
                   textDecoration: props.task.completedAt ? 'line-through' : '',
