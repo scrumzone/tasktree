@@ -4,6 +4,8 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
+import ProjectHeader from '../ProjectHeader'
+import Project, {BlankProject} from '../../types/Project'
 
 export default function NestedList() {
   const [open, setOpen] = React.useState(false);
@@ -22,15 +24,16 @@ export default function NestedList() {
           Tasks
         </ListSubheader>
       }
-    >
+    > 
+      <ProjectHeader project={BlankProject} />
       <ListItemButton onClick={handleClick}>
-        <ListItemText primary="Expand All" />
+        <ListItemText primary="Expand all" />
       </ListItemButton>
       <ListItemButton >
         <ListItemText primary="Task 1" />
       </ListItemButton>
       <Collapse in={open} timeout="auto" unmountOnExit>
-        <List component="div" disablePadding>
+        <List component="div" disablePadding> 
           <ListItemButton sx={{ pl: 4 }}>
             <ListItemText primary="Task 1-1" />
           </ListItemButton>
