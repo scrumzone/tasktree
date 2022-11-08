@@ -19,7 +19,6 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';
-import ProjectService from '../../services/ProjectService';
 
 interface GetProjectFormProps {
   project: Project;
@@ -53,10 +52,10 @@ export default function ProjectListItem(props: GetProjectFormProps) {
             <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h6">{props.project.name}</Typography>
             </Grid>
-            <Grid xs={6}>
+            <Grid xs={8}>
               <LinearProgressWithLabel variant="determinate" value={props.project.progress} />
             </Grid>
-            <Grid xs="auto">
+            <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();

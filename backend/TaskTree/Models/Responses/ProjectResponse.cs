@@ -7,4 +7,5 @@ public class ProjectResponse
     public string? Description { get; set; }
     public TaskResponse? Root { get; set; }
     public double? Progress { get; set; }
+    public DateTime UpdatedAt { get; set; }
 }

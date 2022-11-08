@@ -6,9 +6,10 @@ import ProjectService from '../../services/ProjectService';
 import Project, { BlankProject } from '../../types/Project';
 import CreateProjectDialog from '../CreateProjectDialog';
 import ProjectListItem from '../ProjectItem';
+import ProjectList from '../ProjectList';
 
 export default function VirtualizedList() {
-  const [projects, setProjects] = React.useState<Project[]>([BlankProject]);
+  const [projects, setProjects] = React.useState<Project[]>([]);
   const [open, setOpen] = React.useState(false);
   const [openDel, setOpenDel] = React.useState(false);
   const [formData, setFormData] = React.useState<Project>({
@@ -122,25 +123,7 @@ export default function VirtualizedList() {
 
       <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
 
-      <FixedSizeList
-        height={800}
-        width={'100%'}
-        itemSize={46}
-        itemCount={projects.length}
-        overscanCount={5}
-        itemData={projects}>
-        {renderRow}
-      </FixedSizeList>
-
-      <Snackbar
-        open={openDel}
-        autoHideDuration={6000}
-        onClose={handleDelClose}
-        message="Project successfully deleted">
-        <Alert onClose={handleDelClose} severity="success" sx={{ width: '100%' }}>
-          Project successfully deleted
-        </Alert>
-      </Snackbar>
+      <ProjectList projects={projects} setProjects={setProjects} />
     </Box>
   );
 }
