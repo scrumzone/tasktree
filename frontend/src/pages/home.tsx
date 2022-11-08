@@ -4,8 +4,12 @@ import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import CreateTaskDialog from '../components/CreateTaskDialog';
-import Task from '../types/Task';
+import ProjectService from '../services/ProjectService';
+import { BlankProject } from '../types/Project';
+import Task, { BlankTask } from '../types/Task';
 import EditTaskDialog from '../components/EditTaskDialog';
+import TaskListItem from '../components/TaskItem';
+import TaskService from '../services/TaskService';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();
@@ -41,27 +45,6 @@ export default function HomePage() {
     <div>
       <Typography variant="h1">HOME PAGE</Typography>
       <Typography variant="h4">Hello, {user.username}!</Typography>
-      <Button variant="outlined" onClick={() => setDOpen(true)}>
-        Open CreateTaskDialog
-      </Button>
-      <CreateTaskDialog
-        open={dOpen}
-        onClose={() => setDOpen(false)}
-        onSubmit={(formData) => {
-          console.log(formData);
-        }}
-      />
-      <Button variant="outlined" onClick={() => setDEOpen(true)}>
-        Open EditTaskDialog
-      </Button>
-      <EditTaskDialog
-        open={dEOpen}
-        task={task}
-        onClose={() => setDEOpen(false)}
-        onSubmit={(formData) => {
-          console.log(formData);
-        }}
-      />
     </div>
   );
 }
