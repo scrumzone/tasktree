@@ -20,7 +20,6 @@ export default function ProjectComponent() {
 
   const loadProject = () => {
     ProjectService.getProject(parseInt(params.projectId!)).then((project) => {
-      console.log('got project');
       setProject(project);
     });
   };
