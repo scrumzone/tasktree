@@ -1,15 +1,11 @@
 import React from 'react';
-import { Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import CreateTaskDialog from '../components/CreateTaskDialog';
-import Task from '../types/Task';
-import EditTaskDialog from '../components/EditTaskDialog';
-import { BlankProject } from '../types/Project';
+import Project from '../types/Project';
 import ProjectService from '../services/ProjectService';
-import ProjectForm from '../components/ProjectForm';
-import NestedList from '../components/Project';
+import ProjectList from '../components/ProjectList';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();
@@ -17,9 +13,14 @@ function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurren
   clearCurrentUser();
 }
 
+function getRecentProjects(projects: Project[]) {
+  projects.sort((a, b) => (a.updatedAt! < b.updatedAt! ? 1 : -1));
+  return projects.slice(0, 5);
+}
+
 export default function HomePage() {
   const [user, setUser] = React.useState(BlankUser);
-  const [projects, setProjects] = React.useState([BlankProject]);
+  const [projects, setProjects] = React.useState<Project[]>([]);
   const dispatch = useAppDispatch();
 
   const current = useAppSelector((state) => state.user.current);
@@ -40,7 +41,13 @@ export default function HomePage() {
         {projects.length - projects.filter((project) => project.progress < 100).length} of your{' '}
         {projects.length} projects.
       </Typography>
+      <br />
+      <br />
       <Typography variant="h5">Recent projects</Typography>
+      <br />
+      <Box sx={{ px: 12, mx: 12 }}>
+        <ProjectList projects={getRecentProjects(projects)} setProjects={setProjects} />
+      </Box>
     </div>
   );
 }
