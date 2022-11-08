@@ -14,6 +14,7 @@ function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurren
 }
 
 function getRecentProjects(projects: Project[]) {
+  projects = projects.filter((project) => (project.progress < 100 ? true : false));
   projects.sort((a, b) => (a.updatedAt! < b.updatedAt! ? 1 : -1));
   return projects.slice(0, 5);
 }
