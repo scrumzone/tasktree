@@ -96,7 +96,7 @@ export default function VirtualizedList() {
           width: '100%',
           padding: '10px',
           paddingBottom: '20px',
-          borderBottom: '3px solid darkgrey',
+          borderBottom: '1px solid darkgrey',
           marginBottom: '10px'
         }}>
         <Typography

@@ -14,6 +14,7 @@ import { Alert, Box, ListItem, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
 import EditTaskDialog from '../EditTaskDialog';
+import CreateTaskDialog from '../CreateTaskDialog';
 
 interface GetTaskFormProps {
   task: Task;
@@ -42,14 +43,20 @@ function LinearProgressWithLabel(props: ProgressBarProps) {
   );
 }
 
-function IconGrid(props: GetTaskFormProps & { setOpen: (e: boolean) => void }) {
+function IconGrid(
+  props: GetTaskFormProps & {
+    setOpenSnackbar: (e: boolean) => void;
+    setOpenEdit: (e: boolean) => void;
+    setOpenCreate: (e: boolean) => void;
+  }
+) {
   return (
     <Grid xs={2} container justifyContent="center">
       <IconButton
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-          // do other stuff here
+          props.setOpenCreate(true);
         }}>
         <AddIcon />
       </IconButton>
@@ -57,7 +64,7 @@ function IconGrid(props: GetTaskFormProps & { setOpen: (e: boolean) => void }) {
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-          // do other stuff here
+          props.setOpenEdit(true);
         }}>
         <EditIcon />
       </IconButton>
@@ -68,7 +75,7 @@ function IconGrid(props: GetTaskFormProps & { setOpen: (e: boolean) => void }) {
             e.preventDefault();
             if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
               TaskService.deleteTask(props.task.id!);
-              props.setOpen(true);
+              props.setOpenSnackbar(true);
             }
           }}>
           <DeleteIcon />
@@ -81,6 +88,7 @@ function IconGrid(props: GetTaskFormProps & { setOpen: (e: boolean) => void }) {
 export default function TaskListItem(props: GetTaskFormProps) {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
+  const [openCreate, setOpenCreate] = React.useState(false);
 
   const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -127,7 +135,14 @@ export default function TaskListItem(props: GetTaskFormProps) {
               <LinearProgressWithLabel variant="determinate" task={props.task} />
             </Grid>
             {props.task.completedAt && <Grid xs={2} container justifyContent="center"></Grid>}
-            {!props.task.completedAt && <IconGrid task={props.task} setOpen={setOpenSnackbar} />}
+            {!props.task.completedAt && (
+              <IconGrid
+                task={props.task}
+                setOpenSnackbar={setOpenSnackbar}
+                setOpenEdit={setOpenEdit}
+                setOpenCreate={setOpenCreate}
+              />
+            )}
           </Grid>
         </ListItemText>
       </ListItemButton>
@@ -139,6 +154,15 @@ export default function TaskListItem(props: GetTaskFormProps) {
         onSubmit={(formData) => {
           setOpenEdit(false);
           TaskService.updateTask(formData, props.task.id!);
+        }}
+      />
+
+      <CreateTaskDialog
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        onSubmit={(formData) => {
+          setOpenCreate(false);
+          TaskService.createTask(formData, props.task.id!);
         }}
       />
 
