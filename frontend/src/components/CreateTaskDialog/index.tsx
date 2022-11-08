@@ -32,9 +32,18 @@ export default function CreateTaskDialog(props: CreateTaskFormProps) {
         <TaskForm task={formData} onChange={onChange} />
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.onClose}>Cancel</Button>
         <Button
-          onClick={() => {
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            props.onClose();
+          }}>
+          Cancel
+        </Button>
+        <Button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
             props.onSubmit(formData);
             setFormData(BlankTask);
           }}>
