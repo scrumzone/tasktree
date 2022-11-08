@@ -6,6 +6,10 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import CreateTaskDialog from '../components/CreateTaskDialog';
 import Task from '../types/Task';
 import EditTaskDialog from '../components/EditTaskDialog';
+import { BlankProject } from '../types/Project';
+import ProjectService from '../services/ProjectService';
+import ProjectForm from '../components/ProjectForm';
+import NestedList from '../components/Project';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();
@@ -13,55 +17,30 @@ function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurren
   clearCurrentUser();
 }
 
-const task: Task = {
-  name: 'Task1',
-  description: 'Task description',
-  weight: 100,
-  progress: 1,
-  children: null,
-  completedAt: null
-};
-
 export default function HomePage() {
   const [user, setUser] = React.useState(BlankUser);
-  const [dOpen, setDOpen] = React.useState(false);
-  const [dEOpen, setDEOpen] = React.useState(false);
+  const [projects, setProjects] = React.useState([BlankProject]);
   const dispatch = useAppDispatch();
 
   const current = useAppSelector((state) => state.user.current);
 
   React.useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserProjects = async () => {
       setUser(current || BlankUser);
+      setProjects(await ProjectService.getProjects());
     };
-    fetchUser();
+    fetchUserProjects();
   }, []);
 
   return (
     <div>
-      <Typography variant="h1">HOME PAGE</Typography>
-      <Typography variant="h4">Hello, {user.username}!</Typography>
-      <Button variant="outlined" onClick={() => setDOpen(true)}>
-        Open CreateTaskDialog
-      </Button>
-      <CreateTaskDialog
-        open={dOpen}
-        onClose={() => setDOpen(false)}
-        onSubmit={(formData) => {
-          console.log(formData);
-        }}
-      />
-      <Button variant="outlined" onClick={() => setDEOpen(true)}>
-        Open EditTaskDialog
-      </Button>
-      <EditTaskDialog
-        open={dEOpen}
-        task={task}
-        onClose={() => setDEOpen(false)}
-        onSubmit={(formData) => {
-          console.log(formData);
-        }}
-      />
+      <Typography variant="h1">Hello, {user.firstName}!</Typography>
+      <Typography variant="h4">
+        You have completed{' '}
+        {projects.length - projects.filter((project) => project.progress < 100).length} of your{' '}
+        {projects.length} projects.
+      </Typography>
+      <Typography variant="h5">Recent projects</Typography>
     </div>
   );
 }
