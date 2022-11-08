@@ -10,8 +10,8 @@ export default class TaskService {
     return response.data;
   }
 
-  static async getTasks(taskId: number): Promise<Task[]> {
-    const response = await http.get(`/tasks?taskId=${taskId}`, {
+  static async getTasks(projectId: number): Promise<Task> {
+    const response = await http.get(`/tasks?projectId=${projectId}`, {
       headers: authHeader(AuthService.getJWT())
     });
     return response.data;

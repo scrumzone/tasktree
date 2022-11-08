@@ -7,7 +7,15 @@ import Typography from '@mui/material/Typography';
 import Project from '../../types/Project';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Box, ListItem } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  Snackbar
+} from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';

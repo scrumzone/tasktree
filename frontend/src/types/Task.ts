@@ -1,5 +1,4 @@
 export default interface Task {
-
   id?: number;
   name: string;
   description?: string;
@@ -15,5 +14,5 @@ export const BlankTask: Task = {
   name: '',
   description: '',
   progress: 0,
-  weight: 0, 
+  weight: 1
 };

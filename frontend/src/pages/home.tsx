@@ -7,12 +7,6 @@ import Project from '../types/Project';
 import ProjectService from '../services/ProjectService';
 import ProjectList from '../components/ProjectList';
 
-function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
-  AuthService.signOut();
-  setUser(BlankUser);
-  clearCurrentUser();
-}
-
 function getRecentProjects(projects: Project[]) {
   projects = projects.filter((project) => (project.progress < 100 ? true : false));
   projects.sort((a, b) => (a.updatedAt! < b.updatedAt! ? 1 : -1));

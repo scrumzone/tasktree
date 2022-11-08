@@ -20,6 +20,7 @@ interface TaskListItemProps {
   task: Task;
   children?: React.ReactNode;
   onClick?: (e: React.SyntheticEvent) => void;
+  reloadProject: () => void;
   sx?: any;
 }
 
@@ -52,6 +53,7 @@ function IconGrid(
     setSnackbarOpen: (e: boolean) => void;
     setCreateDialogOpen: (e: boolean) => void;
     setEditDialogOpen: (e: boolean) => void;
+    reloadProject: () => void;
   }
 ) {
   return (
@@ -78,7 +80,9 @@ function IconGrid(
             e.stopPropagation();
             e.preventDefault();
             if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
-              TaskService.deleteTask(props.task.id!);
+              TaskService.deleteTask(props.task.id!).then(() => {
+                props.reloadProject();
+              });
               props.setSnackbarOpen(true);
             }
           }}>
@@ -115,7 +119,9 @@ export default function TaskListItem(props: TaskListItemProps) {
                   confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)
                 ) {
                   props.task.completedAt = new Date();
-                  TaskService.updateTask(props.task, props.task.id!);
+                  TaskService.updateTask(props.task, props.task.id!).then(() => {
+                    props.reloadProject();
+                  });
                 }
               }}>
               {props.task.completedAt && (
@@ -144,6 +150,7 @@ export default function TaskListItem(props: TaskListItemProps) {
               setSnackbarOpen={setOpenSnackbar}
               setCreateDialogOpen={setOpenCreate}
               setEditDialogOpen={setOpenEdit}
+              reloadProject={props.reloadProject}
             />
           )}
         </Grid>
@@ -155,7 +162,7 @@ export default function TaskListItem(props: TaskListItemProps) {
         onClose={() => setOpenEdit(false)}
         onSubmit={(formData) => {
           setOpenEdit(false);
-          TaskService.updateTask(formData, props.task.id!);
+          TaskService.updateTask(formData, props.task.id!).then(() => props.reloadProject());
         }}
       />
 
@@ -163,7 +170,7 @@ export default function TaskListItem(props: TaskListItemProps) {
         open={openCreate}
         onClose={() => setOpenCreate(false)}
         onSubmit={(formData) => {
-          TaskService.createTask(formData, props.task.id!);
+          TaskService.createTask(formData, props.task.id!).then(() => props.reloadProject());
           setOpenCreate(false);
         }}
       />
