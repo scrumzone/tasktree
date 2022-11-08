@@ -16,8 +16,11 @@ import TaskService from '../../services/TaskService';
 import EditTaskDialog from '../EditTaskDialog';
 import CreateTaskDialog from '../CreateTaskDialog';
 
-interface GetTaskFormProps {
+interface TaskListItemProps {
   task: Task;
+  children?: React.ReactNode;
+  onClick?: (e: React.SyntheticEvent) => void;
+  sx?: any;
 }
 
 interface ProgressBarProps extends LinearProgressProps {
@@ -31,6 +34,7 @@ function LinearProgressWithLabel(props: ProgressBarProps) {
         <LinearProgress
           variant="determinate"
           color={props.task.completedAt ? 'success' : 'primary'}
+          value={props.task.progress}
           {...props}
         />
       </Box>
@@ -44,10 +48,10 @@ function LinearProgressWithLabel(props: ProgressBarProps) {
 }
 
 function IconGrid(
-  props: GetTaskFormProps & {
-    setOpenSnackbar: (e: boolean) => void;
-    setOpenEdit: (e: boolean) => void;
-    setOpenCreate: (e: boolean) => void;
+  props: TaskListItemProps & {
+    setSnackbarOpen: (e: boolean) => void;
+    setCreateDialogOpen: (e: boolean) => void;
+    setEditDialogOpen: (e: boolean) => void;
   }
 ) {
   return (
@@ -56,7 +60,7 @@ function IconGrid(
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-          props.setOpenCreate(true);
+          props.setCreateDialogOpen(true);
         }}>
         <AddIcon />
       </IconButton>
@@ -64,7 +68,7 @@ function IconGrid(
         onClick={(e) => {
           e.stopPropagation();
           e.preventDefault();
-          props.setOpenEdit(true);
+          props.setEditDialogOpen(true);
         }}>
         <EditIcon />
       </IconButton>
@@ -75,7 +79,7 @@ function IconGrid(
             e.preventDefault();
             if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
               TaskService.deleteTask(props.task.id!);
-              props.setOpenSnackbar(true);
+              props.setSnackbarOpen(true);
             }
           }}>
           <DeleteIcon />
@@ -85,7 +89,7 @@ function IconGrid(
   );
 }
 
-export default function TaskListItem(props: GetTaskFormProps) {
+export default function TaskListItem(props: TaskListItemProps) {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -99,53 +103,51 @@ export default function TaskListItem(props: GetTaskFormProps) {
   };
 
   return (
-    <ListItem disablePadding>
-      <ListItemButton>
-        <ListItemText disableTypography>
-          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  if (
-                    confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)
-                  ) {
-                    props.task.completedAt = new Date();
-                    TaskService.updateTask(props.task, props.task.id!);
-                  }
-                }}>
-                {props.task.completedAt && (
-                  <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'} />
-                )}
-                {!props.task.completedAt && (
-                  <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'} />
-                )}
-              </IconButton>
-              <Typography
-                sx={{
-                  textDecoration: props.task.completedAt ? 'line-through' : '',
-                  color: props.task.completedAt ? 'gray' : ''
-                }}
-                variant="h6">
-                {props.task.name}
-              </Typography>
-            </Grid>
-            <Grid xs={8}>
-              <LinearProgressWithLabel variant="determinate" task={props.task} />
-            </Grid>
-            {props.task.completedAt && <Grid xs={2} container justifyContent="center"></Grid>}
-            {!props.task.completedAt && (
-              <IconGrid
-                task={props.task}
-                setOpenSnackbar={setOpenSnackbar}
-                setOpenEdit={setOpenEdit}
-                setOpenCreate={setOpenCreate}
-              />
-            )}
+    <ListItem button={!!props.onClick as false} onClick={props.onClick}>
+      <ListItemText disableTypography>
+        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+          <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
+            <IconButton
+              onClick={(e) => {
+                e.stopPropagation();
+                e.preventDefault();
+                if (
+                  confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)
+                ) {
+                  props.task.completedAt = new Date();
+                  TaskService.updateTask(props.task, props.task.id!);
+                }
+              }}>
+              {props.task.completedAt && (
+                <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'} />
+              )}
+              {!props.task.completedAt && (
+                <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'} />
+              )}
+            </IconButton>
+            <Typography
+              sx={{
+                textDecoration: props.task.completedAt ? 'line-through' : '',
+                color: props.task.completedAt ? 'gray' : ''
+              }}
+              variant="h6">
+              {props.task.name}
+            </Typography>
           </Grid>
-        </ListItemText>
-      </ListItemButton>
+          <Grid xs={8}>
+            <LinearProgressWithLabel variant="determinate" task={props.task} />
+          </Grid>
+          {props.task.completedAt && <Grid xs={2} container justifyContent="center"></Grid>}
+          {!props.task.completedAt && (
+            <IconGrid
+              task={props.task}
+              setSnackbarOpen={setOpenSnackbar}
+              setCreateDialogOpen={setOpenCreate}
+              setEditDialogOpen={setOpenEdit}
+            />
+          )}
+        </Grid>
+      </ListItemText>
 
       <EditTaskDialog
         open={openEdit}
@@ -161,8 +163,8 @@ export default function TaskListItem(props: GetTaskFormProps) {
         open={openCreate}
         onClose={() => setOpenCreate(false)}
         onSubmit={(formData) => {
-          setOpenCreate(false);
           TaskService.createTask(formData, props.task.id!);
+          setOpenCreate(false);
         }}
       />
 
@@ -175,6 +177,7 @@ export default function TaskListItem(props: GetTaskFormProps) {
           Task successfully deleted
         </Alert>
       </Snackbar>
+      {props.children}
     </ListItem>
   );
 }
