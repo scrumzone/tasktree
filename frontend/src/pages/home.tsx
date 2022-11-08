@@ -1,15 +1,11 @@
 import React from 'react';
-import { Button, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import User, { BlankUser } from '../types/User';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import CreateTaskDialog from '../components/CreateTaskDialog';
+import Project from '../types/Project';
 import ProjectService from '../services/ProjectService';
-import { BlankProject } from '../types/Project';
-import Task, { BlankTask } from '../types/Task';
-import EditTaskDialog from '../components/EditTaskDialog';
-import TaskListItem from '../components/TaskItem';
-import TaskService from '../services/TaskService';
+import ProjectList from '../components/ProjectList';
 
 function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
   AuthService.signOut();
@@ -17,34 +13,42 @@ function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurren
   clearCurrentUser();
 }
 
-const task: Task = {
-  name: 'Task1',
-  description: 'Task description',
-  weight: 100,
-  progress: 1,
-  children: null,
-  completedAt: null
-};
+function getRecentProjects(projects: Project[]) {
+  projects = projects.filter((project) => (project.progress < 100 ? true : false));
+  projects.sort((a, b) => (a.updatedAt! < b.updatedAt! ? 1 : -1));
+  return projects.slice(0, 5);
+}
 
 export default function HomePage() {
   const [user, setUser] = React.useState(BlankUser);
-  const [dOpen, setDOpen] = React.useState(false);
-  const [dEOpen, setDEOpen] = React.useState(false);
+  const [projects, setProjects] = React.useState<Project[]>([]);
   const dispatch = useAppDispatch();
 
   const current = useAppSelector((state) => state.user.current);
 
   React.useEffect(() => {
-    const fetchUser = async () => {
+    const fetchUserProjects = async () => {
       setUser(current || BlankUser);
+      setProjects(await ProjectService.getProjects());
     };
-    fetchUser();
+    fetchUserProjects();
   }, []);
 
   return (
     <div>
-      <Typography variant="h1">HOME PAGE</Typography>
-      <Typography variant="h4">Hello, {user.username}!</Typography>
+      <Typography variant="h1">Hello, {user.firstName}!</Typography>
+      <Typography variant="h4">
+        You have completed{' '}
+        {projects.length - projects.filter((project) => project.progress < 100).length} of your{' '}
+        {projects.length} projects.
+      </Typography>
+      <br />
+      <br />
+      <Typography variant="h5">Recent projects</Typography>
+      <br />
+      <Box sx={{ px: 12, mx: 12 }}>
+        <ProjectList projects={getRecentProjects(projects)} setProjects={setProjects} />
+      </Box>
     </div>
   );
 }
