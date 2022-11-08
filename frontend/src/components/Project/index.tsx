@@ -1,59 +1,42 @@
-import * as React from 'react';
+import React from 'react';
 import ListSubheader from '@mui/material/ListSubheader';
 import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Collapse from '@mui/material/Collapse';
-import ProjectHeader from '../ProjectHeader'
-import Project, {BlankProject} from '../../types/Project'
+import ProjectHeader from '../ProjectHeader';
+import Project, { BlankProject } from '../../types/Project';
+import ExpandableTaskList from '../ExpandableTaskList';
+import { useParams } from 'react-router-dom';
+import Task, { BlankTask } from '../../types/Task';
+import ProjectService from '../../services/ProjectService';
+import TaskService from '../../services/TaskService';
+import TaskListItem from '../TaskItem';
 
 export default function ProjectComponent() {
+  const params = useParams();
   const [open, setOpen] = React.useState(false);
+  const [project, setProject] = React.useState<Project>(BlankProject);
 
+  React.useEffect(() => {
+    const fetchProject = async () => {
+      setProject(await ProjectService.getProject(parseInt(params.projectId!)));
+    };
+    fetchProject();
+  }, []);
+
+  console.log(project.root);
   const handleClick = () => {
     setOpen(!open);
   };
 
+  const TaskListTag =
+    project.root!.children && project.root!.children.length ? ExpandableTaskList : TaskListItem;
+
   return (
     <div>
-      <ProjectHeader project={BlankProject} />
-      <List
-        sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}
-        component="nav"
-        aria-labelledby="nested-list-subheader"
-        subheader={
-          <ListSubheader component="div" id="nested-list-subheader">
-            Tasks
-          </ListSubheader>
-        }
-      > 
-        <ListItemButton onClick={handleClick}>
-          <ListItemText primary="Expand all" />
-        </ListItemButton>
-        <ListItemButton >
-          <ListItemText primary="Task 1" />
-        </ListItemButton>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding> 
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="Task 1-1" />
-            </ListItemButton>
-          </List>
-        </Collapse>
-        <ListItemButton >
-          <ListItemText primary="Task 2" />
-        </ListItemButton>
-        <ListItemButton >
-          <ListItemText primary="Task 3" />
-        </ListItemButton>
-        <Collapse in={open} timeout="auto" unmountOnExit>
-          <List component="div" disablePadding>
-            <ListItemButton sx={{ pl: 4 }}>
-              <ListItemText primary="Task 3-1" />
-            </ListItemButton>
-          </List>
-        </Collapse>
-      </List>
+      <ProjectHeader project={project} />
+      <TaskListTag task={project.root!} />
     </div>
   );
 }

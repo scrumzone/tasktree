@@ -1,4 +1,4 @@
-import Task from './Task';
+import Task, { BlankTask } from './Task';
 
 export default interface Project {
   id?: number;
@@ -12,5 +12,6 @@ export const BlankProject: Project = {
   id: 0,
   name: 'blank',
   description: 'blank',
-  progress: 0
+  progress: 0,
+  root: BlankTask
 };

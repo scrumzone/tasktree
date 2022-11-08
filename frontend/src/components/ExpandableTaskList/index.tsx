@@ -20,13 +20,13 @@ export default function ExpandableTaskList({ task }: ExpandableTaskListItemProps
         }}>
         {expanded ? <ExpandLess /> : <ExpandMore />}
       </TaskListItem>
-      <Collapse in={expanded} timeout="auto" unmountOnExit sx={{ pl: 1 }}>
+      <Collapse in={expanded} timeout="auto" unmountOnExit sx={{ pl: 2 }}>
         {task.children &&
           task.children.map((child) => {
-            if (child.children) {
+            if (child.children!.length) {
               return <ExpandableTaskList key={child.id} task={child} />;
             } else {
-              return <TaskListItem key={child.id || child.name} task={child} />;
+              return <TaskListItem key={child.id || child.name} task={child}></TaskListItem>;
             }
           })}
       </Collapse>

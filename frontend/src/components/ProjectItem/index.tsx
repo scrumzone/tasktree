@@ -7,7 +7,15 @@ import Typography from '@mui/material/Typography';
 import Project from '../../types/Project';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Alert, Box, Button, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar } from '@mui/material';
+import {
+  Alert,
+  Box,
+  Button,
+  ListItem,
+  ListItemIcon,
+  ListItemSecondaryAction,
+  Snackbar
+} from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';
@@ -75,15 +83,14 @@ export default function ProjectListItem(props: GetProjectFormProps) {
 
       {/* Edit project popup */}
       <EditProjectDialog
-          open={openEdit}
-          project={props.project}
-          onClose={() => setOpenEdit(false)}
-          onSubmit={(formData) => {
-            props.onEditSubmit(formData);
-            setOpenEdit(false);
-          }}
+        open={openEdit}
+        project={props.project}
+        onClose={() => setOpenEdit(false)}
+        onSubmit={(formData) => {
+          props.onEditSubmit(formData);
+          setOpenEdit(false);
+        }}
       />
-
     </ListItem>
   );
 }
