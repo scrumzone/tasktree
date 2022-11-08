@@ -7,9 +7,10 @@ import TaskListItem from '../TaskItem';
 
 interface ExpandableTaskListItemProps {
   task: Task;
+  reloadProject: () => void;
 }
 
-export default function ExpandableTaskList({ task }: ExpandableTaskListItemProps) {
+export default function ExpandableTaskList({ task, reloadProject }: ExpandableTaskListItemProps) {
   const [expanded, setExpanded] = React.useState(false);
   return (
     <List disablePadding>
@@ -17,16 +18,24 @@ export default function ExpandableTaskList({ task }: ExpandableTaskListItemProps
         task={task}
         onClick={() => {
           setExpanded(!expanded);
-        }}>
+        }}
+        reloadProject={reloadProject}>
         {expanded ? <ExpandLess /> : <ExpandMore />}
       </TaskListItem>
       <Collapse in={expanded} timeout="auto" unmountOnExit sx={{ pl: 2 }}>
         {task.children &&
           task.children.map((child) => {
             if (child.children!.length) {
-              return <ExpandableTaskList key={child.id} task={child} />;
+              return (
+                <ExpandableTaskList key={child.id} task={child} reloadProject={reloadProject} />
+              );
             } else {
-              return <TaskListItem key={child.id || child.name} task={child}></TaskListItem>;
+              return (
+                <TaskListItem
+                  key={child.id || child.name}
+                  task={child}
+                  reloadProject={reloadProject}></TaskListItem>
+              );
             }
           })}
       </Collapse>

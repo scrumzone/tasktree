@@ -18,17 +18,16 @@ export default function ProjectComponent() {
   const [open, setOpen] = React.useState(false);
   const [project, setProject] = React.useState<Project>(BlankProject);
 
-  React.useEffect(() => {
-    const fetchProject = async () => {
-      setProject(await ProjectService.getProject(parseInt(params.projectId!)));
-    };
-    fetchProject();
-  }, []);
-
-  console.log(project.root);
-  const handleClick = () => {
-    setOpen(!open);
+  const loadProject = () => {
+    ProjectService.getProject(parseInt(params.projectId!)).then((project) => {
+      console.log('got project');
+      setProject(project);
+    });
   };
+
+  React.useEffect(() => {
+    loadProject();
+  }, []);
 
   const TaskListTag =
     project.root!.children && project.root!.children.length ? ExpandableTaskList : TaskListItem;
@@ -36,7 +35,7 @@ export default function ProjectComponent() {
   return (
     <div>
       <ProjectHeader project={project} />
-      <TaskListTag task={project.root!} />
+      <TaskListTag task={project.root!} reloadProject={loadProject} />
     </div>
   );
 }
