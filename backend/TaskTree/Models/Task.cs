@@ -134,7 +134,13 @@ namespace TaskTree.Models
 
         public long? RootProjectId()
         {
-            return Ancestors().Last().ProjectId;
+            if (ProjectId != null)
+            {
+                return ProjectId;
+            }
+
+            var ancestors = Ancestors();
+            return (ancestors.Count == 0) ? null : ancestors.Last().ProjectId;
         }
     }
 }
