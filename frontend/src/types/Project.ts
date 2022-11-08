@@ -6,6 +6,7 @@ export default interface Project {
   description?: string;
   root?: Task;
   progress: number;
+  updatedAt?: Date;
 }
 
 export const BlankProject: Project = {

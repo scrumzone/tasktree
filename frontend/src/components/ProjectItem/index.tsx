@@ -7,11 +7,10 @@ import Typography from '@mui/material/Typography';
 import Project from '../../types/Project';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Alert, Box, Button, ListItem, ListItemIcon, ListItemSecondaryAction, Snackbar } from '@mui/material';
+import { Box, ListItem } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';
-import ProjectService from '../../services/ProjectService';
 
 interface GetProjectFormProps {
   project: Project;
@@ -45,10 +44,10 @@ export default function ProjectListItem(props: GetProjectFormProps) {
             <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
               <Typography variant="h6">{props.project.name}</Typography>
             </Grid>
-            <Grid xs={6}>
+            <Grid xs={8}>
               <LinearProgressWithLabel variant="determinate" value={props.project.progress} />
             </Grid>
-            <Grid xs="auto">
+            <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <IconButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -75,15 +74,14 @@ export default function ProjectListItem(props: GetProjectFormProps) {
 
       {/* Edit project popup */}
       <EditProjectDialog
-          open={openEdit}
-          project={props.project}
-          onClose={() => setOpenEdit(false)}
-          onSubmit={(formData) => {
-            props.onEditSubmit(formData);
-            setOpenEdit(false);
-          }}
+        open={openEdit}
+        project={props.project}
+        onClose={() => setOpenEdit(false)}
+        onSubmit={(formData) => {
+          props.onEditSubmit(formData);
+          setOpenEdit(false);
+        }}
       />
-
     </ListItem>
   );
 }
