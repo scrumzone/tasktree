@@ -52,6 +52,11 @@ namespace TaskTree.Controllers
                 return Unauthorized();
             }
 
+            if (project.Root == null)
+            {
+                return Problem("Project root is null.", statusCode: 500);
+            }
+
             var root = _mapper.Map<Task, TaskResponse>(project.Root);
 
             return root;
@@ -91,6 +96,7 @@ namespace TaskTree.Controllers
             }
 
             var task = await _context.Tasks
+                .Include("Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent")
                 .Include("Children.Children.Children.Children.Children.Children.Children.Children.Children")
                 .FirstOrDefaultAsync(task => task.Id == id);
 
@@ -105,18 +111,24 @@ namespace TaskTree.Controllers
                 return Unauthorized();
             }
 
-            // If marking Task as completed, also mark all uncompleted descendents as completed
-            if (updateTaskRequest.CompletedAt != null && task.CompletedAt == null)
-            {
-                IEnumerable<Task> incompleteDescendents = task.Descendents().Where(t => t.CompletedAt == null);
-                foreach (var t in incompleteDescendents)
-                {
-                    t.CompletedAt = updateTaskRequest.CompletedAt;
-                    _context.Entry(t).State = EntityState.Modified;
-                }
-            }
+            var projId = task.RootProjectId();
+
+            var updatingCompletionStatus = updateTaskRequest.CompletedAt.HasValue && !task.CompletedAt.HasValue;
 
             _mapper.Map(updateTaskRequest, task);
+
+            // Marking complete also completes all incomplete children
+            if (updatingCompletionStatus)
+            {
+                foreach (Task t in task.Descendents())
+                {
+                    if (!t.CompletedAt.HasValue)
+                    {
+                        t.CompletedAt = task.CompletedAt;
+                        _context.Entry(t).State = EntityState.Modified;
+                    }
+                }
+            }
 
             _context.Entry(task).State = EntityState.Modified;
 
@@ -136,6 +148,14 @@ namespace TaskTree.Controllers
                 }
             }
 
+            // After making changes, tree and project status must be re-evaluated bottom-up
+            if (projId == null)
+            {
+                return Problem("Cannot find root project.", statusCode: 500); ;
+            }
+
+            await AuditProject((long)projId);
+
             return NoContent();
         }
 
@@ -149,13 +169,22 @@ namespace TaskTree.Controllers
                 return Problem("Entity set 'TaskTreeContext.Tasks' is null.", statusCode: 500);
             }
 
-            var parentTask = await _context.Tasks.FindAsync(parentId);
+            var parentTask = await _context.Tasks
+                .Include("Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent")
+                .FirstOrDefaultAsync(task => task.Id == parentId);
+
+            if (parentTask == null)
+            {
+                return NotFound();
+            }
 
             // Is valid user
             if (CurrentUserIdDoesNotMatch(parentTask.UserId))
             {
                 return Unauthorized();
             }
+
+            var projId = parentTask.RootProjectId();
 
             var task = _mapper.Map<Task>(createTaskRequst);
             task.UserId = CurrentUserId();
@@ -166,6 +195,7 @@ namespace TaskTree.Controllers
             }
 
             parentTask.Children.Add(task);
+            task.Parent = parentTask;
 
             try
             {
@@ -188,6 +218,14 @@ namespace TaskTree.Controllers
                 }
             }
 
+            // After making changes, tree and project status must be re-evaluated bottom-up
+            if (projId == null)
+            {
+                return Problem("Cannot find root project.", statusCode: 500); ;
+            }
+
+            await AuditProject((long)projId);
+
             return CreatedAtAction(nameof(GetTask), new { id = task.Id }, _mapper.Map<Task, TaskResponse>(task));
         }
 
@@ -201,7 +239,10 @@ namespace TaskTree.Controllers
                 return Problem("Entity set 'TaskTreeContext.Users' is null.", statusCode: 500);
             }
 
-            var task = await _context.Tasks.FindAsync(id);
+            var task = await _context.Tasks
+                .Include("Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent.Parent")
+                .FirstOrDefaultAsync(task => task.Id == id);
+
             if (task == null)
             {
                 return NotFound();
@@ -219,7 +260,87 @@ namespace TaskTree.Controllers
                 return Problem("Cannot delete root task", statusCode: 400);
             }
 
+            var projId = task.RootProjectId();
+
             _context.Tasks.Remove(task);
+            await _context.SaveChangesAsync();
+
+            // After making changes, tree and project status must be re-evaluated bottom-up
+
+            if (projId == null)
+            {
+                return Problem("Cannot find root project.", statusCode: 500); ;
+            }
+
+            await AuditProject((long)projId);
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Audits an entire project tree from the bottom up, correcting all progress and completion values.
+        /// </summary>
+        /// <param name="id">The value of the <see cref="BaseEntity.Id"/> property for the desired project.</param>
+        private async Task<IActionResult> AuditProject(long id)
+        {
+            var project = await _context.Projects
+                .Include(project => project.Root)
+                .Include("Root.Children.Children.Children.Children.Children.Children.Children.Children.Children")
+                .FirstOrDefaultAsync(project => project.Id == id);
+
+            if (CurrentUserIdDoesNotMatch(project?.UserId))
+            {
+                return Unauthorized();
+            }
+
+            if (project == null)
+            {
+                return NotFound();
+            }
+
+            var root = project.Root;
+
+            if (root == null)
+            {
+                return Problem("Cannot find root node in 'TaskTreeContext.Tasks'.", statusCode: 500); ;
+            }
+
+            List<List<Task>> treeLayers = new List<List<Task>>();
+
+            List<Task> thisLayer = new List<Task>();
+            List<Task> nextLayer = new List<Task>();
+            thisLayer.Add(root);
+            while (thisLayer.Count > 0)
+            {
+                foreach (Task t in thisLayer)
+                {
+                    if (t.Children != null)
+                    {
+                        nextLayer.AddRange(t.Children);
+                    }
+                }
+                treeLayers.Add(new List<Task>());
+                treeLayers.Last().AddRange(thisLayer);
+
+                thisLayer.Clear();
+                thisLayer.AddRange(nextLayer);
+                nextLayer.Clear();
+            }
+
+            for (int i = treeLayers.Count - 1; i >= 0; i--)
+            {
+                var layer = treeLayers[i];
+                foreach (Task t in layer)
+                {
+                    t.UpdateProgress();
+                    _context.Entry(t).State = EntityState.Modified;
+                }
+            }
+
+            project.Progress = root.Progress;
+
+            _context.Entry(project).State = EntityState.Modified;
+
             await _context.SaveChangesAsync();
 
             return NoContent();
