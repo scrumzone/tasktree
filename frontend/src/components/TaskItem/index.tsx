@@ -14,7 +14,6 @@ import { Alert, Box, ListItem, Snackbar } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
 import EditTaskDialog from '../EditTaskDialog';
-import { truncate } from 'fs';
 
 interface TaskListItemProps {
   task: Task;
@@ -34,6 +33,7 @@ function LinearProgressWithLabel(props: ProgressBarProps) {
         <LinearProgress
           variant="determinate"
           color={props.task.completedAt ? 'success' : 'primary'}
+          value={props.task.progress}
           {...props}
         />
       </Box>
@@ -95,7 +95,7 @@ export default function TaskListItem(props: TaskListItemProps) {
   };
 
   return (
-    <ListItem sx={props.sx} button={!!props.onClick as false} onClick={props.onClick}>
+    <ListItem button={!!props.onClick as false} onClick={props.onClick}>
       <ListItemText disableTypography>
         <Grid container spacing={2} alignItems="center" justifyContent="space-between">
           <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>

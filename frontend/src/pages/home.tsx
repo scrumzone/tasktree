@@ -1,22 +1,9 @@
 import React from 'react';
-import { Button, List, Typography } from '@mui/material';
-import UserService from '../services/UserService';
-import User, { BlankUser } from '../types/User';
-import AuthService from '../services/AuthService';
+import { List, Typography } from '@mui/material';
+import { BlankUser } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { clearCurrentUser } from '../store/user';
-import CreateTaskDialog from '../components/CreateTaskDialog';
-import ProjectService from '../services/ProjectService';
-import { BlankProject } from '../types/Project';
-import Task from '../types/Task';
-import EditTaskDialog from '../components/EditTaskDialog';
+import Task, { BlankTask } from '../types/Task';
 import ExpandableTaskList from '../components/ExpandableTaskList';
-
-function logout(setUser: React.Dispatch<React.SetStateAction<User>>, clearCurrentUser: () => void) {
-  AuthService.signOut();
-  setUser(BlankUser);
-  clearCurrentUser();
-}
 
 const task: Task = {
   name: 'Task1',
@@ -54,8 +41,6 @@ const task: Task = {
 
 export default function HomePage() {
   const [user, setUser] = React.useState(BlankUser);
-  const [dOpen, setDOpen] = React.useState(false);
-  const [dEOpen, setDEOpen] = React.useState(false);
   const dispatch = useAppDispatch();
 
   const current = useAppSelector((state) => state.user.current);
@@ -71,30 +56,7 @@ export default function HomePage() {
     <div>
       <Typography variant="h1">HOME PAGE</Typography>
       <Typography variant="h4">Hello, {user.username}!</Typography>
-      <Button variant="outlined" onClick={() => setDOpen(true)}>
-        Open CreateTaskDialog
-      </Button>
-      <CreateTaskDialog
-        open={dOpen}
-        onClose={() => setDOpen(false)}
-        onSubmit={(formData) => {
-          console.log(formData);
-        }}
-      />
-      <Button variant="outlined" onClick={() => setDEOpen(true)}>
-        Open EditTaskDialog
-      </Button>
-      <EditTaskDialog
-        open={dEOpen}
-        task={task}
-        onClose={() => setDEOpen(false)}
-        onSubmit={(formData) => {
-          console.log(formData);
-        }}
-      />
-      <List>
-        <ExpandableTaskList task={task} />
-      </List>
+      <ExpandableTaskList task={task} />
     </div>
   );
 }
