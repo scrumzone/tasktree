@@ -21,9 +21,34 @@ interface GetProjectFormProps {
 export default function ProjectHeader(props: GetProjectFormProps) {
 
   return (
-    <Typography component="h3" variant="h3">
-      {props.project.name}
-      {props.project.progress}% Completed
-    </Typography>
+    <Typography component="h3" variant="h3"
+      sx={{
+        marginTop: 8,
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+      }}>
+        <Typography align='left'
+          component="h3"
+          variant="h3"
+          sx={{
+            justifySelf: 'left',
+            marginRight: 'auto',
+            marginLeft: '30px'
+          }}>
+          {props.project.name}
+        </Typography>
+
+        <Typography align='center'
+          component="h3"
+          variant="h3"
+          sx={{
+            justifySelf: 'center',
+            
+            marginRight: 'auto'
+          }}>
+          {props.project.progress}% completed
+        </Typography>
+      </Typography>
   );
 }
