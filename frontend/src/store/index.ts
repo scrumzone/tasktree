@@ -1,24 +1,21 @@
 import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './user';
-import snackbarReducer from './snackbar';
-import { SnackbarState, UserState } from './types';
+import { UserState } from './types';
 import AuthService from '../services/AuthService';
 
 export type RootState = {
   user: UserState;
-  snackbar: SnackbarState;
 };
 
 function preloadState(): RootState {
   const jwt = AuthService.getJWT();
   const user = AuthService.decodeJWT(jwt);
-  return { user: { current: user, isLoggedIn: !!user }, snackbar: { message: '' } };
+  return { user: { current: user, isLoggedIn: !!user } };
 }
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
-    snackbar: snackbarReducer
+    user: userReducer
   },
   preloadedState: preloadState(),
   devTools: true
