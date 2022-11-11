@@ -15,6 +15,8 @@ import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
 import EditTaskDialog from '../EditTaskDialog';
 import CreateTaskDialog from '../CreateTaskDialog';
+import { useAppDispatch } from '../../store/hooks';
+import { showSnackbar } from '../../store/snackbar';
 
 interface TaskListItemProps {
   task: Task;
@@ -54,6 +56,7 @@ function IconGrid(
     setCreateDialogOpen: (e: boolean) => void;
     setEditDialogOpen: (e: boolean) => void;
     reloadProject: () => void;
+    dispatch: any;
   }
 ) {
   return (
@@ -66,34 +69,40 @@ function IconGrid(
         }}>
         <AddIcon />
       </IconButton>
-      <IconButton
-        onClick={(e) => {
-          e.stopPropagation();
-          e.preventDefault();
-          props.setEditDialogOpen(true);
-        }}>
-        <EditIcon />
-      </IconButton>
       {props.task.projectId == null && (
-        <IconButton
-          onClick={(e) => {
-            e.stopPropagation();
-            e.preventDefault();
-            if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
-              TaskService.deleteTask(props.task.id!).then(() => {
-                props.reloadProject();
-              });
-              props.setSnackbarOpen(true);
-            }
-          }}>
-          <DeleteIcon />
-        </IconButton>
+        <>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              props.setEditDialogOpen(true);
+            }}>
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              if (confirm(`Are you sure you want to delete task "${props.task.name}"?`)) {
+                TaskService.deleteTask(props.task.id!).then(() => {
+                  props.reloadProject();
+                  props.dispatch(
+                    showSnackbar({ message: 'Task deleted successfully', severity: 'success' })
+                  );
+                });
+                props.setSnackbarOpen(true);
+              }
+            }}>
+            <DeleteIcon />
+          </IconButton>
+        </>
       )}
     </Grid>
   );
 }
 
 export default function TaskListItem(props: TaskListItemProps) {
+  const dispatch = useAppDispatch();
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
   const [openCreate, setOpenCreate] = React.useState(false);
@@ -121,6 +130,9 @@ export default function TaskListItem(props: TaskListItemProps) {
                   props.task.completedAt = new Date();
                   TaskService.updateTask(props.task, props.task.id!).then(() => {
                     props.reloadProject();
+                    dispatch(
+                      showSnackbar({ message: 'Task completed successfully', severity: 'success' })
+                    );
                   });
                 }
               }}>
@@ -151,6 +163,7 @@ export default function TaskListItem(props: TaskListItemProps) {
               setCreateDialogOpen={setOpenCreate}
               setEditDialogOpen={setOpenEdit}
               reloadProject={props.reloadProject}
+              dispatch={dispatch}
             />
           )}
         </Grid>
@@ -162,7 +175,10 @@ export default function TaskListItem(props: TaskListItemProps) {
         onClose={() => setOpenEdit(false)}
         onSubmit={(formData) => {
           setOpenEdit(false);
-          TaskService.updateTask(formData, props.task.id!).then(() => props.reloadProject());
+          TaskService.updateTask(formData, props.task.id!).then(() => {
+            props.reloadProject();
+            dispatch(showSnackbar({ message: 'Task updated successfully', severity: 'success' }));
+          });
         }}
       />
 
@@ -170,7 +186,10 @@ export default function TaskListItem(props: TaskListItemProps) {
         open={openCreate}
         onClose={() => setOpenCreate(false)}
         onSubmit={(formData) => {
-          TaskService.createTask(formData, props.task.id!).then(() => props.reloadProject());
+          TaskService.createTask(formData, props.task.id!).then(() => {
+            props.reloadProject();
+            dispatch(showSnackbar({ message: 'Task created successfully', severity: 'success' }));
+          });
           setOpenCreate(false);
         }}
       />
