@@ -33,54 +33,55 @@ export default function ProjectsPage() {
   };
 
   return (
-    <Box
-      sx={{
-        marginTop: 8,
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '80%',
-        marginLeft: 'auto',
-        marginRight: 'auto'
-      }}>
+    <>
       <Box
         sx={{
           marginTop: 8,
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'column',
           alignItems: 'center',
-          alignContent: 'space-between',
-          width: '100%',
-          padding: '10px',
-          paddingBottom: '20px',
-          borderBottom: '1px solid darkgrey',
-          marginBottom: '10px'
+          width: '80%',
+          marginLeft: 'auto',
+          marginRight: 'auto'
         }}>
-        <Typography
-          component="h4"
-          variant="h4"
+        <Box
           sx={{
-            justifySelf: 'left',
-            marginLeft: '30px'
+            marginTop: 8,
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            alignContent: 'space-between',
+            width: '100%',
+            padding: '10px',
+            paddingBottom: '20px',
+            borderBottom: '1px solid darkgrey',
+            marginBottom: '10px'
           }}>
-          Projects
-        </Typography>
+          <Typography
+            component="h4"
+            variant="h4"
+            sx={{
+              justifySelf: 'left',
+              marginLeft: '30px'
+            }}>
+            Projects
+          </Typography>
 
-        <Button
-          variant="outlined"
-          onClick={handleClickOpen}
-          sx={{
-            justifySelf: 'right',
-            marginLeft: 'auto',
-            marginRight: '30px'
-          }}>
-          Create new project
-        </Button>
+          <Button
+            variant="outlined"
+            onClick={handleClickOpen}
+            sx={{
+              justifySelf: 'right',
+              marginLeft: 'auto',
+              marginRight: '30px'
+            }}>
+            Create new project
+          </Button>
+        </Box>
+
+        <ProjectList projects={projects} setProjects={setProjects} />
       </Box>
-
       <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
-
-      <ProjectList projects={projects} setProjects={setProjects} />
-    </Box>
+    </>
   );
 }
