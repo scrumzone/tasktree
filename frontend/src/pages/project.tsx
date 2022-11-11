@@ -1,17 +1,32 @@
-import * as React from 'react';
-import ListSubheader from '@mui/material/ListSubheader';
-import List from '@mui/material/List';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemText from '@mui/material/ListItemText';
-import Collapse from '@mui/material/Collapse';
+import React from 'react';
+import ProjectHeader from '../components/ProjectHeader';
+import Project, { BlankProject } from '../types/Project';
+import ExpandableTaskList from '../components/ExpandableTaskList';
 import { useParams } from 'react-router-dom';
-import { render } from '@testing-library/react';
-import ProjectComponent from '../components/Project'
+import ProjectService from '../services/ProjectService';
+import TaskListItem from '../components/TaskItem';
 
-class ProjectPage extends React.Component {
-  render(){
-    return <ProjectComponent />
-  }
+export default function ProjectPage() {
+  const params = useParams();
+  const [project, setProject] = React.useState<Project>(BlankProject);
+
+  const loadProject = () => {
+    ProjectService.getProject(parseInt(params.projectId!)).then((project) => {
+      setProject(project);
+    });
+  };
+
+  React.useEffect(() => {
+    loadProject();
+  }, []);
+
+  const TaskListTag =
+    project.root!.children && project.root!.children.length ? ExpandableTaskList : TaskListItem;
+
+  return (
+    <>
+      <ProjectHeader project={project} />
+      <TaskListTag task={project.root!} reloadProject={loadProject} />
+    </>
+  );
 }
-
-export default ProjectPage
