@@ -2,43 +2,15 @@ import * as React from 'react';
 import ListItem from '@mui/material/ListItem';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
-import ProjectService from '../../services/ProjectService';
-import Project, { BlankProject } from '../../types/Project';
-import CreateProjectDialog from '../CreateProjectDialog';
-import ProjectListItem from '../ProjectItem';
-import ProjectList from '../ProjectList';
+import ProjectService from '../services/ProjectService';
+import Project, { BlankProject } from '../types/Project';
+import CreateProjectDialog from '../components/CreateProjectDialog';
+import ProjectListItem from '../components/ProjectItem';
+import ProjectList from '../components/ProjectList';
 
-export default function VirtualizedList() {
+export default function ProjectsPage() {
   const [projects, setProjects] = React.useState<Project[]>([]);
   const [open, setOpen] = React.useState(false);
-  const [openDel, setOpenDel] = React.useState(false);
-  const [formData, setFormData] = React.useState<Project>({
-    name: '',
-    description: '',
-    progress: 0
-  });
-
-  function renderRow(props: ListChildComponentProps) {
-    const { data, index, style } = props;
-
-    function onEditSubmit(formData: Project) {
-      data[index].name = formData.name;
-      data[index].description = formData.description;
-      ProjectService.updateProject(data[index], data[index].id!);
-    }
-
-    function onDelete() {
-      ProjectService.deleteProject(data[index].id!);
-      setProjects(projects.filter((project) => project != data[index]));
-      setOpenDel(true);
-    }
-
-    return (
-      <ListItem style={style}>
-        <ProjectListItem onEditSubmit={onEditSubmit} onDelete={onDelete} project={data[index]} />
-      </ListItem>
-    );
-  }
 
   React.useEffect(() => {
     const fetchProjects = async () => {
@@ -54,25 +26,10 @@ export default function VirtualizedList() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  const onChange = (e: React.SyntheticEvent) => {
-    const target = e.target as HTMLInputElement;
-    setFormData((formData) => ({ ...formData, [target.name]: target.value }));
-  };
-
   const handleSubmit = async (data: Project) => {
     const project = await ProjectService.createProject(data);
     setProjects([...projects, project]);
     handleClose();
-  };
-
-  // handle close for delete
-  const handleDelClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpenDel(false);
   };
 
   return (

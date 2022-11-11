@@ -7,7 +7,7 @@ import { setCurrentUser } from '../../store/user';
 import { useNavigate } from 'react-router-dom';
 import UserService from '../../services/UserService';
 
-export default function LoginDesktop() {
+export default function LoginMobile() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -37,16 +37,18 @@ export default function LoginDesktop() {
             id="passIn"
             onChange={(e) => setPassword(e.target.value)}
             variant="outlined"
-            type="password" 
+            type="password"
             placeholder="Password"></TextField>
           <Button id="loginBtn" onClick={onSubmit} variant="contained">
             Log In
-          </Button><br></br><br></br>
-          
+          </Button>
+          <br></br>
+          <br></br>
+
           <Typography id="signUpDiv">
             Don't have an account? &nbsp;
             <Link className="existingUser" href="/SignUp" variant="body2">
-                Sign Up
+              Sign Up
             </Link>
           </Typography>
         </form>

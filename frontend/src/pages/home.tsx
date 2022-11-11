@@ -29,7 +29,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div>
+    <>
       <Typography variant="h1">Hello, {user.firstName}!</Typography>
       <Typography variant="h4">
         You have completed{' '}
@@ -43,6 +43,6 @@ export default function HomePage() {
       <Box sx={{ px: 12, mx: 12 }}>
         <ProjectList projects={getRecentProjects(projects)} setProjects={setProjects} />
       </Box>
-    </div>
+    </>
   );
 }
