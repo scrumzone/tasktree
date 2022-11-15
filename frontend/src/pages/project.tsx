@@ -18,7 +18,7 @@ export default function ProjectPage() {
       setProject(project);
       if (project.progress === 100 && initComplete === false && !initRender) {
         setDisplayConfetti(true);
-        setTimeout(() => setDisplayConfetti(false), 5000);
+        setTimeout(() => setDisplayConfetti(false), 15000); // larger than it needs to be to overcome differences in machines
       }
     });
   };
