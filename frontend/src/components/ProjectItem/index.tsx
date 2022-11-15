@@ -100,18 +100,17 @@ export default function ProjectListItem(props: GetProjectFormProps) {
             </Grid>
           </ListItemText>
         </ListItemButton>
-
-        {/* Edit project popup */}
-        <EditProjectDialog
-          open={openEdit}
-          project={props.project}
-          onClose={() => setOpenEdit(false)}
-          onSubmit={(formData) => {
-            props.onEditSubmit(formData);
-            setOpenEdit(false);
-          }}
-        />
       </ListItem>
+      {/* Edit project popup */}
+      <EditProjectDialog
+        open={openEdit}
+        project={props.project}
+        onClose={() => setOpenEdit(false)}
+        onSubmit={(formData) => {
+          props.onEditSubmit(formData);
+          setOpenEdit(false);
+        }}
+      />
     </>
   );
 }
