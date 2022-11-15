@@ -6,8 +6,10 @@ import { useParams } from 'react-router-dom';
 import ProjectService from '../services/ProjectService';
 import TaskListItem from '../components/TaskItem';
 import Confetti from 'react-confetti';
+import { useWindowSize } from '../App'
 
 export default function ProjectPage() {
+  const windowSize = useWindowSize()
   const params = useParams();
   const [project, setProject] = React.useState<Project>(BlankProject);
   const [displayConfetti, setDisplayConfetti] = React.useState(false);
@@ -33,7 +35,7 @@ export default function ProjectPage() {
 
   return (
     <>
-      <Confetti run={displayConfetti} numberOfPieces={1500} recycle={false} />
+      <Confetti width={windowSize.width} height={windowSize.height} run={displayConfetti} numberOfPieces={1500} recycle={false} />
       <ProjectHeader project={project} />
       <TaskListTag task={project.root!} reloadProject={() => loadProject(false)} />
     </>
