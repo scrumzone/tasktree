@@ -71,14 +71,17 @@ export default function ProjectListItem(props: GetProjectFormProps) {
               <LinearProgressWithLabel variant="determinate" project={props.project} />
             </Grid>
             <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  setOpenEdit(true);
-                }}>
-                <EditIcon />
-              </IconButton>
+              {props.project.progress === 100 && <IconButton />}
+              {props.project.progress !== 100 && (
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setOpenEdit(true);
+                  }}>
+                  <EditIcon />
+                </IconButton>
+              )}
 
               <IconButton
                 onClick={(e) => {
