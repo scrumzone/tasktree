@@ -12,11 +12,23 @@ import { clearCurrentUser } from './store/user';
 import LandingPage from './pages/landing';
 import { authorizedRoutes, unauthorizedRoutes } from './router';
 import { useNavigate } from 'react-router-dom';
+import { Alert, Snackbar } from '@mui/material';
+import { SnackbarState } from './store/types';
+import { clearSnackbar } from './store/snackbar';
 
 function App() {
   const { isLoggedIn } = useAppSelector((state) => state.user);
+  const snackbar = useAppSelector((state) => state.snackbar);
   const dispatch = useAppDispatch();
   const routes = isLoggedIn ? authorizedRoutes : unauthorizedRoutes;
+
+  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    dispatch(clearSnackbar());
+  };
 
   const navItems = isLoggedIn
     ? [
@@ -66,6 +78,11 @@ function App() {
           })}
         </Routes>
       </Router>
+      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 }

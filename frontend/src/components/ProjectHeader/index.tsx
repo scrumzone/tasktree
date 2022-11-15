@@ -47,7 +47,7 @@ export default function ProjectHeader(props: GetProjectFormProps) {
             
             marginRight: 'auto'
           }}>
-          {props.project.progress}% completed
+          {Math.round(props.project.progress)}% completed
         </Typography>
       </Typography>
   );

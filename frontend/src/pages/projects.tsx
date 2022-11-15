@@ -7,8 +7,11 @@ import Project, { BlankProject } from '../types/Project';
 import CreateProjectDialog from '../components/CreateProjectDialog';
 import ProjectListItem from '../components/ProjectItem';
 import ProjectList from '../components/ProjectList';
+import { showSnackbar } from '../store/snackbar';
+import { useAppDispatch } from '../store/hooks';
 
 export default function ProjectsPage() {
+  const dispatch = useAppDispatch();
   const [projects, setProjects] = React.useState<Project[]>([]);
   const [open, setOpen] = React.useState(false);
 
@@ -30,6 +33,7 @@ export default function ProjectsPage() {
     const project = await ProjectService.createProject(data);
     setProjects([...projects, project]);
     handleClose();
+    dispatch(showSnackbar({ message: 'Project created successfully', severity: 'success' }));
   };
 
   return (
