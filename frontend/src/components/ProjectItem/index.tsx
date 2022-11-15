@@ -26,7 +26,7 @@ interface GetProjectFormProps {
   onDelete: () => void;
 }
 
-interface ProgressBarProps extends LinearProgressProps {
+interface ProgressBarProps {
   project: Project;
 }
 
@@ -37,7 +37,7 @@ function LinearProgressWithLabel(props: ProgressBarProps) {
         <LinearProgress
           variant="determinate"
           color={props.project.progress === 100 ? 'success' : 'primary'}
-          {...props}
+          value={props.project.progress}
         />
       </Box>
       <Box sx={{ minWidth: 35 }}>
@@ -68,7 +68,7 @@ export default function ProjectListItem(props: GetProjectFormProps) {
               </Typography>
             </Grid>
             <Grid xs={8}>
-              <LinearProgressWithLabel variant="determinate" project={props.project} />
+              <LinearProgressWithLabel project={props.project} />
             </Grid>
             <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               {props.project.progress === 100 && <IconButton />}
