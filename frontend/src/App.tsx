@@ -78,7 +78,7 @@ function App() {
           })}
         </Routes>
       </Router>
-      <Snackbar open={snackbar.message !== ''} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleClose}>
         <Alert onClose={handleClose} severity={snackbar.severity} sx={{ width: '100%' }}>
           {snackbar.message}
         </Alert>

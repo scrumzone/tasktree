@@ -6,6 +6,7 @@ export interface UserState {
 }
 
 export interface SnackbarState {
+  open?: boolean;
   message: string;
   severity?: 'success' | 'info' | 'warning' | 'error';
 }

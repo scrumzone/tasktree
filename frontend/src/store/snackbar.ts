@@ -2,6 +2,7 @@ import { createSlice, current, PayloadAction } from '@reduxjs/toolkit';
 import { SnackbarState } from './types';
 
 const initialState: SnackbarState = {
+  open: false,
   message: ''
 };
 
@@ -10,11 +11,12 @@ export const snackbarSlice = createSlice({
   initialState,
   reducers: {
     showSnackbar: (state, action: PayloadAction<SnackbarState>) => {
+      state.open = true;
       state.message = action.payload.message;
       state.severity = action.payload.severity;
     },
-    clearSnackbar: (_) => {
-      return initialState;
+    clearSnackbar: (state) => {
+      state.open = false;
     }
   }
 });
