@@ -1,11 +1,8 @@
 import * as React from 'react';
-import ListItem from '@mui/material/ListItem';
-import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import { Box, Button, Typography, Snackbar, Alert } from '@mui/material';
+import { Box, Button, Grid, Skeleton, Typography } from '@mui/material';
 import ProjectService from '../services/ProjectService';
-import Project, { BlankProject } from '../types/Project';
+import Project from '../types/Project';
 import CreateProjectDialog from '../components/CreateProjectDialog';
-import ProjectListItem from '../components/ProjectItem';
 import ProjectList from '../components/ProjectList';
 import { showSnackbar } from '../store/snackbar';
 import { useAppDispatch } from '../store/hooks';
@@ -84,7 +81,17 @@ export default function ProjectsPage() {
 
       <CreateProjectDialog open={open} onClose={handleClose} onSubmit={handleSubmit} />
 
-      <ProjectList projects={projects} setProjects={setProjects} />
+      {projects.length > 0 ? (
+        <ProjectList projects={projects} setProjects={setProjects} />
+      ) : (
+        <Grid container spacing={2} sx={{ direction: 'row', justifyContent: 'center' }}>
+          {Array(4).fill(
+            <Grid item xs={12}>
+              <Skeleton variant="rounded" height={64} />
+            </Grid>
+          )}
+        </Grid>
+      )}
     </Box>
   );
 }

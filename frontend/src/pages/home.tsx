@@ -1,7 +1,6 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
-import User, { BlankUser } from '../types/User';
-import AuthService from '../services/AuthService';
+import { Box, Grid, Skeleton, Typography } from '@mui/material';
+import { BlankUser } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Project from '../types/Project';
 import ProjectService from '../services/ProjectService';
@@ -41,7 +40,17 @@ export default function HomePage() {
       <Typography variant="h5">Recent projects</Typography>
       <br />
       <Box sx={{ px: 12, mx: 12 }}>
-        <ProjectList projects={getRecentProjects(projects)} setProjects={setProjects} />
+        {projects.length > 0 ? (
+          <ProjectList projects={getRecentProjects(projects)} setProjects={setProjects} />
+        ) : (
+          <Grid container spacing={2} sx={{ direction: 'row', justifyContent: 'center' }}>
+            {Array(4).fill(
+              <Grid item xs={12}>
+                <Skeleton variant="rounded" height={64} />
+              </Grid>
+            )}
+          </Grid>
+        )}
       </Box>
     </>
   );
