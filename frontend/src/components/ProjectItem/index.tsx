@@ -53,51 +53,54 @@ export default function ProjectListItem(props: GetProjectFormProps) {
   const [openEdit, setOpenEdit] = React.useState(false);
 
   return (
-    <ListItem disablePadding>
-      <ListItemButton component={Link} to={`/projects/${props.project.id}`}>
-        <ListItemText disableTypography>
-          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
-              <Typography
-                sx={{
-                  textDecoration: props.project.progress === 100 ? 'line-through' : '',
-                  color: props.project.progress === 100 ? 'gray' : ''
-                }}
-                variant="h6">
-                {props.project.name}
-              </Typography>
-            </Grid>
-            <Grid xs={8}>
-              <LinearProgressWithLabel project={props.project} />
-            </Grid>
-            <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-              {props.project.progress === 100 && <IconButton />}
-              {props.project.progress !== 100 && (
+    <>
+      <ListItem disablePadding>
+        <ListItemButton component={Link} to={`/projects/${props.project.id}`}>
+          <ListItemText disableTypography>
+            <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+              <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
+                <Typography
+                  sx={{
+                    textDecoration: props.project.progress === 100 ? 'line-through' : '',
+                    color: props.project.progress === 100 ? 'gray' : ''
+                  }}
+                  variant="h6">
+                  {props.project.name}
+                </Typography>
+              </Grid>
+              <Grid xs={8}>
+                <LinearProgressWithLabel project={props.project} />
+              </Grid>
+              <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                {props.project.progress === 100 && <IconButton />}
+                {props.project.progress !== 100 && (
+                  <IconButton
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      e.preventDefault();
+                      setOpenEdit(true);
+                    }}>
+                    <EditIcon />
+                  </IconButton>
+                )}
+
                 <IconButton
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
-                    setOpenEdit(true);
+                    if (
+                      confirm(`Are you sure you want to delete project "${props.project.name}"?`)
+                    ) {
+                      props.onDelete();
+                    }
                   }}>
-                  <EditIcon />
+                  <DeleteIcon />
                 </IconButton>
-              )}
-
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  if (confirm(`Are you sure you want to delete project "${props.project.name}"?`)) {
-                    props.onDelete();
-                  }
-                }}>
-                <DeleteIcon />
-              </IconButton>
+              </Grid>
             </Grid>
-          </Grid>
-        </ListItemText>
-      </ListItemButton>
-
+          </ListItemText>
+        </ListItemButton>
+      </ListItem>
       {/* Edit project popup */}
       <EditProjectDialog
         open={openEdit}
@@ -108,6 +111,6 @@ export default function ProjectListItem(props: GetProjectFormProps) {
           setOpenEdit(false);
         }}
       />
-    </ListItem>
+    </>
   );
 }

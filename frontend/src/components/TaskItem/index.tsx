@@ -116,59 +116,65 @@ export default function TaskListItem(props: TaskListItemProps) {
   };
 
   return (
-    <ListItem button={!!props.onClick as false} onClick={props.onClick}>
-      <ListItemText disableTypography>
-        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-          <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
-            <IconButton
-              onClick={(e) => {
-                e.stopPropagation();
-                e.preventDefault();
-                if (
-                  confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)
-                ) {
-                  props.task.completedAt = new Date();
-                  TaskService.updateTask(props.task, props.task.id!).then(() => {
-                    props.reloadProject();
-                    dispatch(
-                      showSnackbar({ message: 'Task completed successfully', severity: 'success' })
-                    );
-                  });
-                }
-              }}>
-              {props.task.completedAt && (
-                <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'} />
-              )}
-              {!props.task.completedAt && (
-                <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'} />
-              )}
-            </IconButton>
-            <Typography
-              sx={{
-                textDecoration: props.task.completedAt ? 'line-through' : '',
-                color: props.task.completedAt ? 'gray' : ''
-              }}
-              variant="h6">
-              {props.task.name}
-            </Typography>
+    <>
+      <ListItem button={!!props.onClick as false} onClick={props.onClick}>
+        <ListItemText disableTypography>
+          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
+              <IconButton
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  if (
+                    confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)
+                  ) {
+                    props.task.completedAt = new Date();
+                    TaskService.updateTask(props.task, props.task.id!).then(() => {
+                      props.reloadProject();
+                      dispatch(
+                        showSnackbar({
+                          message: 'Task completed successfully',
+                          severity: 'success'
+                        })
+                      );
+                    });
+                  }
+                }}>
+                {props.task.completedAt && (
+                  <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'} />
+                )}
+                {!props.task.completedAt && (
+                  <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'} />
+                )}
+              </IconButton>
+              <Typography
+                sx={{
+                  textDecoration: props.task.completedAt ? 'line-through' : '',
+                  color: props.task.completedAt ? 'gray' : ''
+                }}
+                variant="h6">
+                {props.task.name}
+              </Typography>
+            </Grid>
+            <Grid xs={8}>
+              <LinearProgressWithLabel variant="determinate" task={props.task} />
+            </Grid>
+            {props.task.completedAt && <Grid xs={2} container justifyContent="center"></Grid>}
+            {!props.task.completedAt && (
+              <IconGrid
+                task={props.task}
+                setSnackbarOpen={setOpenSnackbar}
+                setCreateDialogOpen={setOpenCreate}
+                setEditDialogOpen={setOpenEdit}
+                reloadProject={props.reloadProject}
+                dispatch={dispatch}
+              />
+            )}
           </Grid>
-          <Grid xs={8}>
-            <LinearProgressWithLabel variant="determinate" task={props.task} />
-          </Grid>
-          {props.task.completedAt && <Grid xs={2} container justifyContent="center"></Grid>}
-          {!props.task.completedAt && (
-            <IconGrid
-              task={props.task}
-              setSnackbarOpen={setOpenSnackbar}
-              setCreateDialogOpen={setOpenCreate}
-              setEditDialogOpen={setOpenEdit}
-              reloadProject={props.reloadProject}
-              dispatch={dispatch}
-            />
-          )}
-        </Grid>
-      </ListItemText>
+        </ListItemText>
 
+        {props.children}
+      </ListItem>
       <EditTaskDialog
         open={openEdit}
         task={props.task}
@@ -193,17 +199,6 @@ export default function TaskListItem(props: TaskListItemProps) {
           setOpenCreate(false);
         }}
       />
-
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message="Task successfully deleted">
-        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-          Task successfully deleted
-        </Alert>
-      </Snackbar>
-      {props.children}
-    </ListItem>
+    </>
   );
 }
