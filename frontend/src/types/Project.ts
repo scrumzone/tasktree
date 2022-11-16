@@ -11,8 +11,8 @@ export default interface Project {
 
 export const BlankProject: Project = {
   id: 0,
-  name: 'blank',
-  description: 'blank',
+  name: '',
+  description: '',
   progress: 0,
   root: BlankTask
 };
