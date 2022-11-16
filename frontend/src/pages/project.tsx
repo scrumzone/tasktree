@@ -27,7 +27,7 @@ export default function ProjectPage() {
   };
 
   React.useEffect(() => {
-    setTimeout(() => loadProject(true), 3000);
+    loadProject(true);
     setInitComplete(project.progress === 100);
   }, []);
 
@@ -47,20 +47,6 @@ export default function ProjectPage() {
       {project != BlankProject ? (
         <TaskListTag task={project.root!} reloadProject={() => loadProject(false)} />
       ) : (
-        // <Grid
-        //   container
-        //   spacing={2}
-        //   sx={{ direction: 'row', justifyContent: 'center', marginTop: '10px' }}>
-        //   <Grid item xs={11}>
-        //     <Skeleton variant="rounded" height={56} />
-        //   </Grid>
-        //   <Grid item xs={11}>
-        //     <Skeleton variant="rounded" height={56} />
-        //   </Grid>
-        //   <Grid item xs={11}>
-        //     <Skeleton variant="rounded" height={56} />
-        //   </Grid>
-        // </Grid>
         <Skeleton
           variant="rounded"
           height={56}
