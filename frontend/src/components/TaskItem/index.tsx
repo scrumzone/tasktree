@@ -5,18 +5,18 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
-import ListItemButton from '@mui/material/ListItemButton';
 import Typography from '@mui/material/Typography';
 import Task from '../../types/Task';
 import ListItemText from '@mui/material/ListItemText';
 import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress';
-import { Alert, Box, ListItem, Snackbar } from '@mui/material';
+import { Box, ListItem } from '@mui/material';
 import Grid from '@mui/material/Unstable_Grid2';
 import TaskService from '../../services/TaskService';
 import EditTaskDialog from '../EditTaskDialog';
 import CreateTaskDialog from '../CreateTaskDialog';
 import { useAppDispatch } from '../../store/hooks';
 import { showSnackbar } from '../../store/snackbar';
+import shallowEqual from '../../util/object-equality';
 
 interface TaskListItemProps {
   task: Task;
@@ -106,6 +106,7 @@ export default function TaskListItem(props: TaskListItemProps) {
   const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
   const [openCreate, setOpenCreate] = React.useState(false);
+  const [preEditTask, setPreEditTask] = React.useState(props.task);
 
   const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
     if (reason === 'clickaway') {
@@ -183,7 +184,10 @@ export default function TaskListItem(props: TaskListItemProps) {
           setOpenEdit(false);
           TaskService.updateTask(formData, props.task.id!).then(() => {
             props.reloadProject();
-            dispatch(showSnackbar({ message: 'Task updated successfully', severity: 'success' }));
+            if (!shallowEqual(formData, preEditTask)) {
+              dispatch(showSnackbar({ message: 'Task updated successfully', severity: 'success' }));
+              setPreEditTask(formData);
+            }
           });
         }}
       />
