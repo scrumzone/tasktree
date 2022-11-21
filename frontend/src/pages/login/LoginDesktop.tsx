@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TextField, Button, Link, Typography } from '@mui/material';
-import './login.css';
 import AuthService from '../../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
 import { setCurrentUser } from '../../store/user';
@@ -22,37 +21,57 @@ export default function LoginDesktop() {
   };
 
   return (
-    <div id="wrapper1">
-      <div id="loginField">
-        <h1>Account Log In</h1>
-        <form>
-          <TextField
-            id="userIn"
-            onChange={(e) => setUsername(e.target.value)}
-            variant="outlined"
-            placeholder="Username"></TextField>
-          <br />
-          <br />
-          <TextField
-            id="passIn"
-            onChange={(e) => setPassword(e.target.value)}
-            variant="outlined"
-            type="password"
-            placeholder="Password"></TextField>
-          <Button id="loginBtn" onClick={onSubmit} variant="contained">
-            Log In
-          </Button>
-          <br></br>
-          <br></br>
+    <Typography sx={{marginTop:6}}>
+      <Typography component="h1" variant="h5">Account Log In</Typography><br/>
+      <form>
+        <TextField
+          id="userIn"
+          onChange={(e) => setUsername(e.target.value)}
+          variant="outlined"
+          placeholder="Username"
+          sx={{
+            width:500,
+            height:15,
+            marginBottom:5,
+          }
+        }/>
+        <br/>
+        <br/>
 
-          <Typography id="signUpDiv">
-            Don't have an account? &nbsp;
-            <Link className="existingUser" href="/SignUp" variant="body2">
-              Sign Up
-            </Link>
-          </Typography>
-        </form>
-      </div>
-    </div>
+        <TextField
+          id="passIn"
+          onChange={(e) => setPassword(e.target.value)}
+          variant="outlined"
+          type="password"
+          placeholder="Password"
+          sx={{
+            width:500,
+            height:15,
+            marginBottom:5,
+          }}
+        />
+        <br/>
+        <br/>
+
+        <Button 
+          id="loginBtn" 
+          onClick={onSubmit} 
+          variant="contained"
+          sx={{
+            width:500,
+            color:'white',
+            backgroundColor:'#1565c0',
+          }}>Log In</Button>
+        <br/>
+        <br/>
+
+        <Typography id="signUpDiv">
+          Don't have an account? &nbsp;
+          <Link className="existingUser" href="/SignUp" variant="body2">
+            Sign Up
+          </Link>
+        </Typography>
+      </form>
+    </Typography>
   );
 }
