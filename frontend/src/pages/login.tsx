@@ -62,7 +62,7 @@ export default function LoginDesktop() {
         <Button
           id="loginBtn"
           variant="contained"
-          type='submit'
+          type="submit"
           sx={{
             width: 500,
             color: 'white',
