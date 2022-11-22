@@ -40,8 +40,7 @@ export default function LandingPage() {
                   sx={{
                     padding: 2
                   }}>
-                  {' '}
-                  Welcome to TaskTree!{' '}
+                  Welcome to TaskTree!
                 </Typography>
               </Paper>
             </Grid>
