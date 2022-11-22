@@ -1,14 +1,10 @@
-import { Snackbar, Alert, ListItem } from '@mui/material';
-import { ThunkDispatch } from '@reduxjs/toolkit';
 import * as React from 'react';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
-import { AnyAction } from 'redux';
-import projects from '../../pages/projects';
 import ProjectService from '../../services/ProjectService';
 import { useAppDispatch } from '../../store/hooks';
 import { showSnackbar } from '../../store/snackbar';
-import { SnackbarState, UserState } from '../../store/types';
 import Project from '../../types/Project';
+import shallowEqual from '../../util/object-equality';
 import ProjectListItem from '../ProjectItem';
 
 export interface ProjectListProps {
@@ -18,11 +14,15 @@ export interface ProjectListProps {
 
 function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
+  var preEditProject: Project = JSON.parse(JSON.stringify(data.projects[index]));
   function onEditSubmit(formData: Project) {
     data.projects[index].name = formData.name;
     data.projects[index].description = formData.description;
-    ProjectService.updateProject(data.projects[index], data.projects[index].id!);
-    data.dispatch(showSnackbar({ message: 'Project updated successfully', severity: 'success' }));
+    if (!shallowEqual(preEditProject, data.projects[index])) {
+      ProjectService.updateProject(data.projects[index], data.projects[index].id!);
+      data.dispatch(showSnackbar({ message: 'Project updated successfully', severity: 'success' }));
+    }
+    preEditProject = JSON.parse(JSON.stringify(data.projects[index]));
   }
 
   function onDelete() {
