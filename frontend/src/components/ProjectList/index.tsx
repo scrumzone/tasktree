@@ -18,9 +18,8 @@ function renderRow(props: ListChildComponentProps) {
   function onEditSubmit(formData: Project) {
     data.projects[index].name = formData.name;
     data.projects[index].description = formData.description;
-    ProjectService.updateProject(data.projects[index], data.projects[index].id!);
-    console.log(data.projects[index], preEditProject);
     if (!shallowEqual(preEditProject, data.projects[index])) {
+      ProjectService.updateProject(data.projects[index], data.projects[index].id!);
       data.dispatch(showSnackbar({ message: 'Project updated successfully', severity: 'success' }));
     }
     preEditProject = JSON.parse(JSON.stringify(data.projects[index]));

@@ -182,13 +182,13 @@ export default function TaskListItem(props: TaskListItemProps) {
         onClose={() => setOpenEdit(false)}
         onSubmit={(formData) => {
           setOpenEdit(false);
-          TaskService.updateTask(formData, props.task.id!).then(() => {
-            props.reloadProject();
-            if (!shallowEqual(formData, preEditTask)) {
-              dispatch(showSnackbar({ message: 'Task updated successfully', severity: 'success' }));
-              setPreEditTask(formData);
-            }
-          });
+          if (!shallowEqual(formData, preEditTask)) {
+            TaskService.updateTask(formData, props.task.id!).then(() => {
+              props.reloadProject();
+            });
+            dispatch(showSnackbar({ message: 'Task updated successfully', severity: 'success' }));
+            setPreEditTask(formData);
+          }
         }}
       />
 
