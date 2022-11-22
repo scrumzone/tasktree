@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Skeleton, Typography } from '@mui/material';
+import { Box, Grid, Skeleton, Typography } from '@mui/material';
 import { BlankUser } from '../types/User';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import Project, { BlankProject } from '../types/Project';
@@ -50,7 +50,17 @@ function displayProjects(projects: Project[], setProjects: (e: Project[]) => voi
       <Typography variant="h5">Recent projects</Typography>
       <br />
       <Box sx={{ px: 12, mx: 12 }}>
-        <ProjectList projects={getRecentProjects(projects)} setProjects={setProjects} />
+        {projects.length > 0 ? (
+          <ProjectList projects={getRecentProjects(projects)} setProjects={setProjects} />
+        ) : (
+          <Grid container spacing={2} sx={{ direction: 'row', justifyContent: 'center' }}>
+            {Array(4).fill(
+              <Grid item xs={12}>
+                <Skeleton variant="rounded" height={64} />
+              </Grid>
+            )}
+          </Grid>
+        )}
       </Box>
     </>
   );
