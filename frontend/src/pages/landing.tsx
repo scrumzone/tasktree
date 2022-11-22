@@ -11,10 +11,10 @@ export default function LandingPage() {
 
   return (
     <>
-      <Typography 
-        // sx={{ backgroundColor: '#3087d1' }}
+      <Typography
+      // sx={{ backgroundColor: '#3087d1' }}
       >
-        <img src={backgroundTop} style={{ opacity: 0.7, maxWidth:'100%', }}></img>
+        <img src={backgroundTop} style={{ opacity: 0.7, maxWidth: '100%' }}></img>
         <Typography
           sx={{
             padding: 5,
@@ -74,7 +74,7 @@ export default function LandingPage() {
                   Catagorize your multiple projects and add subtasks that allow you to focus on what
                   is important. Simply click on a new project and add as many subtasks as you need.
                 </p>
-                <img style={{width: '100%'}} src={project1}></img>
+                <img style={{ width: '100%' }} src={project1}></img>
               </Paper>
             </Grid>
             <Grid item xs={4}>
@@ -114,7 +114,7 @@ export default function LandingPage() {
             </Grid>
           </Grid>
         </Typography>
-        <img src={backgroundBot} style={{ opacity: 0.7, maxWidth:'100%'}}></img>
+        <img src={backgroundBot} style={{ opacity: 0.7, maxWidth: '100%' }}></img>
       </Typography>
     </>
   );
