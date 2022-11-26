@@ -118,91 +118,102 @@ export default function TaskListItem(props: TaskListItemProps) {
 
   return (
     <>
-      <ListItem button={!!props.onClick as false} onClick={props.onClick}>
-        <ListItemText disableTypography>
-          <Grid container spacing={2} alignItems="center" justifyContent="space-between">
-            <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
-              <IconButton
-                onClick={(e) => {
-                  e.stopPropagation();
-                  e.preventDefault();
-                  if (
-                    confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)
-                  ) {
-                    props.task.completedAt = new Date();
-                    TaskService.updateTask(props.task, props.task.id!).then(() => {
-                      props.reloadProject();
-                      dispatch(
-                        showSnackbar({
-                          message: 'Task completed successfully',
-                          severity: 'success'
-                        })
-                      );
-                    });
-                  }
-                }}>
-                {props.task.completedAt && (
-                  <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'} />
-                )}
-                {!props.task.completedAt && (
-                  <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'} />
-                )}
-              </IconButton>
-              <Typography
-                sx={{
-                  textDecoration: props.task.completedAt ? 'line-through' : '',
-                  color: props.task.completedAt ? 'gray' : ''
-                }}
-                variant="h6">
-                {props.task.name}
-              </Typography>
+      <div>
+        <ListItem button={!!props.onClick as false} onClick={props.onClick}>
+          <ListItemText disableTypography>
+            <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+              <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (
+                      confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)
+                    ) {
+                      props.task.completedAt = new Date();
+                      TaskService.updateTask(props.task, props.task.id!).then(() => {
+                        props.reloadProject();
+                        dispatch(
+                          showSnackbar({
+                            message: 'Task completed successfully',
+                            severity: 'success'
+                          })
+                        );
+                      });
+                    }
+                  }}>
+                  {props.task.completedAt && (
+                    <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'} />
+                  )}
+                  {!props.task.completedAt && (
+                    <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'} />
+                  )}
+                </IconButton>
+                <Typography
+                  sx={{
+                    textDecoration: props.task.completedAt ? 'line-through' : '',
+                    color: props.task.completedAt ? 'gray' : ''
+                  }}
+                  variant="h6">
+                  {props.task.name}
+                </Typography>
+              </Grid>
+              <Grid xs={8}>
+                <LinearProgressWithLabel variant="determinate" task={props.task} />
+              </Grid>
+              {props.task.completedAt && <Grid xs={2} container justifyContent="center"></Grid>}
+              {!props.task.completedAt && (
+                <IconGrid
+                  task={props.task}
+                  setSnackbarOpen={setOpenSnackbar}
+                  setCreateDialogOpen={setOpenCreate}
+                  setEditDialogOpen={setOpenEdit}
+                  reloadProject={props.reloadProject}
+                  dispatch={dispatch}
+                />
+              )}
             </Grid>
-            <Grid xs={8}>
-              <LinearProgressWithLabel variant="determinate" task={props.task} />
-            </Grid>
-            {props.task.completedAt && <Grid xs={2} container justifyContent="center"></Grid>}
-            {!props.task.completedAt && (
-              <IconGrid
-                task={props.task}
-                setSnackbarOpen={setOpenSnackbar}
-                setCreateDialogOpen={setOpenCreate}
-                setEditDialogOpen={setOpenEdit}
-                reloadProject={props.reloadProject}
-                dispatch={dispatch}
-              />
-            )}
-          </Grid>
+          </ListItemText>
+          {props.children}
+        </ListItem>
+        <ListItemText>
+          <Typography sx={{
+                    textDecoration: props.task.completedAt ? 'line-through' : '',
+                    color: props.task.completedAt ? 'gray' : ''
+                  }} variant = "h6">
+                
+            {props.task.description}
+          </Typography>
         </ListItemText>
+        <EditTaskDialog
+          open={openEdit}
+          task={props.task}
+          onClose={() => setOpenEdit(false)}
+          onSubmit={(formData) => {
+            setOpenEdit(false);
+            if (!shallowEqual(formData, preEditTask)) {
+              TaskService.updateTask(formData, props.task.id!).then(() => {
+                props.reloadProject();
+              });
+              dispatch(showSnackbar({ message: 'Task updated successfully', severity: 'success' }));
+              setPreEditTask(formData);
+            }
+          }}
+        />
 
-        {props.children}
-      </ListItem>
-      <EditTaskDialog
-        open={openEdit}
-        task={props.task}
-        onClose={() => setOpenEdit(false)}
-        onSubmit={(formData) => {
-          setOpenEdit(false);
-          if (!shallowEqual(formData, preEditTask)) {
-            TaskService.updateTask(formData, props.task.id!).then(() => {
+        <CreateTaskDialog
+          open={openCreate}
+          onClose={() => setOpenCreate(false)}
+          onSubmit={(formData) => {
+            TaskService.createTask(formData, props.task.id!).then(() => {
               props.reloadProject();
+              dispatch(showSnackbar({ message: 'Task created successfully', severity: 'success' }));
             });
-            dispatch(showSnackbar({ message: 'Task updated successfully', severity: 'success' }));
-            setPreEditTask(formData);
-          }
-        }}
-      />
-
-      <CreateTaskDialog
-        open={openCreate}
-        onClose={() => setOpenCreate(false)}
-        onSubmit={(formData) => {
-          TaskService.createTask(formData, props.task.id!).then(() => {
-            props.reloadProject();
-            dispatch(showSnackbar({ message: 'Task created successfully', severity: 'success' }));
-          });
-          setOpenCreate(false);
-        }}
-      />
+            setOpenCreate(false);
+          }}
+        />
+      </div>        
     </>
+    
   );
 }
