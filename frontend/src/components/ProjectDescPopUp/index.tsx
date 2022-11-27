@@ -11,19 +11,12 @@ interface ProjectDialogProps {
   open: boolean;
   onClose: () => void;
   project: Project;
-  //onSubmit: (taskData: Task) => void;
 }
 
 export default function ProjectDescPopUp(props: ProjectDialogProps) {
-  //const [formData, setFormData] = React.useState<Task>({
-  //  name: '',
-  //  description: '',
-  //  weight: 1
-  //} as Task);
 
   const onChange = (e: React.SyntheticEvent) => {
     const target = e.target as HTMLInputElement;
-    //setFormData((formData) => ({ ...formData, [target.name]: target.value }));
   };
 
   return (
