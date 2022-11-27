@@ -11,10 +11,13 @@ export default function ProjectsPage() {
   const dispatch = useAppDispatch();
   const [projects, setProjects] = React.useState<Project[]>([]);
   const [open, setOpen] = React.useState(false);
+  const [initialLoading, setInitialLoading] = React.useState(true);
 
   React.useEffect(() => {
     const fetchProjects = async () => {
+      setInitialLoading(true);
       setProjects(await ProjectService.getProjects());
+      setInitialLoading(false);
     };
     fetchProjects();
   }, []);
@@ -80,7 +83,7 @@ export default function ProjectsPage() {
           </Button>
         </Box>
 
-        {projects.length > 0 ? (
+        {!initialLoading ? (
           <ProjectList projects={projects} setProjects={setProjects} />
         ) : (
           <Grid container spacing={2} sx={{ direction: 'row', justifyContent: 'center' }}>
