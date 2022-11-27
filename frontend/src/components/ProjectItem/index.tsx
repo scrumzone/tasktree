@@ -2,6 +2,7 @@ import * as React from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import MessageIcon from '@mui/icons-material/Message';
 import ListItemButton from '@mui/material/ListItemButton';
 import Typography from '@mui/material/Typography';
 import Project from '../../types/Project';
@@ -19,6 +20,7 @@ import {
 import Grid from '@mui/material/Unstable_Grid2';
 import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';
+import ProjectDescPopUp from '../ProjectDescPopUp';
 
 interface GetProjectFormProps {
   project: Project;
@@ -51,6 +53,7 @@ function LinearProgressWithLabel(props: ProgressBarProps) {
 
 export default function ProjectListItem(props: GetProjectFormProps) {
   const [openEdit, setOpenEdit] = React.useState(false);
+  const [openDesc, setOpenDesc] = React.useState(false);
 
   return (
     <>
@@ -72,6 +75,14 @@ export default function ProjectListItem(props: GetProjectFormProps) {
                 <LinearProgressWithLabel project={props.project} />
               </Grid>
               <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <IconButton
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    setOpenDesc(true);
+                  }}>
+                  <MessageIcon />
+                </IconButton>
                 {props.project.progress === 100 && <IconButton />}
                 {props.project.progress !== 100 && (
                   <IconButton
@@ -110,6 +121,12 @@ export default function ProjectListItem(props: GetProjectFormProps) {
           props.onEditSubmit(formData);
           setOpenEdit(false);
         }}
+      />
+      {/* Edit project popup */}
+      <ProjectDescPopUp
+        open={openDesc}
+        project={props.project}
+        onClose={() => setOpenDesc(false)}
       />
     </>
   );
