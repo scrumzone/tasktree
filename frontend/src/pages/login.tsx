@@ -1,5 +1,5 @@
 import React, { FormEvent, useState } from 'react';
-import { TextField, Button, Link, Typography } from '@mui/material';
+import { TextField, Button, Link, Typography, Box, Alert } from '@mui/material';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setCurrentUser } from '../store/user';
@@ -9,16 +9,24 @@ import UserService from '../services/UserService';
 export default function LoginDesktop() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorText, setErrorText] = useState('');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const token = await UserService.authenticateUser(username, password);
-    AuthService.storeJWT(token);
-    const user = AuthService.decodeJWT(token);
-    dispatch(setCurrentUser(user));
-    navigate('/');
+
+    if (!password || !username) return;
+
+    try {
+      const token = await UserService.authenticateUser(username, password);
+      AuthService.storeJWT(token);
+      const user = AuthService.decodeJWT(token);
+      dispatch(setCurrentUser(user));
+      navigate('/');
+    } catch (err) {
+      setErrorText('Incorrect username or password. Please try again.');
+    }
   };
 
   return (
@@ -27,12 +35,17 @@ export default function LoginDesktop() {
         Account Log In
       </Typography>
       <br />
-      <form onSubmit={handleSubmit}>
+      <Box
+        component="form"
+        noValidate
+        onSubmit={(e) => handleSubmit(e)}
+        sx={{ width: 800, marginLeft: 'auto', marginRight: 'auto' }}>
         <TextField
           id="userIn"
           onChange={(e) => setUsername(e.target.value)}
           variant="outlined"
-          placeholder="Username"
+          label="Username"
+          autoFocus
           required
           sx={{
             width: 500,
@@ -48,7 +61,8 @@ export default function LoginDesktop() {
           onChange={(e) => setPassword(e.target.value)}
           variant="outlined"
           type="password"
-          placeholder="Password"
+          label="Password"
+          autoFocus
           required
           sx={{
             width: 500,
@@ -65,21 +79,28 @@ export default function LoginDesktop() {
           type="submit"
           sx={{
             width: 500,
-            color: 'white',
-            backgroundColor: '#1565c0'
+            color: 'white'
           }}>
           Log In
         </Button>
         <br />
         <br />
 
-        <Typography id="signUpDiv">
+        <Typography>
           Don't have an account? &nbsp;
           <Link className="existingUser" href="/SignUp" variant="body2">
             Sign Up
           </Link>
         </Typography>
-      </form>
+        {errorText && errorText.length > 0 && (
+          <Box sx={{ width: '100%', textAlign: 'center' }}>
+            <br />
+            <Alert sx={{ width: 475, marginLeft: 'auto', marginRight: 'auto' }} severity="error">
+              {errorText}
+            </Alert>
+          </Box>
+        )}
+      </Box>
     </Typography>
   );
 }
