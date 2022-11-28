@@ -1,10 +1,11 @@
 import React, { FormEvent, useState } from 'react';
-import { TextField, Button, Link, Typography, Box, Alert } from '@mui/material';
+import { TextField, Button, Link, Typography, Box, Alert, CircularProgress, Hidden } from '@mui/material';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setCurrentUser } from '../store/user';
 import { useNavigate } from 'react-router-dom';
 import UserService from '../services/UserService';
+import { Visibility } from '@mui/icons-material';
 
 export default function LoginDesktop() {
   const [username, setUsername] = useState('');
@@ -12,6 +13,22 @@ export default function LoginDesktop() {
   const [errorText, setErrorText] = useState('');
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const loginButton = document.getElementById("loginBtn");
+  const loginProgress = document.getElementById("loginProgress");
+
+  const hideLoginButton = () => {
+    if (loginButton != null && loginProgress != null) {
+      loginButton.style.display = 'none';
+      loginProgress.style.display = 'inline-flex';
+    }
+  }
+
+  const showLoginButton = () => {
+    if (loginButton != null && loginProgress != null) {
+      loginButton.style.display = 'inline-flex';
+      loginProgress.style.display = 'none';
+    }
+  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -19,14 +36,17 @@ export default function LoginDesktop() {
     if (!password || !username) return;
 
     try {
+      hideLoginButton();
       const token = await UserService.authenticateUser(username, password);
       AuthService.storeJWT(token);
       const user = AuthService.decodeJWT(token);
       dispatch(setCurrentUser(user));
       navigate('/');
     } catch (err) {
+      showLoginButton();
       setErrorText('Incorrect username or password. Please try again.');
     }
+    showLoginButton();
   };
 
   return (
@@ -83,6 +103,11 @@ export default function LoginDesktop() {
           }}>
           Log In
         </Button>
+        <CircularProgress
+          id="loginProgress"
+          sx={{
+            display: 'none'
+          }} />
         <br />
         <br />
 
