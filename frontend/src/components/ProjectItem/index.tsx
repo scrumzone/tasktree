@@ -82,14 +82,16 @@ export default function ProjectListItem(props: GetProjectFormProps) {
               <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
                 {showIcons && (
                   <>
-                    <IconButton
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        e.preventDefault();
-                        setOpenDesc(true);
-                      }}>
-                      <MessageIcon />
-                    </IconButton>
+                    {!!props.project.description && (
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setOpenDesc(true);
+                        }}>
+                        <MessageIcon />
+                      </IconButton>
+                    )}
                     {props.project.progress === 100 && <IconButton />}
                     {props.project.progress !== 100 && (
                       <IconButton

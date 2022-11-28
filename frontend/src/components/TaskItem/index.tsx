@@ -52,7 +52,6 @@ function LinearProgressWithLabel(props: ProgressBarProps) {
 
 function IconGrid(
   props: TaskListItemProps & {
-    setSnackbarOpen: (e: boolean) => void;
     setCreateDialogOpen: (e: boolean) => void;
     setEditDialogOpen: (e: boolean) => void;
     reloadProject: () => void;
@@ -90,7 +89,6 @@ function IconGrid(
                     showSnackbar({ message: 'Task deleted successfully', severity: 'success' })
                   );
                 });
-                props.setSnackbarOpen(true);
               }
             }}>
             <DeleteIcon />
@@ -103,23 +101,19 @@ function IconGrid(
 
 export default function TaskListItem(props: TaskListItemProps) {
   const dispatch = useAppDispatch();
-  const [openSnackbar, setOpenSnackbar] = React.useState(false);
   const [openEdit, setOpenEdit] = React.useState(false);
   const [openCreate, setOpenCreate] = React.useState(false);
   const [preEditTask, setPreEditTask] = React.useState(props.task);
-
-  const handleClose = (event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setOpenSnackbar(false);
-  };
+  const [showIcons, setShowIcons] = React.useState(false);
 
   return (
     <>
       <div>
-        <ListItem button={!!props.onClick as false} onClick={props.onClick}>
+        <ListItem
+          button={!!props.onClick as false}
+          onClick={props.onClick}
+          onMouseEnter={() => setShowIcons(true)}
+          onMouseLeave={() => setShowIcons(false)}>
           <ListItemText disableTypography>
             <Grid container spacing={2} alignItems="center" justifyContent="space-between">
               <Grid xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
@@ -128,7 +122,9 @@ export default function TaskListItem(props: TaskListItemProps) {
                     e.stopPropagation();
                     e.preventDefault();
                     if (
-                      confirm(`Mark task "${props.task.name}" and all of its sub-tasks as complete?`)
+                      confirm(
+                        `Mark task "${props.task.name}" and all of its sub-tasks as complete?`
+                      )
                     ) {
                       props.task.completedAt = new Date();
                       TaskService.updateTask(props.task, props.task.id!).then(() => {
@@ -146,7 +142,9 @@ export default function TaskListItem(props: TaskListItemProps) {
                     <CheckCircleIcon color={props.task.completedAt ? 'success' : 'primary'} />
                   )}
                   {!props.task.completedAt && (
-                    <CheckCircleOutlineIcon color={props.task.completedAt ? 'success' : 'primary'} />
+                    <CheckCircleOutlineIcon
+                      color={props.task.completedAt ? 'success' : 'primary'}
+                    />
                   )}
                 </IconButton>
                 <Typography
@@ -161,11 +159,12 @@ export default function TaskListItem(props: TaskListItemProps) {
               <Grid xs={8}>
                 <LinearProgressWithLabel variant="determinate" task={props.task} />
               </Grid>
-              {props.task.completedAt && <Grid xs={2} container justifyContent="center"></Grid>}
-              {!props.task.completedAt && (
+              {(props.task.completedAt || !showIcons) && (
+                <Grid xs={2} container justifyContent="center"></Grid>
+              )}
+              {!props.task.completedAt && showIcons && (
                 <IconGrid
                   task={props.task}
-                  setSnackbarOpen={setOpenSnackbar}
                   setCreateDialogOpen={setOpenCreate}
                   setEditDialogOpen={setOpenEdit}
                   reloadProject={props.reloadProject}
@@ -177,11 +176,12 @@ export default function TaskListItem(props: TaskListItemProps) {
           {props.children}
         </ListItem>
         <ListItemText>
-          <Typography sx={{
-                    textDecoration: props.task.completedAt ? 'line-through' : '',
-                    color: props.task.completedAt ? 'gray' : ''
-                  }} variant = "h6">
-                
+          <Typography
+            sx={{
+              textDecoration: props.task.completedAt ? 'line-through' : '',
+              color: props.task.completedAt ? 'gray' : ''
+            }}
+            variant="subtitle2">
             {props.task.description}
           </Typography>
         </ListItemText>
@@ -212,8 +212,7 @@ export default function TaskListItem(props: TaskListItemProps) {
             setOpenCreate(false);
           }}
         />
-      </div>        
+      </div>
     </>
-    
   );
 }
