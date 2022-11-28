@@ -16,7 +16,10 @@ export default function LoginDesktop() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!password || !username) return;
+    if (!password || !username) {
+      setErrorText('All fields are required.');
+      return;
+    }
 
     try {
       const token = await UserService.authenticateUser(username, password);
