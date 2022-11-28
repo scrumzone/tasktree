@@ -44,7 +44,7 @@ export default function LoginDesktop() {
           id="userIn"
           onChange={(e) => setUsername(e.target.value)}
           variant="outlined"
-          placeholder="Username *"
+          label="Username"
           autoFocus
           required
           sx={{
@@ -61,7 +61,7 @@ export default function LoginDesktop() {
           onChange={(e) => setPassword(e.target.value)}
           variant="outlined"
           type="password"
-          placeholder="Password *"
+          label="Password"
           autoFocus
           required
           sx={{
