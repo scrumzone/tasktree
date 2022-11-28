@@ -16,6 +16,10 @@ function renderRow(props: ListChildComponentProps) {
   const { data, index, style } = props;
   var preEditProject: Project = JSON.parse(JSON.stringify(data.projects[index]));
   function onEditSubmit(formData: Project) {
+    if (formData.name == "") {
+      data.dispatch(showSnackbar({ message: 'Name is required', severity: 'error' }));
+      return;
+    }
     data.projects[index].name = formData.name;
     data.projects[index].description = formData.description;
     if (!shallowEqual(preEditProject, data.projects[index])) {

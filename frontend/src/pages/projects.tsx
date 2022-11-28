@@ -30,6 +30,10 @@ export default function ProjectsPage() {
     setOpen(false);
   };
   const handleSubmit = async (data: Project) => {
+    if (data.name == "") {
+      dispatch(showSnackbar({ message: 'Name is required', severity: 'error' }));
+      return;
+    }
     const project = await ProjectService.createProject(data);
     setProjects([...projects, project]);
     handleClose();
