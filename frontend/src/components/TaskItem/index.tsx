@@ -178,10 +178,10 @@ export default function TaskListItem(props: TaskListItemProps) {
         </ListItem>
         <ListItemText>
           <Typography sx={{
-                    textDecoration: props.task.completedAt ? 'line-through' : '',
-                    color: props.task.completedAt ? 'gray' : ''
-                  }} variant = "h6">
-                
+            textDecoration: props.task.completedAt ? 'line-through' : '',
+            color: props.task.completedAt ? 'gray' : ''
+          }} variant="h6">
+
             {props.task.description}
           </Typography>
         </ListItemText>
@@ -190,6 +190,14 @@ export default function TaskListItem(props: TaskListItemProps) {
           task={props.task}
           onClose={() => setOpenEdit(false)}
           onSubmit={(formData) => {
+            if (formData.name == "") {
+              dispatch(showSnackbar({ message: 'Name is required', severity: 'error' }));
+              return;
+            }
+            else if (formData.weight <= 0) {
+              dispatch(showSnackbar({ message: 'Weight must be positive', severity: 'error' }));
+              return;
+            }
             setOpenEdit(false);
             if (!shallowEqual(formData, preEditTask)) {
               TaskService.updateTask(formData, props.task.id!).then(() => {
@@ -205,6 +213,14 @@ export default function TaskListItem(props: TaskListItemProps) {
           open={openCreate}
           onClose={() => setOpenCreate(false)}
           onSubmit={(formData) => {
+            if (formData.name == "") {
+              dispatch(showSnackbar({ message: 'Name is required', severity: 'error' }));
+              return;
+            }
+            else if (formData.weight <= 0) {
+              dispatch(showSnackbar({ message: 'Weight must be positive', severity: 'error' }));
+              return;
+            }
             TaskService.createTask(formData, props.task.id!).then(() => {
               props.reloadProject();
               dispatch(showSnackbar({ message: 'Task created successfully', severity: 'success' }));
@@ -212,8 +228,8 @@ export default function TaskListItem(props: TaskListItemProps) {
             setOpenCreate(false);
           }}
         />
-      </div>        
+      </div>
     </>
-    
+
   );
 }
