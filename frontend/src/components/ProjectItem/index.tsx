@@ -119,10 +119,10 @@ export default function ProjectListItem(props: GetProjectFormProps) {
         project={props.project}
         onClose={() => setOpenEdit(false)}
         onSubmit={(formData) => {
+          props.onEditSubmit(formData);
           if (formData.name == "") {
             return;
           }
-          props.onEditSubmit(formData);
           setOpenEdit(false);
         }}
       />
