@@ -54,10 +54,14 @@ function LinearProgressWithLabel(props: ProgressBarProps) {
 export default function ProjectListItem(props: GetProjectFormProps) {
   const [openEdit, setOpenEdit] = React.useState(false);
   const [openDesc, setOpenDesc] = React.useState(false);
+  const [showIcons, setShowIcons] = React.useState(false);
 
   return (
     <>
-      <ListItem disablePadding>
+      <ListItem
+        disablePadding
+        onMouseEnter={() => setShowIcons(true)}
+        onMouseLeave={() => setShowIcons(false)}>
         <ListItemButton component={Link} to={`/projects/${props.project.id}`}>
           <ListItemText disableTypography>
             <Grid container spacing={2} alignItems="center" justifyContent="space-between">
@@ -65,7 +69,8 @@ export default function ProjectListItem(props: GetProjectFormProps) {
                 <Typography
                   sx={{
                     textDecoration: props.project.progress === 100 ? 'line-through' : '',
-                    color: props.project.progress === 100 ? 'gray' : ''
+                    color: props.project.progress === 100 ? 'gray' : '',
+                    py: 1
                   }}
                   variant="h6">
                   {props.project.name}
@@ -75,38 +80,46 @@ export default function ProjectListItem(props: GetProjectFormProps) {
                 <LinearProgressWithLabel project={props.project} />
               </Grid>
               <Grid xs={2} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    setOpenDesc(true);
-                  }}>
-                  <MessageIcon />
-                </IconButton>
-                {props.project.progress === 100 && <IconButton />}
-                {props.project.progress !== 100 && (
-                  <IconButton
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      e.preventDefault();
-                      setOpenEdit(true);
-                    }}>
-                    <EditIcon />
-                  </IconButton>
-                )}
+                {showIcons && (
+                  <>
+                    {!!props.project.description && (
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setOpenDesc(true);
+                        }}>
+                        <MessageIcon />
+                      </IconButton>
+                    )}
+                    {props.project.progress === 100 && <IconButton />}
+                    {props.project.progress !== 100 && (
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          e.preventDefault();
+                          setOpenEdit(true);
+                        }}>
+                        <EditIcon />
+                      </IconButton>
+                    )}
 
-                <IconButton
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    e.preventDefault();
-                    if (
-                      confirm(`Are you sure you want to delete project "${props.project.name}"?`)
-                    ) {
-                      props.onDelete();
-                    }
-                  }}>
-                  <DeleteIcon />
-                </IconButton>
+                    <IconButton
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        if (
+                          confirm(
+                            `Are you sure you want to delete project "${props.project.name}"?`
+                          )
+                        ) {
+                          props.onDelete();
+                        }
+                      }}>
+                      <DeleteIcon />
+                    </IconButton>
+                  </>
+                )}
               </Grid>
             </Grid>
           </ListItemText>
