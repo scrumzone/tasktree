@@ -11,24 +11,9 @@ export default function LoginDesktop() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const loginButton = document.getElementById("loginBtn");
-  const loginProgress = document.getElementById("loginProgress");
-
-  const hideLoginButton = () => {
-    if (loginButton != null && loginProgress != null) {
-      loginButton.style.display = 'none';
-      loginProgress.style.display = 'inline-flex';
-    }
-  }
-
-  const showLoginButton = () => {
-    if (loginButton != null && loginProgress != null) {
-      loginButton.style.display = 'inline-flex';
-      loginProgress.style.display = 'none';
-    }
-  }
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -36,17 +21,17 @@ export default function LoginDesktop() {
     if (!password || !username) return;
 
     try {
-      hideLoginButton();
+      setLoading(true);
       const token = await UserService.authenticateUser(username, password);
       AuthService.storeJWT(token);
       const user = AuthService.decodeJWT(token);
       dispatch(setCurrentUser(user));
       navigate('/');
     } catch (err) {
-      showLoginButton();
+      setLoading(false);
       setErrorText('Incorrect username or password. Please try again.');
     }
-    showLoginButton();
+    setLoading(false);
   };
 
   return (
@@ -101,13 +86,8 @@ export default function LoginDesktop() {
             width: 500,
             color: 'white'
           }}>
-          Log In
+          {loading ? <CircularProgress size={24} color="inherit" /> : 'Log Up'}
         </Button>
-        <CircularProgress
-          id="loginProgress"
-          sx={{
-            display: 'none'
-          }} />
         <br />
         <br />
 

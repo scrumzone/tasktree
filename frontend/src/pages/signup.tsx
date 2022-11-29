@@ -20,9 +20,9 @@ interface stateInterface {
 
 export default function SignUpPage() {
   const [values, setValues] = useState<stateInterface>({} as stateInterface);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const signupButton = document.getElementById("signupBtn");
   const signupProgress = document.getElementById("signupProgress");
 
   /* Generic way of using useStates for state values so that one onChange can be used for
@@ -34,24 +34,10 @@ export default function SignUpPage() {
       setValues((values) => ({ ...values, ['passwordLength']: values.password.length }));
   };
 
-  const hideSignupButton = () => {
-    if (signupButton != null && signupProgress != null) {
-      signupButton.style.display = 'none';
-      signupProgress.style.display = 'inline-flex'
-    }
-  }
-
-  const showSignupButton = () => {
-    if (signupButton != null && signupProgress != null) {
-      signupButton.style.display = 'inline-flex';
-      signupProgress.style.display = 'none'
-    }
-  }
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValues((values) => ({ ...values, ['submitFlag']: true }));
-    hideSignupButton();
+    setLoading(true);
 
     if (validateFields()) {
       const user: User = {
@@ -64,7 +50,7 @@ export default function SignUpPage() {
       const res = await UserService.createUser(user);
       if (res.status != 201) {
         displayError(res.data);
-        showSignupButton();
+        setLoading(false);
         return;
       }
 
@@ -74,10 +60,10 @@ export default function SignUpPage() {
       dispatch(setCurrentUser(user));
       navigate('/');
     } else {
-      showSignupButton();
+      setLoading(false);
       return;
     }
-    showSignupButton();
+    setLoading(false);
   };
 
   const displayError = (errorMessage: string) => {
@@ -223,16 +209,9 @@ export default function SignUpPage() {
               />
             </Grid>
           </Grid>
-          <Button id="signupBtn" type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Sign Up
+          <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
           </Button>
-          <CircularProgress
-            id='signupProgress'
-            sx={{
-              mt: 3,
-              mb: 2,
-              display: 'none'
-            }} />
           <Grid container justifyContent="center">
             <Grid
               item
