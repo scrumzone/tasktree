@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Grid, Link, TextField, Typography } from '@mui/material';
+import { Alert, Box, Button, CircularProgress, Grid, Link, TextField, Typography } from '@mui/material';
 import React, { FormEvent, useState } from 'react';
 import AuthService from '../services/AuthService';
 import UserService from '../services/UserService';
@@ -20,8 +20,10 @@ interface stateInterface {
 
 export default function SignUpPage() {
   const [values, setValues] = useState<stateInterface>({} as stateInterface);
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const signupProgress = document.getElementById("signupProgress");
 
   /* Generic way of using useStates for state values so that one onChange can be used for
    * all values in the stateInterface */
@@ -35,6 +37,7 @@ export default function SignUpPage() {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setValues((values) => ({ ...values, ['submitFlag']: true }));
+    setLoading(true);
 
     if (validateFields()) {
       const user: User = {
@@ -47,6 +50,7 @@ export default function SignUpPage() {
       const res = await UserService.createUser(user);
       if (res.status != 201) {
         displayError(res.data);
+        setLoading(false);
         return;
       }
 
@@ -56,8 +60,10 @@ export default function SignUpPage() {
       dispatch(setCurrentUser(user));
       navigate('/');
     } else {
+      setLoading(false);
       return;
     }
+    setLoading(false);
   };
 
   const displayError = (errorMessage: string) => {
@@ -173,8 +179,8 @@ export default function SignUpPage() {
                   values.password === ''
                     ? 'Required'
                     : values.passwordLength < 8 && values.submitFlag
-                    ? 'Password must be at least 8 characters'
-                    : ''
+                      ? 'Password must be at least 8 characters'
+                      : ''
                 }
                 value={values.password}
               />
@@ -196,15 +202,15 @@ export default function SignUpPage() {
                   values.confirmPassword === ''
                     ? 'Required'
                     : values.password !== values.confirmPassword && values.submitFlag
-                    ? 'Passwords do not match'
-                    : ''
+                      ? 'Passwords do not match'
+                      : ''
                 }
                 value={values.confirmPassword}
               />
             </Grid>
           </Grid>
           <Button type="submit" fullWidth variant="contained" sx={{ mt: 3, mb: 2 }}>
-            Sign Up
+            {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign Up'}
           </Button>
           <Grid container justifyContent="center">
             <Grid

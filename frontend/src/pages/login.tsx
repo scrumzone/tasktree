@@ -1,15 +1,17 @@
 import React, { FormEvent, useState } from 'react';
-import { TextField, Button, Link, Typography, Box, Alert } from '@mui/material';
+import { TextField, Button, Link, Typography, Box, Alert, CircularProgress, Hidden } from '@mui/material';
 import AuthService from '../services/AuthService';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { setCurrentUser } from '../store/user';
 import { useNavigate } from 'react-router-dom';
 import UserService from '../services/UserService';
+import { Visibility } from '@mui/icons-material';
 
 export default function LoginDesktop() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
@@ -22,14 +24,17 @@ export default function LoginDesktop() {
     }
 
     try {
+      setLoading(true);
       const token = await UserService.authenticateUser(username, password);
       AuthService.storeJWT(token);
       const user = AuthService.decodeJWT(token);
       dispatch(setCurrentUser(user));
       navigate('/');
     } catch (err) {
+      setLoading(false);
       setErrorText('Incorrect username or password. Please try again.');
     }
+    setLoading(false);
   };
 
   return (
@@ -84,7 +89,7 @@ export default function LoginDesktop() {
             width: 500,
             color: 'white'
           }}>
-          Log In
+          {loading ? <CircularProgress size={24} color="inherit" /> : 'Log Up'}
         </Button>
         <br />
         <br />
