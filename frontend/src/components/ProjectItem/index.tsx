@@ -21,6 +21,7 @@ import Grid from '@mui/material/Unstable_Grid2';
 import { Link } from 'react-router-dom';
 import EditProjectDialog from '../EditProjectDialog';
 import ProjectDescPopUp from '../ProjectDescPopUp';
+import { showSnackbar } from '../../store/snackbar';
 
 interface GetProjectFormProps {
   project: Project;
@@ -132,6 +133,9 @@ export default function ProjectListItem(props: GetProjectFormProps) {
         onClose={() => setOpenEdit(false)}
         onSubmit={(formData) => {
           props.onEditSubmit(formData);
+          if (formData.name == "") {
+            return;
+          }
           setOpenEdit(false);
         }}
       />
