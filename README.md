@@ -1,6 +1,16 @@
-# tasktree
+# Tasktree
+![logo](https://github.com/scrumzone/tasktree/blob/main/frontend/src/assets/logo.png)
 
-welcome to the scrum zone
+### Members:
+* Zack Malkmus (zmalkmus)
+* Tyler Nitzsche (PotassiumLover)
+* Andrew Rutter
+* Ethan Maness
+* Zavier Miller
+
+
+## Product Overview:
+  Sometimes its hard to keep track of tasks you have to do in your day to day lives and organize your productivity based on importance so you get the stuff you want to   get done before the menial, unimportant tasks. Sometimes the tasks are too large and complex to reasonably keep track of without writing it down. This application     would solve a variety of problems in prioritizing, and managing one's time. The website will allow a user to create an account and add a new project to get started.   They will be given the option to edit the name and description of the project, and add tasks corresponding to the project according to their needs. When the user       completes an item, they can mark is as complete by pressing the checkmark and all subtasks will be marked as complete as well. When all subtasks are completed, or     the project itself is marked as complete, the project will visually update as completed for the user. The site will also feature the most recent projects being         worked on, as well as another tab for an extended list of projects. The site will overall have a landing, log in, sign up, home, and projects page to be navigated by   the end user.
 
 # Getting started
 
