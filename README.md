@@ -114,4 +114,5 @@ to run the whole project, or just the backend/frontend.
 
 To run just the backend or frontend simply specify that in the command up in the optional `[project]` argument.
 
+### License
 [License](https://github.com/scrumzone/tasktree/blob/main/LICENSE.txt)
