@@ -6,7 +6,7 @@
 * Tyler Nitzsche (PotassiumLover)
 * Andrew Rutter
 * Ethan Maness (emaness-utk)
-* Zavier Miller
+* Zavier Miller (zaviermiller)
 
 
 ## Product Overview:
