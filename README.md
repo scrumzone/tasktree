@@ -80,7 +80,7 @@ There are a lot of steps involved with getting everything set up locally, so we 
 
 To use Docker, on Windows, install Docker Desktop. On Linux, install the Docker daemon from you package manager.
 
-You will still need to run `dotnet ef database update` to ensure the database is properly set up.
+You will still need to run `dotnet ef database update` from within the backend container to ensure the database is properly set up.
 
 ## Running the app
 
