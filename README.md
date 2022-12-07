@@ -4,7 +4,7 @@
 ### Members:
 * Zack Malkmus (zmalkmus)
 * Tyler Nitzsche (PotassiumLover)
-* Andrew Rutter
+* Andrew Rutter (andlrutt)
 * Ethan Maness (emaness-utk)
 * Zavier Miller (zaviermiller)
 
