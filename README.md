@@ -52,7 +52,7 @@ After doing that, navigate to the install location of the MySQL binary (usually 
 
 You will be asked to provide a password, this is the same one you set up during the install process.
 
-Now, copy the commands in the file `db/init/init-windows.sql` to get the MySQL user set up correctly for talking to the backend.
+Now, copy the commands in the file `db/init/init-windows.sql` to get the MySQL user set up correctly for talking to the backend. If this doesn't work, try the other file in the same directory.
 
 Finally, you should now navigate to the `backend/TaskTree` directory and run the following command to create the appropriate tables in the database by running migrations:
 
