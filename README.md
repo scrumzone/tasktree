@@ -5,7 +5,7 @@
 * Zack Malkmus (zmalkmus)
 * Tyler Nitzsche (PotassiumLover)
 * Andrew Rutter
-* Ethan Maness
+* Ethan Maness (emaness-utk)
 * Zavier Miller
 
 
