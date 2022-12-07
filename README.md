@@ -24,13 +24,15 @@ Before you can run any apps, you will need to have the following installed:
   - the `dotnet` CLI
   - `mysql`
   - `node`
+ 
     **OR**
 - docker setup
   - `docker`
+  - `dotnet` CLI
 
 ### Local setup
 
-#### Setting up dotnet CLI
+#### Setting up dotnet CLI (required for both Docker and running locally)
 
 When you first set up Visual Studio or Rider to work with our project backend, the dotnet CLI should be automatically installed.
 You can now run commands starting with `dotnet ...`. For example, one tool you'll need is the Entity Framework CLI, which is easily installable through the dotnet CLI:
@@ -77,6 +79,8 @@ Once Node has been installed, navigate to the `frontend` directory and execute `
 There are a lot of steps involved with getting everything set up locally, so we have a Docker Compose project to help get started a lot quicker.
 
 To use Docker, on Windows, install Docker Desktop. On Linux, install the Docker daemon from you package manager.
+
+You will still need to run `dotnet ef database update` to ensure the database is properly set up.
 
 ## Running the app
 
